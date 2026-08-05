@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'accounts',
     'pages',
     'modules',
+    'blog',
     'seo',
     'api',
 ]

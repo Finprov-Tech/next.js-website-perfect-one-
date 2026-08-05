@@ -1,9 +1,10 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from simple_history.admin import SimpleHistoryAdmin
 
 from core.admin_site import cms_admin_site
 from pages.models import Page, PageType
 from seo.admin import SEOMetaInline
+from seo.models import SEOMeta
 
 
 @admin.register(PageType, site=cms_admin_site)
@@ -37,3 +38,10 @@ class PageAdmin(SimpleHistoryAdmin):
     @admin.display(description='Modules')
     def module_count(self, obj):
         return sum(getattr(obj, name).count() for name in self.MODULE_RELATED_NAMES)
+
+    def save_formset(self, request, form, formset, change):
+        super().save_formset(request, form, formset, change)
+        if formset.model is SEOMeta:
+            for inline_form in formset.forms:
+                for warning in getattr(inline_form.instance, '_seo_warnings', None) or []:
+                    messages.warning(request, warning)

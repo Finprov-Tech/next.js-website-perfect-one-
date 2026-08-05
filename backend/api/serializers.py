@@ -1,5 +1,6 @@
 from rest_framework import serializers
 
+from blog.models import BlogCategory, BlogPost, BlogPostSection
 from modules.models import (
     CTA,
     Banner,
@@ -18,8 +19,9 @@ from modules.models import (
     Testimonial,
     WhyFinprovSection,
 )
+from core.models import SiteSettings
 from pages.models import Page, PageType
-from seo.models import SEOMeta
+from seo.models import Redirect, SEOMeta
 
 
 class PageTypeSerializer(serializers.ModelSerializer):
@@ -222,10 +224,30 @@ class FAQItemSerializer(serializers.ModelSerializer):
 
 class PageListSerializer(serializers.ModelSerializer):
     page_type = PageTypeSerializer(read_only=True)
+    include_in_sitemap = serializers.SerializerMethodField()
 
     class Meta:
         model = Page
-        fields = ['id', 'name', 'slug', 'page_type', 'is_homepage', 'status']
+        fields = ['id', 'name', 'slug', 'page_type', 'is_homepage', 'status', 'include_in_sitemap', 'updated_at']
+
+    def get_include_in_sitemap(self, obj):
+        seo = getattr(obj, 'seo', None)
+        return seo.include_in_sitemap if seo is not None else True
+
+
+class RedirectSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Redirect
+        fields = ['old_path', 'new_path', 'redirect_type']
+
+
+class SiteSettingsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = [
+            'site_name', 'site_logo', 'default_og_image',
+            'custom_404_title', 'custom_404_message', 'custom_404_image',
+        ]
 
 
 class PageDetailSerializer(serializers.ModelSerializer):
@@ -294,3 +316,44 @@ class PageDetailSerializer(serializers.ModelSerializer):
 
     def get_faq(self, obj):
         return FAQItemSerializer(self._active(obj.faqitem_set), many=True, context=self.context).data
+
+
+class BlogCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogCategory
+        fields = ['name', 'slug']
+
+
+class BlogPostSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = BlogPostSection
+        fields = ['id', 'heading', 'body', 'display_order']
+
+
+class BlogPostListSerializer(serializers.ModelSerializer):
+    category = BlogCategorySerializer(read_only=True)
+
+    class Meta:
+        model = BlogPost
+        fields = [
+            'title', 'slug', 'excerpt', 'category', 'cover_image', 'cover_image_alt',
+            'author_name', 'author_role', 'published_date', 'read_time', 'is_featured',
+        ]
+
+
+class BlogPostDetailSerializer(serializers.ModelSerializer):
+    category = BlogCategorySerializer(read_only=True)
+    seo = SEOMetaSerializer(read_only=True)
+    sections = serializers.SerializerMethodField()
+
+    class Meta:
+        model = BlogPost
+        fields = [
+            'title', 'slug', 'excerpt', 'category', 'cover_image', 'cover_image_alt',
+            'author_name', 'author_role', 'published_date', 'read_time', 'is_featured',
+            'sections', 'seo',
+        ]
+
+    def get_sections(self, obj):
+        sections = obj.sections.filter(is_active=True).order_by('display_order')
+        return BlogPostSectionSerializer(sections, many=True, context=self.context).data

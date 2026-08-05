@@ -1,7 +1,7 @@
 from django.contrib import admin
 from simple_history.admin import SimpleHistoryAdmin
 
-from core.admin import image_preview
+from core.admin import AltTextWarningMixin, image_preview
 from core.admin_site import cms_admin_site
 from modules.models import (
     CTA,
@@ -56,7 +56,7 @@ class FeatureCardInline(admin.TabularInline):
     fields = ('title', 'description', 'icon', 'display_order', 'is_active')
 
 
-class HeadingModuleAdmin(SimpleHistoryAdmin):
+class HeadingModuleAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
     list_display = ('page', 'heading', 'heading_level', 'display_order', 'is_active', 'updated_at')
     list_filter = ('page', 'is_active', 'heading_level')
     list_editable = ('display_order', 'is_active')
@@ -124,6 +124,8 @@ class CourseSectionAdmin(HeadingModuleAdmin):
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
         ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
+    alt_text_image_field = 'background_image'
+    alt_text_alt_field = 'background_image_alt'
 
     def image_preview_display(self, obj):
         return image_preview(obj, 'background_image')
@@ -132,7 +134,7 @@ class CourseSectionAdmin(HeadingModuleAdmin):
 
 
 @admin.register(CourseCard, site=cms_admin_site)
-class CourseCardAdmin(admin.ModelAdmin):
+class CourseCardAdmin(AltTextWarningMixin, admin.ModelAdmin):
     list_display = ('title', 'course_section', 'category', 'program_type', 'badge', 'display_order', 'is_active', 'thumb')
     list_filter = ('course_section', 'category', 'program_type', 'is_active')
     list_editable = ('display_order', 'is_active')
@@ -201,13 +203,15 @@ class CTAAdmin(HeadingModuleAdmin):
 
 
 @admin.register(Testimonial, site=cms_admin_site)
-class TestimonialAdmin(SimpleHistoryAdmin):
+class TestimonialAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
     list_display = ('page', 'name', 'company', 'kind', 'rating', 'display_order', 'is_active', 'avatar_preview')
     list_filter = ('page', 'is_active', 'kind', 'rating')
     list_editable = ('display_order', 'is_active')
     search_fields = ('name', 'company', 'designation', 'quote', 'page__name')
     readonly_fields = ('created_at', 'updated_at', 'avatar_preview')
     autocomplete_fields = ('page',)
+    alt_text_image_field = 'avatar'
+    alt_text_alt_field = 'avatar_alt'
     fieldsets = (
         ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('name', 'company', 'designation', 'quote', 'rating')}),
@@ -222,13 +226,15 @@ class TestimonialAdmin(SimpleHistoryAdmin):
 
 
 @admin.register(PartnerLogo, site=cms_admin_site)
-class PartnerLogoAdmin(SimpleHistoryAdmin):
+class PartnerLogoAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
     list_display = ('page', 'name', 'kind', 'website_url', 'display_order', 'is_active', 'logo_preview')
     list_filter = ('page', 'kind', 'is_active')
     list_editable = ('display_order', 'is_active')
     search_fields = ('name', 'page__name')
     readonly_fields = ('created_at', 'updated_at', 'logo_preview')
     autocomplete_fields = ('page',)
+    alt_text_image_field = 'logo'
+    alt_text_alt_field = 'logo_alt'
 
     def logo_preview(self, obj):
         return image_preview(obj, 'logo')

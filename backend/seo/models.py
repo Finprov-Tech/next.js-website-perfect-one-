@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -5,7 +6,10 @@ from core.models import TimeStampedModel
 
 
 class SEOMeta(TimeStampedModel):
-    """The single, page-level SEO record. One per Page — never per-module."""
+    """The single SEO record for a Page OR a BlogPost — never per-module.
+
+    Exactly one of `page`/`blog_post` must be set; enforced in clean().
+    """
 
     ROBOTS_INDEX_FOLLOW = 'index,follow'
     ROBOTS_NOINDEX_FOLLOW = 'noindex,follow'
@@ -20,8 +24,10 @@ class SEOMeta(TimeStampedModel):
 
     SCHEMA_CHOICES = [
         ('none', 'None'),
+        ('webpage', 'WebPage'),
         ('organization', 'Organization'),
         ('article', 'Article'),
+        ('blogposting', 'BlogPosting'),
         ('faq', 'FAQ'),
         ('course', 'Course'),
         ('breadcrumb', 'Breadcrumb'),
@@ -29,12 +35,13 @@ class SEOMeta(TimeStampedModel):
         ('product', 'Product'),
     ]
 
-    page = models.OneToOneField('pages.Page', on_delete=models.CASCADE, related_name='seo')
+    page = models.OneToOneField('pages.Page', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
+    blog_post = models.OneToOneField('blog.BlogPost', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
 
     # General SEO
     seo_title = models.CharField(max_length=255, blank=True)
     meta_description = models.CharField(max_length=320, blank=True)
-    focus_keyword = models.CharField(max_length=255, blank=True)
+    focus_keyword = models.CharField(max_length=255, blank=True, db_index=True)
     canonical_url = models.URLField(blank=True)
     meta_robots = models.CharField(max_length=20, choices=ROBOTS_CHOICES, default=ROBOTS_INDEX_FOLLOW)
 
@@ -63,8 +70,14 @@ class SEOMeta(TimeStampedModel):
         verbose_name = 'SEO Meta'
         verbose_name_plural = 'SEO Meta'
 
+    def clean(self):
+        super().clean()
+        if bool(self.page_id) == bool(self.blog_post_id):
+            raise ValidationError('Exactly one of "page" or "blog_post" must be set.')
+
     def __str__(self):
-        return f'SEO — {self.page.name}'
+        target = self.page or self.blog_post
+        return f'SEO — {target}' if target else 'SEO — (unattached)'
 
 
 class Redirect(models.Model):

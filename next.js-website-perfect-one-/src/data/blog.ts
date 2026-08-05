@@ -8,6 +8,8 @@ export type Post = {
   gradient: string;
   author: { name: string; role: string };
   sections: { heading: string; body: string }[];
+  /** CMS-sourced cover image, when adapting a CMSBlogPostDetail — absent for local posts. */
+  coverImageUrl?: string;
 };
 
 export type BlogPost = Post;

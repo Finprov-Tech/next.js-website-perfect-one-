@@ -1,29 +1,27 @@
 import type { Metadata } from "next";
 import "@/styles.css";
 import { ClientProviders } from "@/components/providers/ClientProviders";
+import { SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_IMAGE, SITE_DEFAULT_TITLE } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Finprov — Master Finance. Accelerate Your Global Career.",
-  description:
-    "Industry-validated finance programs with SAP, Tally & Power BI training. 100% placement assistance for freshers and working professionals.",
+  title: SITE_DEFAULT_TITLE,
+  description: SITE_DEFAULT_DESCRIPTION,
   authors: [{ name: "Finprov" }],
   openGraph: {
-    title: "Finprov — Master Finance. Accelerate Your Global Career.",
-    description:
-      "Industry-validated finance programs with SAP, Tally & Power BI training. 100% placement assistance for freshers and working professionals.",
+    title: SITE_DEFAULT_TITLE,
+    description: SITE_DEFAULT_DESCRIPTION,
     type: "website",
     images: [
       {
-        url: "https://finprov.com/finprov-wordmark.jpeg",
+        url: SITE_DEFAULT_IMAGE,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Finprov — Master Finance. Accelerate Your Global Career.",
-    description:
-      "Industry-validated finance programs with SAP, Tally & Power BI training. 100% placement assistance for freshers and working professionals.",
-    images: ["https://finprov.com/finprov-wordmark.jpeg"],
+    title: SITE_DEFAULT_TITLE,
+    description: SITE_DEFAULT_DESCRIPTION,
+    images: [SITE_DEFAULT_IMAGE],
   },
   icons: {
     icon: "/finprov-mark.jpeg",

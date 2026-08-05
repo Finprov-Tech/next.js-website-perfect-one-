@@ -35,11 +35,11 @@ const postImages: Record<string, string> = {
 
 const defaultImage = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80";
 
-export function BlogDetailView({ post }: { post: BlogPost }) {
-  const related = getRelatedPosts(post);
+export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost; related?: BlogPost[] }) {
+  const related = relatedProp ?? getRelatedPosts(post);
   const [copied, setCopied] = useState(false);
 
-  const heroImg = postImages[post.slug] || defaultImage;
+  const heroImg = post.coverImageUrl || postImages[post.slug] || defaultImage;
 
   const handleCopyLink = () => {
     if (typeof window !== "undefined") {
@@ -227,7 +227,7 @@ export function BlogDetailView({ post }: { post: BlogPost }) {
 
             <div className="grid gap-6 md:grid-cols-3">
               {related.map((p) => {
-                const bgImg = postImages[p.slug] || defaultImage;
+                const bgImg = p.coverImageUrl || postImages[p.slug] || defaultImage;
                 return (
                   <Link key={p.slug} href={`/blog/${p.slug}`} className="block">
                     <article className="group relative h-[360px] w-full overflow-hidden rounded-xl border border-white/10 bg-navy shadow-xl transition-all duration-300 hover:border-gold/50">

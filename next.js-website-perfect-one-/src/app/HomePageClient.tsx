@@ -21,7 +21,8 @@ import { WhyChooseUs } from "@/components/home/WhyChooseUs";
 import { LifeAtFinprov } from "@/components/home/LifeAtFinprov";
 import { scrollToSection } from "@/lib/scroll";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { organizationSchema } from "@/lib/seoSchemas";
+import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
+import { SITE_URL } from "@/lib/seo";
 import type { CMSPage } from "@/lib/cms";
 
 const defaultTickerItems = [
@@ -119,9 +120,11 @@ export function HomePageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     return () => window.cancelAnimationFrame(frame);
   }, []);
 
+  const pageSchema = generateSchemaForPage(cmsPage, SITE_URL + "/") ?? organizationSchema;
+
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <JsonLd data={organizationSchema} />
+      <JsonLd data={pageSchema} />
       <ScrollProgress />
       <SiteHeader />
 

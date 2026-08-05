@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import GroupAdmin, UserAdmin
 from django.contrib.auth.models import Group, User
 from django.utils.html import format_html
@@ -16,6 +16,29 @@ def image_preview(obj, field_name='image', height=60):
     if not file:
         return '(no image)'
     return format_html('<img src="{}" style="height:{}px;object-fit:contain;" />', file.url, height)
+
+
+class AltTextWarningMixin:
+    """Non-blocking `messages.warning` when an image is set but its alt text is blank.
+
+    Field names default to the MediaFieldsMixin convention (`image`/`image_alt`);
+    override `alt_text_image_field`/`alt_text_alt_field` per ModelAdmin for models
+    that name theirs differently (e.g. `avatar`/`avatar_alt`, `logo`/`logo_alt`).
+    """
+
+    alt_text_image_field = 'image'
+    alt_text_alt_field = 'image_alt'
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        image = getattr(obj, self.alt_text_image_field, None)
+        alt_text = getattr(obj, self.alt_text_alt_field, '')
+        if image and not alt_text:
+            messages.warning(
+                request,
+                f'"{obj}" has an image set on "{self.alt_text_image_field}" but no alt text on '
+                f'"{self.alt_text_alt_field}" — add one for accessibility and SEO.',
+            )
 
 
 @admin.register(SiteSettings, site=cms_admin_site)

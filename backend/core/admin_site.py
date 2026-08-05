@@ -8,7 +8,7 @@ class CMSAdminSite(AdminSite):
 
     # Apps listed here (by app_label) are shown first, in this order; everything
     # else (e.g. Django's built-in "auth" app) is appended afterwards.
-    APP_ORDER = ['pages', 'modules', 'seo', 'core']
+    APP_ORDER = ['pages', 'modules', 'blog', 'seo', 'core']
 
     def get_app_list(self, request, app_label=None):
         app_list = super().get_app_list(request, app_label=app_label)

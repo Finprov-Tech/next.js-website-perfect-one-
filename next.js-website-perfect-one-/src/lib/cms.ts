@@ -204,6 +204,54 @@ export type CMSCTA = {
   display_order: number;
 };
 
+export type CMSMetaRobots = "index,follow" | "noindex,follow" | "index,nofollow" | "noindex,nofollow";
+
+export type CMSSchemaType =
+  | "none"
+  | "webpage"
+  | "organization"
+  | "article"
+  | "blogposting"
+  | "faq"
+  | "course"
+  | "breadcrumb"
+  | "localbusiness"
+  | "product";
+
+export type CMSSeoMeta = {
+  seo_title: string;
+  meta_description: string;
+  focus_keyword: string;
+  canonical_url: string;
+  meta_robots: CMSMetaRobots;
+  og_title: string;
+  og_description: string;
+  og_image: string | null;
+  og_url: string;
+  schema_type: CMSSchemaType;
+  custom_schema_json: Record<string, unknown> | null;
+  include_in_sitemap: boolean;
+  author_name: string;
+  author_bio: string;
+  author_image: string | null;
+  word_count: number | null;
+};
+
+export type CMSSiteSettings = {
+  site_name: string;
+  site_logo: string | null;
+  default_og_image: string | null;
+  custom_404_title: string;
+  custom_404_message: string;
+  custom_404_image: string | null;
+};
+
+export type CMSRedirect = {
+  old_path: string;
+  new_path: string;
+  redirect_type: 301 | 302;
+};
+
 export type CMSPage = {
   id: number;
   name: string;
@@ -211,7 +259,7 @@ export type CMSPage = {
   page_type: CMSPageType | null;
   is_homepage: boolean;
   status: string;
-  seo: Record<string, unknown> | null;
+  seo: CMSSeoMeta | null;
   banner: CMSBanner | null;
   scroll_section: CMSScrollSection | null;
   credentials: CMSCredentials | null;
@@ -238,6 +286,98 @@ export async function getPageBySlug(slug: string): Promise<CMSPage | null> {
     return (await res.json()) as CMSPage;
   } catch {
     return null;
+  }
+}
+
+export type CMSBlogCategory = {
+  name: string;
+  slug: string;
+};
+
+export type CMSBlogPostSection = {
+  id: number;
+  heading: string;
+  body: string;
+  display_order: number;
+};
+
+export type CMSBlogPostSummary = {
+  title: string;
+  slug: string;
+  excerpt: string;
+  category: CMSBlogCategory | null;
+  cover_image: string | null;
+  cover_image_alt: string;
+  author_name: string;
+  author_role: string;
+  published_date: string | null;
+  read_time: string;
+  is_featured: boolean;
+};
+
+export type CMSBlogPostDetail = CMSBlogPostSummary & {
+  sections: CMSBlogPostSection[];
+  seo: CMSSeoMeta | null;
+};
+
+/** Fetches all published blog posts (list shape, no sections/seo). Returns [] on any failure. */
+export async function getBlogPosts(): Promise<CMSBlogPostSummary[]> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.results ?? data) as CMSBlogPostSummary[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fetches all blog categories. Returns [] on any failure. */
+export async function getBlogCategories(): Promise<CMSBlogCategory[]> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/categories/`, { cache: "no-store" });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.results ?? data) as CMSBlogCategory[];
+  } catch {
+    return [];
+  }
+}
+
+/** Fetches one published blog post by slug (full detail incl. sections + seo). Null on any failure. */
+export async function getBlogPostBySlug(slug: string): Promise<CMSBlogPostDetail | null> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/${slug}/`, { cache: "no-store" });
+    if (!res.ok) return null;
+    return (await res.json()) as CMSBlogPostDetail;
+  } catch {
+    return null;
+  }
+}
+
+/** Fetches the singleton site settings (branding + custom 404) from the Django CMS. */
+export async function getSiteSettings(): Promise<CMSSiteSettings | null> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/site-settings/`, {
+      next: { revalidate: 3600 },
+    });
+    if (!res.ok) return null;
+    return (await res.json()) as CMSSiteSettings;
+  } catch {
+    return null;
+  }
+}
+
+/** Fetches active 301/302 redirects from the Django CMS, used by middleware.ts. */
+export async function getActiveRedirects(): Promise<CMSRedirect[]> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/redirects/`, {
+      next: { revalidate: 300 },
+    });
+    if (!res.ok) return [];
+    return (await res.json()) as CMSRedirect[];
+  } catch {
+    return [];
   }
 }
 

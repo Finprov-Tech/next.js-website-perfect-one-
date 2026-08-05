@@ -1,0 +1,17 @@
+.seo-char-counter {
+  font-size: 11px;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+.seo-counter-green {
+  color: #2e7d32;
+}
+
+.seo-counter-amber {
+  color: #b26a00;
+}
+
+.seo-counter-red {
+  color: #c62828;
+}
