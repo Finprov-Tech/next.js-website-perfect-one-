@@ -52,7 +52,7 @@ export function VerifyCertificatePageClient({ cmsPage }: { cmsPage: CMSPage | nu
   const heroHeading = banner?.heading || "Certificate Verification Portal";
   const heroParagraph = banner?.paragraph || "Verify Certificates Issued by Finprov Learning";
 
-  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/verify-certificate/`) ?? organizationSchema;
+  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/verify-student-certificate/`) ?? organizationSchema;
 
   const handleVerify = (e: React.FormEvent) => {
     e.preventDefault();

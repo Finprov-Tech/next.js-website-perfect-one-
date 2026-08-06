@@ -63,7 +63,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     `https://wa.me/${careerHero.applyPhone.replace(/[^0-9]/g, "")}`,
   );
 
-  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/careers/`) ?? organizationSchema;
+  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/career/`) ?? organizationSchema;
 
   const filteredJobs = useMemo(() => {
     return jobOpenings.filter((job) => {
@@ -288,7 +288,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
                         <div className="grid grid-cols-2 gap-2">
                           <Link
-                            href={`/careers/${job.slug}`}
+                            href={`/career/${job.slug}`}
                             className="inline-flex items-center justify-center gap-1 rounded-xl bg-bg-light px-3 py-2 text-xs font-bold text-navy hover:bg-navy/10 transition-colors"
                           >
                             Details <ChevronRight className="h-3.5 w-3.5" />

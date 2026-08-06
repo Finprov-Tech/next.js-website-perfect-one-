@@ -11,17 +11,17 @@ const STATIC_ROUTES = [
   "/admission/",
   "/blog/",
   "/business/",
-  "/careers/",
+  "/career/",
   "/contact/",
   "/courses/",
   "/events/",
   "/faq/",
-  "/placements/",
+  "/placement/",
   "/privacy-policy/",
   "/team/",
-  "/terms/",
+  "/terms-and-conditions/",
   "/testimonials/",
-  "/verify-certificate/",
+  "/verify-student-certificate/",
 ];
 
 type CmsPageSummary = {
@@ -76,7 +76,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const careerEntries: MetadataRoute.Sitemap = jobOpenings.map((j) => ({
-    url: `${SITE_URL}/careers/${j.slug}/`,
+    url: `${SITE_URL}/career/${j.slug}/`,
     changeFrequency: "weekly",
     priority: 0.5,
   }));

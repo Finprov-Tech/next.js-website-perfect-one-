@@ -19,7 +19,7 @@ const navLinks: NavItem[] = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
   { label: "Courses", to: "/courses" },
-  { label: "Placements", to: "/placements" },
+  { label: "Placements", to: "/placement" },
   { label: "Business", to: "/business" },
   { label: "Blog", to: "/blog" },
   { label: "Contact", to: "/contact" },

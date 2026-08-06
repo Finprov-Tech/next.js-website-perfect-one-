@@ -35,13 +35,13 @@ const columns = [
       { label: "About Us", to: "/about" },
       { label: "Our Team", to: "/team" },
       { label: "Online Admission", to: "/admission" },
-      { label: "Careers", to: "/careers" },
-      { label: "Placements", to: "/placements" },
+      { label: "Careers", to: "/career" },
+      { label: "Placements", to: "/placement" },
       { label: "Student Testimonials", to: "/testimonials" },
       { label: "Blog", to: "/blog" },
       { label: "Events & Workshops", to: "/events" },
       { label: "FAQ", to: "/faq" },
-      { label: "Certificate Verification", to: "/verify-certificate" },
+      { label: "Certificate Verification", to: "/verify-student-certificate" },
     ],
   },
 ] as const;
@@ -104,7 +104,7 @@ export function SiteFooter() {
           <p>© 2026 Finprov Learning Pvt Ltd. Excel in Accounting, Data Analytics and Digital Marketing.</p>
           <div className="flex gap-6">
             <Link href="/privacy-policy" className="hover:text-white">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-white">Terms</Link>
+            <Link href="/terms-and-conditions" className="hover:text-white">Terms</Link>
           </div>
         </div>
       </div>

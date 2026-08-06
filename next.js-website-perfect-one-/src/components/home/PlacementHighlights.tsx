@@ -21,7 +21,7 @@ const defaultStats = [
 export function PlacementHighlights({ placementSection }: { placementSection?: CMSPlacementSection | null }) {
   const heading = placementSection?.heading || "Placement highlights FY2025–26";
   const ctaText = placementSection?.cta_text || "View Full Placement Report";
-  const ctaHref = resolveCmsLink(placementSection?.cta_internal_page, placementSection?.cta_external_url, "/placements");
+  const ctaHref = resolveCmsLink(placementSection?.cta_internal_page, placementSection?.cta_external_url, "/placement");
   const stats = placementSection?.stats?.length
     ? placementSection.stats.map((s) => ({ label: s.label, ...parseCountValue(s.value) }))
     : defaultStats;

@@ -22,7 +22,7 @@ export function LearningToEarning({ cta }: { cta?: CMSCTA | null }) {
     cta?.paragraph ||
     `Experienced instructors, hands-on software training, and a placement cell that stays with you. Every Finprov program carries 100% placement assistance — and our learners hold a ${placementStats.placementRecord}% placement record across cohorts.`;
   const ctaLabel = cta?.cta_text || "More Placements";
-  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/placements");
+  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/placement");
   const bgImage = resolveCmsImageUrl(cta?.image);
 
   return (

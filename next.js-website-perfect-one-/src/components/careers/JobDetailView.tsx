@@ -37,7 +37,7 @@ export function JobDetailView({ job }: { job: JobOpening }) {
         
         <div className={container}>
           <Link
-            href="/careers"
+            href="/career"
             className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-teal hover:underline mb-6"
           >
             <ArrowLeft className="h-3.5 w-3.5" /> Back to All Job Openings

@@ -60,7 +60,7 @@ export function TermsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     ? cmsPage.legal_sections.map((s) => ({ title: s.title, body: s.body }))
     : defaultSections;
 
-  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/terms/`) ?? organizationSchema;
+  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/terms-and-conditions/`) ?? organizationSchema;
 
   return (
     <div className="min-h-screen bg-background text-foreground">

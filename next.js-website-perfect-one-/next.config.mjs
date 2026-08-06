@@ -3,6 +3,7 @@ const cmsApiUrl = new URL(process.env.NEXT_PUBLIC_CMS_API_URL || 'http://127.0.0
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  devIndicators: false,
   eslint: {
     ignoreDuringBuilds: true,
   },

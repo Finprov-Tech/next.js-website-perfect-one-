@@ -68,7 +68,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
   const topPartners = partnerNames.slice(0, Math.ceil(partnerNames.length / 2));
   const bottomPartners = partnerNames.slice(Math.ceil(partnerNames.length / 2));
 
-  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/placements/`) ?? organizationSchema;
+  const pageSchema = generateSchemaForPage(cmsPage, `${SITE_URL}/placement/`) ?? organizationSchema;
 
   return (
     <div className="min-h-screen bg-background text-foreground">

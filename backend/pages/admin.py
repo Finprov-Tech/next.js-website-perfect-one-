@@ -45,19 +45,19 @@ PAGE_INLINE_MAP = {
     ],
     'about': [BannerInline, CredentialsInline, WhyFinprovSectionInline, CTAInline],
     'courses': [BannerInline],
-    'placements': [PlacementSectionInline, TestimonialInline, PartnerLogoInline],
+    'placement': [PlacementSectionInline, TestimonialInline, PartnerLogoInline],
     'business': [BannerInline, WhyFinprovSectionInline, CTAInline, FAQItemInline],
     'blog': [BannerInline, CTAInline],
     'contact': [BannerInline, FAQItemInline],
     'admission': [BannerInline],
-    'careers': [BannerInline, WhyFinprovSectionInline, CTAInline],
+    'career': [BannerInline, WhyFinprovSectionInline, CTAInline],
     'team': [BannerInline, CredentialsInline, TeamSectionInline, CTAInline],
     'testimonials': [BannerInline, TestimonialInline],
     'events': [BannerInline],
     'faq': [BannerInline, FAQItemInline],
-    'verify-certificate': [BannerInline],
+    'verify-student-certificate': [BannerInline],
     'privacy-policy': [BannerInline, LegalSectionInline],
-    'terms': [BannerInline, LegalSectionInline],
+    'terms-and-conditions': [BannerInline, LegalSectionInline],
 }
 DEFAULT_PAGE_INLINES = [BannerInline, CTAInline, FAQItemInline]
 
