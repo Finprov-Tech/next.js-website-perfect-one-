@@ -3,9 +3,11 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, PartyPopper, RotateCcw } from "lucide-react";
+import Link from "next/link";
 import keralaAdvisor from "@/assets/kerala-advisor.png";
 import { Reveal } from "@/components/motion/Reveal";
 import { courses, type Category } from "@/data/courses";
+import { resolveCmsLink, type CMSQuiz } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10";
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -50,10 +52,20 @@ function recommend(answers: string[]) {
   return pool.find((c) => c.programType === "Job Assured") ?? pool[0] ?? courses[0];
 }
 
-export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => void }) {
+export function ProgramQuiz({ onEnquire, quiz }: { onEnquire: (course?: string) => void; quiz?: CMSQuiz | null }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [done, setDone] = useState(false);
+
+  const activeSteps: Step[] = quiz?.questions?.length
+    ? quiz.questions.map((q) => ({ question: q.question_text, options: q.options.map((o) => o.label) }))
+    : steps;
+  const heading = quiz?.heading || "Unsure about which program meets your requirements?";
+  const eyebrow = quiz?.description || "Take our quiz";
+  const nextLabel = quiz?.next_button_text || "Next";
+  const resultCtaLabel = quiz?.cta_text || "Get Free Counselling";
+  const resultHasLink = Boolean(quiz?.cta_internal_page || quiz?.cta_external_url);
+  const resultHref = resultHasLink ? resolveCmsLink(quiz?.cta_internal_page, quiz?.cta_external_url, "#") : null;
 
   const selected = answers[step];
   const result = useMemo(() => (done ? recommend(answers) : null), [done, answers]);
@@ -65,7 +77,7 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
   };
 
   const goNext = () => {
-    if (step < steps.length - 1) setStep(step + 1);
+    if (step < activeSteps.length - 1) setStep(step + 1);
     else setDone(true);
   };
 
@@ -87,9 +99,9 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
           <div>
             <Reveal>
               <h2 className="max-w-lg text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
-                Unsure about which program meets your requirements?
+                {heading}
               </h2>
-              <p className="mt-1 text-xs font-bold uppercase tracking-[.18em] text-mint">Take our quiz</p>
+              <p className="mt-1 text-xs font-bold uppercase tracking-[.18em] text-mint">{eyebrow}</p>
             </Reveal>
 
             <div className="mt-5 min-h-[210px]">
@@ -102,9 +114,9 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
                     exit={{ opacity: 0, x: -24 }}
                     transition={{ duration: 0.3, ease }}
                   >
-                    <p className="text-sm font-semibold text-white/90 sm:text-base">{steps[step].question}</p>
+                    <p className="text-sm font-semibold text-white/90 sm:text-base">{activeSteps[step].question}</p>
                     <div className="mt-3.5 grid max-w-xl gap-2.5 sm:grid-cols-2">
-                      {steps[step].options.map((option) => {
+                      {activeSteps[step].options.map((option) => {
                         const active = selected === option;
                         return (
                           <motion.button
@@ -134,12 +146,12 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
                     <div className="mt-6 flex max-w-xl items-center justify-between border-t border-white/15 pt-4">
                       <div className="flex items-center gap-3">
                         <span className="text-xs font-bold text-white/80">
-                          {step + 1}/{steps.length}
+                          {step + 1}/{activeSteps.length}
                         </span>
                         <div className="h-1.5 w-24 overflow-hidden rounded-full bg-white/20">
                           <motion.div
                             className="h-full rounded-full bg-mint"
-                            animate={{ width: `${((step + (selected ? 1 : 0)) / steps.length) * 100}%` }}
+                            animate={{ width: `${((step + (selected ? 1 : 0)) / activeSteps.length) * 100}%` }}
                             transition={{ duration: 0.3, ease }}
                           />
                         </div>
@@ -160,7 +172,7 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
                           disabled={!selected}
                           className="inline-flex items-center gap-1 rounded-full bg-white px-4 py-1.5 text-xs font-bold text-emerald-deep shadow-md transition-opacity disabled:cursor-not-allowed disabled:opacity-40"
                         >
-                          {step === steps.length - 1 ? "See My Program" : "Next"} <ArrowRight className="h-3.5 w-3.5" />
+                          {step === activeSteps.length - 1 ? "See My Program" : nextLabel} <ArrowRight className="h-3.5 w-3.5" />
                         </motion.button>
                       </div>
                     </div>
@@ -186,14 +198,23 @@ export function ProgramQuiz({ onEnquire }: { onEnquire: (course?: string) => voi
                         <span className="rounded-full bg-emerald/10 px-2.5 py-0.5">{result!.programType}</span>
                       </div>
                       <div className="mt-4 flex flex-wrap gap-2.5">
-                        <motion.button
-                          whileHover={{ scale: 1.04 }}
-                          whileTap={{ scale: 0.97 }}
-                          onClick={() => onEnquire(result!.title)}
-                          className="btn-gloss rounded-full bg-gold px-5 py-2 text-xs font-bold text-navy shadow-md shadow-gold/30"
-                        >
-                          Get Free Counselling
-                        </motion.button>
+                        {resultHasLink ? (
+                          <Link
+                            href={resultHref!}
+                            className="btn-gloss rounded-full bg-gold px-5 py-2 text-xs font-bold text-navy shadow-md shadow-gold/30"
+                          >
+                            {resultCtaLabel}
+                          </Link>
+                        ) : (
+                          <motion.button
+                            whileHover={{ scale: 1.04 }}
+                            whileTap={{ scale: 0.97 }}
+                            onClick={() => onEnquire(result!.title)}
+                            className="btn-gloss rounded-full bg-gold px-5 py-2 text-xs font-bold text-navy shadow-md shadow-gold/30"
+                          >
+                            {resultCtaLabel}
+                          </motion.button>
+                        )}
                         <button
                           onClick={restart}
                           className="inline-flex items-center gap-1 rounded-full border border-navy/20 px-4 py-2 text-xs font-semibold text-navy transition-colors hover:bg-navy hover:text-white"

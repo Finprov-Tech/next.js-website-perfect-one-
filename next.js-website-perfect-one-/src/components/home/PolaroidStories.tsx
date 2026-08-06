@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { User } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { testimonials } from "@/data/testimonials";
+import { resolveCmsImageUrl, type CMSTestimonial } from "@/lib/cms";
 
 const tilts = [-3, 2.5, -2, 3, -2.5, 2];
 
@@ -35,7 +36,11 @@ function Polaroid({ name, role, company, photo, tilt }: { name: string; role: st
   );
 }
 
-export function PolaroidStories() {
+export function PolaroidStories({ testimonials: cmsTestimonials }: { testimonials?: CMSTestimonial[] | null } = {}) {
+  const stories = cmsTestimonials?.length
+    ? cmsTestimonials.map((t) => ({ name: t.name, role: t.designation, company: t.company, photo: resolveCmsImageUrl(t.avatar) || undefined }))
+    : testimonials.map((t) => ({ name: t.name, role: t.role, company: t.company, photo: t.photo }));
+
   return (
     <section className="section-ambient overflow-hidden py-8 sm:py-12">
       <div className="mx-auto w-full max-w-[1320px] px-5 sm:px-8">
@@ -57,7 +62,7 @@ export function PolaroidStories() {
           <div className="flex w-max gap-7 animate-marquee-slow group-hover/marquee:[animation-play-state:paused]">
             {[...Array(2)].map((_, r) => (
               <div key={r} className="flex gap-7 pr-7">
-                {testimonials.map((t, i) => (
+                {stories.map((t, i) => (
                   <Polaroid
                     key={`${r}-${t.name}`}
                     name={t.name}

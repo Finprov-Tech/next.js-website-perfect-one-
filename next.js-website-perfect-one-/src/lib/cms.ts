@@ -187,6 +187,14 @@ export type CMSFAQItem = {
   display_order: number;
 };
 
+/** `body` is raw HTML, already sanitized server-side (see LegalSectionSerializer). */
+export type CMSLegalSection = {
+  id: number;
+  title: string;
+  body: string;
+  display_order: number;
+};
+
 export type CMSCTA = {
   id: number;
   heading: string;
@@ -252,6 +260,75 @@ export type CMSRedirect = {
   redirect_type: 301 | 302;
 };
 
+export type CMSQuizOption = {
+  id: number;
+  label: string;
+  category: string;
+  display_order: number;
+};
+
+export type CMSQuizQuestion = {
+  id: number;
+  question_text: string;
+  options: CMSQuizOption[];
+  display_order: number;
+};
+
+export type CMSQuiz = {
+  id: number;
+  heading: string;
+  description: string;
+  next_button_text: string;
+  cta_text: string;
+  cta_internal_page: string | null;
+  cta_external_url: string;
+  questions: CMSQuizQuestion[];
+  display_order: number;
+};
+
+export type CMSTeamMember = {
+  id: number;
+  name: string;
+  role: string;
+  category: string;
+  experience: string;
+  credentials: string;
+  quote: string;
+  photo: string | null;
+  photo_alt: string;
+  bio: string;
+  highlights: string;
+  display_order: number;
+};
+
+export type CMSTeamSection = {
+  id: number;
+  heading: string;
+  sub_heading: string;
+  heading_level: string;
+  paragraph: string;
+  members: CMSTeamMember[];
+  display_order: number;
+};
+
+export type CMSGalleryImage = {
+  id: number;
+  image: string | null;
+  image_alt: string;
+  caption: string;
+  display_order: number;
+};
+
+export type CMSLifeAtFinprovSection = {
+  id: number;
+  heading: string;
+  sub_heading: string;
+  heading_level: string;
+  paragraph: string;
+  images: CMSGalleryImage[];
+  display_order: number;
+};
+
 export type CMSPage = {
   id: number;
   name: string;
@@ -270,6 +347,10 @@ export type CMSPage = {
   partner_logos: CMSPartnerLogo[];
   faq: CMSFAQItem[];
   cta: CMSCTA | null;
+  quiz: CMSQuiz | null;
+  team: CMSTeamSection | null;
+  life_at_finprov: CMSLifeAtFinprovSection | null;
+  legal_sections: CMSLegalSection[];
 };
 
 /**

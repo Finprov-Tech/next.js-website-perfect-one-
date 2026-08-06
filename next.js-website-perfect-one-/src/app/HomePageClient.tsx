@@ -91,7 +91,7 @@ function HeroToPrograms({
 
       <div className="relative z-10 overflow-hidden rounded-[2.5rem] border border-white/70 bg-white shadow-[0_-30px_90px_rgba(0,0,0,0.45),0_30px_90px_rgba(0,0,0,0.32)] sm:rounded-[3.5rem] lg:rounded-[4rem]">
         <CourseExplorer onEnquire={onEnquire} courseSection={cmsPage?.courses ?? null} />
-        <ProgramQuiz onEnquire={onEnquire} />
+        <ProgramQuiz onEnquire={onEnquire} quiz={cmsPage?.quiz ?? null} />
         <AboutBand />
       </div>
     </div>
@@ -132,12 +132,12 @@ export function HomePageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
       <ProgramsExitToPlacement placementSection={cmsPage?.placements ?? null} />
       <StudentTestimonialsSection testimonials={cmsPage?.testimonials ?? null} />
-      <PolaroidStories />
+      <PolaroidStories testimonials={cmsPage?.testimonials ?? null} />
       <LearningToEarning cta={cmsPage?.cta ?? null} />
       <ToolsMarquee partnerLogos={cmsPage?.partner_logos ?? null} />
-      <MentorsBand onEnquire={() => openModal()} />
+      <MentorsBand onEnquire={() => openModal()} team={cmsPage?.team ?? null} />
       <WhyChooseUs whyFinprovSection={cmsPage?.why_finprov ?? null} />
-      <LifeAtFinprov />
+      <LifeAtFinprov lifeAtFinprov={cmsPage?.life_at_finprov ?? null} />
       <Faq faqItems={cmsPage?.faq ?? null} />
 
       <SiteFooter />

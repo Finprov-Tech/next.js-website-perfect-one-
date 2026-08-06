@@ -1,3 +1,4 @@
+import nested_admin
 from django import forms
 from django.apps import apps
 from django.contrib import admin
@@ -63,7 +64,7 @@ class SEOMetaAdminForm(forms.ModelForm):
         return cleaned
 
 
-class SEOMetaInline(admin.StackedInline):
+class SEOMetaInline(nested_admin.NestedStackedInline):
     model = SEOMeta
     form = SEOMetaAdminForm
     can_delete = False

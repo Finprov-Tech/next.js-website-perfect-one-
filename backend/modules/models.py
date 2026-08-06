@@ -304,3 +304,124 @@ class FAQItem(PageScopedModule):
 
     def __str__(self):
         return f'{self.page.name} — FAQ: {self.question[:60]}'
+
+
+class Quiz(LinkFieldsMixin, PageScopedModule):
+    """A short interactive quiz (e.g. Home's 'which program is right for you').
+    `cta_text`/`cta_internal_page`/`cta_external_url` (from LinkFieldsMixin) are
+    the button shown on the RESULT screen, not the per-question options."""
+
+    heading = models.CharField(max_length=255, blank=True)
+    description = models.CharField(max_length=255, blank=True, help_text='Small eyebrow/subtitle, e.g. "Take our quiz".')
+    next_button_text = models.CharField(max_length=50, blank=True, default='Next')
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'Quiz'
+        verbose_name_plural = 'Quizzes'
+
+    def __str__(self):
+        return f'{self.page.name} — Quiz: {self.heading or "(untitled)"}'
+
+
+class QuizQuestion(OrderedToggleModel):
+    quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, related_name='questions')
+    question_text = models.CharField(max_length=500)
+
+    class Meta(OrderedToggleModel.Meta):
+        verbose_name = 'Quiz Question'
+
+    def __str__(self):
+        return self.question_text
+
+
+class QuizOption(OrderedToggleModel):
+    question = models.ForeignKey(QuizQuestion, on_delete=models.CASCADE, related_name='options')
+    label = models.CharField(max_length=255)
+    category = models.CharField(
+        max_length=50, blank=True,
+        help_text='Matches a course category (Finance, Taxation, Analytics, Marketing, Gulf) — used for the recommendation logic.',
+    )
+
+    class Meta(OrderedToggleModel.Meta):
+        verbose_name = 'Quiz Option'
+
+    def __str__(self):
+        return self.label
+
+
+class TeamSection(HeadingFieldsMixin, PageScopedModule):
+    paragraph = models.TextField(blank=True)
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'Team Section'
+
+    def __str__(self):
+        return f'{self.page.name} — Team: {self.heading or "(untitled)"}'
+
+
+class TeamMember(OrderedToggleModel):
+    team_section = models.ForeignKey(TeamSection, on_delete=models.CASCADE, related_name='members')
+    name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, blank=True)
+    category = models.CharField(max_length=50, blank=True, help_text='e.g. Management, Faculty')
+    experience = models.CharField(max_length=100, blank=True, help_text='e.g. "20+ Years Practice"')
+    credentials = models.CharField(max_length=255, blank=True)
+    quote = models.CharField(max_length=255, blank=True)
+    photo = models.ImageField(upload_to='modules/%Y/%m/', blank=True, null=True)
+    photo_alt = models.CharField(max_length=255, blank=True)
+    bio = models.TextField(blank=True)
+    highlights = models.TextField(blank=True, help_text='One highlight per line.')
+
+    class Meta(OrderedToggleModel.Meta):
+        verbose_name = 'Team Member'
+
+    def __str__(self):
+        return self.name
+
+
+class LifeAtFinprovSection(HeadingFieldsMixin, PageScopedModule):
+    paragraph = models.TextField(blank=True)
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'Life at Finprov Section'
+
+    def __str__(self):
+        return f'{self.page.name} — Life at Finprov: {self.heading or "(untitled)"}'
+
+
+class GalleryImage(OrderedToggleModel):
+    section = models.ForeignKey(LifeAtFinprovSection, on_delete=models.CASCADE, related_name='images')
+    image = models.ImageField(upload_to='modules/%Y/%m/', blank=True, null=True)
+    image_alt = models.CharField(max_length=255, blank=True)
+    caption = models.CharField(max_length=255, blank=True)
+
+    class Meta(OrderedToggleModel.Meta):
+        verbose_name = 'Gallery Image'
+
+    def __str__(self):
+        return self.caption or '(untitled)'
+
+
+class LegalSection(PageScopedModule):
+    """A titled block of long-form legal copy (Privacy Policy, Terms). `body` is
+    raw HTML, sanitized server-side (see api.serializers.LegalSectionSerializer)
+    before it ever reaches the API."""
+    title = models.CharField(max_length=255)
+    body = models.TextField(
+        help_text='Raw HTML. Supported tags: p, ul, ol, li, strong, em, b, i, a, br. '
+                   'Sanitized server-side before it reaches the API.'
+    )
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'Legal Section'
+
+    def __str__(self):
+        return f'{self.page.name} — {self.title}'

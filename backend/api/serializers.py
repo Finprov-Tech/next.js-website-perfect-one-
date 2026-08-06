@@ -1,3 +1,4 @@
+import bleach
 from rest_framework import serializers
 
 from blog.models import BlogCategory, BlogPost, BlogPostSection
@@ -10,12 +11,20 @@ from modules.models import (
     Credentials,
     FAQItem,
     FeatureCard,
+    GalleryImage,
     HeroAnimatedWord,
+    LegalSection,
+    LifeAtFinprovSection,
     PartnerLogo,
     PlacementSection,
     PlacementStat,
+    Quiz,
+    QuizOption,
+    QuizQuestion,
     ScrollItem,
     ScrollSection,
+    TeamMember,
+    TeamSection,
     Testimonial,
     WhyFinprovSection,
 )
@@ -222,6 +231,26 @@ class FAQItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'question', 'answer', 'display_order']
 
 
+LEGAL_SECTION_ALLOWED_TAGS = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'a', 'br']
+LEGAL_SECTION_ALLOWED_ATTRS = {'a': ['href', 'target', 'rel']}
+
+
+class LegalSectionSerializer(serializers.ModelSerializer):
+    body = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LegalSection
+        fields = ['id', 'title', 'body', 'display_order']
+
+    def get_body(self, obj):
+        return bleach.clean(
+            obj.body,
+            tags=LEGAL_SECTION_ALLOWED_TAGS,
+            attributes=LEGAL_SECTION_ALLOWED_ATTRS,
+            strip=True,
+        )
+
+
 class PageListSerializer(serializers.ModelSerializer):
     page_type = PageTypeSerializer(read_only=True)
     include_in_sitemap = serializers.SerializerMethodField()
@@ -250,6 +279,76 @@ class SiteSettingsSerializer(serializers.ModelSerializer):
         ]
 
 
+class QuizOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuizOption
+        fields = ['id', 'label', 'category', 'display_order']
+
+
+class QuizQuestionSerializer(serializers.ModelSerializer):
+    options = serializers.SerializerMethodField()
+
+    class Meta:
+        model = QuizQuestion
+        fields = ['id', 'question_text', 'options', 'display_order']
+
+    def get_options(self, obj):
+        options = obj.options.filter(is_active=True).order_by('display_order')
+        return QuizOptionSerializer(options, many=True, context=self.context).data
+
+
+class QuizSerializer(CTALinkMixinSerializer):
+    questions = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Quiz
+        fields = [
+            'id', 'heading', 'description', 'next_button_text',
+            'cta_text', 'cta_internal_page', 'cta_external_url',
+            'questions', 'display_order',
+        ]
+
+    def get_questions(self, obj):
+        questions = obj.questions.filter(is_active=True).order_by('display_order')
+        return QuizQuestionSerializer(questions, many=True, context=self.context).data
+
+
+class TeamMemberSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamMember
+        fields = ['id', 'name', 'role', 'category', 'experience', 'credentials', 'quote', 'photo', 'photo_alt', 'bio', 'highlights', 'display_order']
+
+
+class TeamSectionSerializer(serializers.ModelSerializer):
+    members = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TeamSection
+        fields = ['id', 'heading', 'sub_heading', 'heading_level', 'paragraph', 'members', 'display_order']
+
+    def get_members(self, obj):
+        members = obj.members.filter(is_active=True).order_by('display_order')
+        return TeamMemberSerializer(members, many=True, context=self.context).data
+
+
+class GalleryImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GalleryImage
+        fields = ['id', 'image', 'image_alt', 'caption', 'display_order']
+
+
+class LifeAtFinprovSectionSerializer(serializers.ModelSerializer):
+    images = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LifeAtFinprovSection
+        fields = ['id', 'heading', 'sub_heading', 'heading_level', 'paragraph', 'images', 'display_order']
+
+    def get_images(self, obj):
+        images = obj.images.filter(is_active=True).order_by('display_order')
+        return GalleryImageSerializer(images, many=True, context=self.context).data
+
+
 class PageDetailSerializer(serializers.ModelSerializer):
     """The main payload shape for the frontend. Sections that are conceptually
     one-per-page (banner, scroll_section, credentials, courses, why_finprov,
@@ -269,6 +368,10 @@ class PageDetailSerializer(serializers.ModelSerializer):
     testimonials = serializers.SerializerMethodField()
     partner_logos = serializers.SerializerMethodField()
     faq = serializers.SerializerMethodField()
+    quiz = serializers.SerializerMethodField()
+    team = serializers.SerializerMethodField()
+    life_at_finprov = serializers.SerializerMethodField()
+    legal_sections = serializers.SerializerMethodField()
 
     class Meta:
         model = Page
@@ -276,6 +379,7 @@ class PageDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'slug', 'page_type', 'is_homepage', 'status',
             'seo', 'banner', 'scroll_section', 'credentials', 'courses', 'why_finprov',
             'placements', 'testimonials', 'partner_logos', 'faq', 'cta',
+            'quiz', 'team', 'life_at_finprov', 'legal_sections',
         ]
 
     def _active(self, related_manager):
@@ -316,6 +420,18 @@ class PageDetailSerializer(serializers.ModelSerializer):
 
     def get_faq(self, obj):
         return FAQItemSerializer(self._active(obj.faqitem_set), many=True, context=self.context).data
+
+    def get_quiz(self, obj):
+        return self._first_active(obj.quiz_set, QuizSerializer)
+
+    def get_team(self, obj):
+        return self._first_active(obj.teamsection_set, TeamSectionSerializer)
+
+    def get_life_at_finprov(self, obj):
+        return self._first_active(obj.lifeatfinprovsection_set, LifeAtFinprovSectionSerializer)
+
+    def get_legal_sections(self, obj):
+        return LegalSectionSerializer(self._active(obj.legalsection_set), many=True, context=self.context).data
 
 
 class BlogCategorySerializer(serializers.ModelSerializer):

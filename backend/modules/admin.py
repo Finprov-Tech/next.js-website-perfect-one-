@@ -1,8 +1,6 @@
-from django.contrib import admin
-from simple_history.admin import SimpleHistoryAdmin
+import nested_admin
 
-from core.admin import AltTextWarningMixin, image_preview
-from core.admin_site import cms_admin_site
+from core.admin import image_preview
 from modules.models import (
     CTA,
     Banner,
@@ -12,68 +10,44 @@ from modules.models import (
     Credentials,
     FAQItem,
     FeatureCard,
+    GalleryImage,
     HeroAnimatedWord,
+    LegalSection,
+    LifeAtFinprovSection,
     PartnerLogo,
     PlacementSection,
     PlacementStat,
+    Quiz,
+    QuizOption,
+    QuizQuestion,
     ScrollItem,
     ScrollSection,
+    TeamMember,
+    TeamSection,
     Testimonial,
     WhyFinprovSection,
 )
 
-
-class ScrollItemInline(admin.TabularInline):
-    model = ScrollItem
-    extra = 1
-
-
-class CredentialItemInline(admin.TabularInline):
-    model = CredentialItem
-    extra = 1
+"""Every page-scoped content module lives here as a nested_admin inline class
+— never a standalone registered ModelAdmin. They're only ever edited as part
+of a Page's single unified screen (see pages/admin.py's PAGE_INLINE_MAP).
+Container modules (Banner, Credentials, CourseSection, WhyFinprovSection,
+PlacementSection) declare their repeating children via `inlines = [...]`,
+which nested_admin renders as real nested add/reorder/delete rows."""
 
 
-class PlacementStatInline(admin.TabularInline):
-    model = PlacementStat
-    extra = 1
-
-
-class HeroAnimatedWordInline(admin.TabularInline):
+class HeroAnimatedWordInline(nested_admin.NestedTabularInline):
     model = HeroAnimatedWord
     extra = 1
 
 
-class CourseCardInline(admin.TabularInline):
-    model = CourseCard
-    extra = 1
-    fields = ('title', 'slug', 'category', 'program_type', 'badge', 'duration', 'display_order', 'is_active')
-    show_change_link = True
-
-
-class FeatureCardInline(admin.TabularInline):
-    model = FeatureCard
-    extra = 1
-    fields = ('title', 'description', 'icon', 'display_order', 'is_active')
-
-
-class HeadingModuleAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
-    list_display = ('page', 'heading', 'heading_level', 'display_order', 'is_active', 'updated_at')
-    list_filter = ('page', 'is_active', 'heading_level')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('heading', 'sub_heading', 'page__name')
-    readonly_fields = ('created_at', 'updated_at', 'image_preview_display')
-    autocomplete_fields = ('page',)
-
-    def image_preview_display(self, obj):
-        return image_preview(obj)
-
-    image_preview_display.short_description = 'Image preview'
-
-
-@admin.register(Banner, site=cms_admin_site)
-class BannerAdmin(HeadingModuleAdmin):
+class BannerInline(nested_admin.NestedStackedInline):
+    model = Banner
+    fk_name = 'page'
+    extra = 0
+    max_num = 1
+    readonly_fields = ('image_preview_display',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph', 'rich_text')}),
         ('Top Badge', {'fields': ('badge_text', 'badge_icon')}),
         ('Centres / Location Line', {'fields': ('centres_text',)}),
@@ -85,112 +59,123 @@ class BannerAdmin(HeadingModuleAdmin):
         ('Floating Statistic', {'fields': ('floating_stat_value', 'floating_stat_label')}),
         ('Media', {'fields': ('image', 'image_preview_display', 'image_alt')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
     inlines = [HeroAnimatedWordInline]
 
+    def image_preview_display(self, obj):
+        return image_preview(obj)
+    image_preview_display.short_description = 'Image preview'
 
-@admin.register(ScrollSection, site=cms_admin_site)
-class ScrollSectionAdmin(SimpleHistoryAdmin):
-    list_display = ('page', 'heading', 'display_order', 'is_active', 'updated_at')
-    list_filter = ('page', 'is_active')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('heading', 'page__name')
-    readonly_fields = ('created_at', 'updated_at')
-    autocomplete_fields = ('page',)
+
+class ScrollItemInline(nested_admin.NestedTabularInline):
+    model = ScrollItem
+    extra = 1
+
+
+class ScrollSectionInline(nested_admin.NestedStackedInline):
+    model = ScrollSection
+    extra = 0
+    max_num = 1
+    fields = ('heading', 'display_order', 'is_active')
     inlines = [ScrollItemInline]
 
 
-@admin.register(Credentials, site=cms_admin_site)
-class CredentialsAdmin(HeadingModuleAdmin):
+class CredentialItemInline(nested_admin.NestedTabularInline):
+    model = CredentialItem
+    extra = 1
+
+
+class CredentialsInline(nested_admin.NestedStackedInline):
+    model = Credentials
+    extra = 0
+    max_num = 1
+    readonly_fields = ('image_preview_display',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
         ('Media', {'fields': ('image', 'image_preview_display', 'image_alt')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
     inlines = [CredentialItemInline]
 
+    def image_preview_display(self, obj):
+        return image_preview(obj)
+    image_preview_display.short_description = 'Image preview'
 
-@admin.register(CourseSection, site=cms_admin_site)
-class CourseSectionAdmin(HeadingModuleAdmin):
+
+class CourseCardInline(nested_admin.NestedTabularInline):
+    model = CourseCard
+    extra = 1
+    fields = ('title', 'slug', 'category', 'program_type', 'badge', 'duration', 'display_order', 'is_active')
+
+
+class CourseSectionInline(nested_admin.NestedStackedInline):
+    model = CourseSection
+    fk_name = 'page'
+    extra = 0
+    max_num = 1
+    readonly_fields = ('image_preview_display',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
         ('Background Image', {'fields': ('background_image', 'image_preview_display', 'background_image_alt'),
                                'description': 'Not currently rendered on the homepage — reserved for future use.'}),
         ('Button ("Compare all programs" link)', {'fields': ('button_text', 'button_internal_page', 'button_external_url')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
-    alt_text_image_field = 'background_image'
-    alt_text_alt_field = 'background_image_alt'
+    inlines = [CourseCardInline]
 
     def image_preview_display(self, obj):
         return image_preview(obj, 'background_image')
-
-    inlines = [CourseCardInline]
-
-
-@admin.register(CourseCard, site=cms_admin_site)
-class CourseCardAdmin(AltTextWarningMixin, admin.ModelAdmin):
-    list_display = ('title', 'course_section', 'category', 'program_type', 'badge', 'display_order', 'is_active', 'thumb')
-    list_filter = ('course_section', 'category', 'program_type', 'is_active')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('title', 'slug', 'description')
-    prepopulated_fields = {'slug': ('title',)}
-    readonly_fields = ('thumb',)
-    autocomplete_fields = ('course_section', 'button_internal_page')
-
-    def thumb(self, obj):
-        return image_preview(obj)
+    image_preview_display.short_description = 'Image preview'
 
 
-@admin.register(WhyFinprovSection, site=cms_admin_site)
-class WhyFinprovSectionAdmin(HeadingModuleAdmin):
+class FeatureCardInline(nested_admin.NestedTabularInline):
+    model = FeatureCard
+    extra = 1
+    fields = ('title', 'description', 'icon', 'display_order', 'is_active')
+
+
+class WhyFinprovSectionInline(nested_admin.NestedStackedInline):
+    model = WhyFinprovSection
+    extra = 0
+    max_num = 1
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
     inlines = [FeatureCardInline]
 
-    def image_preview_display(self, obj):
-        return '(no image field on this model)'
+
+class PlacementStatInline(nested_admin.NestedTabularInline):
+    model = PlacementStat
+    extra = 1
 
 
-@admin.register(FeatureCard, site=cms_admin_site)
-class FeatureCardAdmin(admin.ModelAdmin):
-    list_display = ('title', 'why_finprov_section', 'icon', 'display_order', 'is_active', 'thumb')
-    list_filter = ('why_finprov_section', 'is_active')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('title', 'description')
-    readonly_fields = ('thumb',)
-    autocomplete_fields = ('why_finprov_section',)
-
-    def thumb(self, obj):
-        return image_preview(obj)
-
-
-@admin.register(PlacementSection, site=cms_admin_site)
-class PlacementSectionAdmin(HeadingModuleAdmin):
+class PlacementSectionInline(nested_admin.NestedStackedInline):
+    model = PlacementSection
+    fk_name = 'page'
+    extra = 0
+    max_num = 1
+    readonly_fields = ('image_preview_display',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
         ('Call To Action', {'fields': ('cta_text', 'cta_internal_page', 'cta_external_url')}),
         ('Media', {'fields': ('image', 'image_preview_display', 'image_alt')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
     inlines = [PlacementStatInline]
 
+    def image_preview_display(self, obj):
+        return image_preview(obj)
+    image_preview_display.short_description = 'Image preview'
 
-@admin.register(CTA, site=cms_admin_site)
-class CTAAdmin(HeadingModuleAdmin):
+
+class CTAInline(nested_admin.NestedStackedInline):
+    model = CTA
+    fk_name = 'page'
+    extra = 0
+    max_num = 1
+    readonly_fields = ('image_preview_display',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
         ('Primary Button', {'fields': ('cta_text', 'cta_internal_page', 'cta_external_url')}),
         ('Secondary Button', {'fields': ('secondary_cta_text', 'secondary_cta_internal_page', 'secondary_cta_external_url'),
@@ -198,53 +183,113 @@ class CTAAdmin(HeadingModuleAdmin):
         ('Media', {'fields': ('image', 'image_preview_display', 'image_alt'),
                    'description': 'Not currently rendered — reserved for future use.'}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
 
+    def image_preview_display(self, obj):
+        return image_preview(obj)
+    image_preview_display.short_description = 'Image preview'
 
-@admin.register(Testimonial, site=cms_admin_site)
-class TestimonialAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
-    list_display = ('page', 'name', 'company', 'kind', 'rating', 'display_order', 'is_active', 'avatar_preview')
-    list_filter = ('page', 'is_active', 'kind', 'rating')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('name', 'company', 'designation', 'quote', 'page__name')
-    readonly_fields = ('created_at', 'updated_at', 'avatar_preview')
-    autocomplete_fields = ('page',)
-    alt_text_image_field = 'avatar'
-    alt_text_alt_field = 'avatar_alt'
+
+class TestimonialInline(nested_admin.NestedStackedInline):
+    model = Testimonial
+    extra = 0
+    readonly_fields = ('avatar_preview',)
     fieldsets = (
-        ('Page', {'fields': ('page',)}),
         ('Content', {'fields': ('name', 'company', 'designation', 'quote', 'rating')}),
         ('Photo', {'fields': ('avatar', 'avatar_preview', 'avatar_alt')}),
         ('Video (only used when Kind = Video)', {'fields': ('kind', 'video_url', 'video_thumbnail')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
-        ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
 
     def avatar_preview(self, obj):
         return image_preview(obj, 'avatar')
 
 
-@admin.register(PartnerLogo, site=cms_admin_site)
-class PartnerLogoAdmin(AltTextWarningMixin, SimpleHistoryAdmin):
-    list_display = ('page', 'name', 'kind', 'website_url', 'display_order', 'is_active', 'logo_preview')
-    list_filter = ('page', 'kind', 'is_active')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('name', 'page__name')
-    readonly_fields = ('created_at', 'updated_at', 'logo_preview')
-    autocomplete_fields = ('page',)
-    alt_text_image_field = 'logo'
-    alt_text_alt_field = 'logo_alt'
-
-    def logo_preview(self, obj):
-        return image_preview(obj, 'logo')
+class PartnerLogoInline(nested_admin.NestedTabularInline):
+    model = PartnerLogo
+    extra = 1
+    fields = ('name', 'kind', 'logo', 'logo_alt', 'website_url', 'display_order', 'is_active')
 
 
-@admin.register(FAQItem, site=cms_admin_site)
-class FAQItemAdmin(SimpleHistoryAdmin):
-    list_display = ('page', 'question', 'display_order', 'is_active')
-    list_filter = ('page', 'is_active')
-    list_editable = ('display_order', 'is_active')
-    search_fields = ('question', 'answer', 'page__name')
-    readonly_fields = ('created_at', 'updated_at')
-    autocomplete_fields = ('page',)
+class FAQItemInline(nested_admin.NestedTabularInline):
+    model = FAQItem
+    extra = 1
+    fields = ('question', 'answer', 'display_order', 'is_active')
+
+
+class QuizOptionInline(nested_admin.NestedTabularInline):
+    model = QuizOption
+    extra = 1
+    fields = ('label', 'category', 'display_order', 'is_active')
+
+
+class QuizQuestionInline(nested_admin.NestedStackedInline):
+    model = QuizQuestion
+    extra = 1
+    fields = ('question_text', 'display_order', 'is_active')
+    inlines = [QuizOptionInline]
+
+
+class QuizInline(nested_admin.NestedStackedInline):
+    model = Quiz
+    fk_name = 'page'
+    extra = 0
+    max_num = 1
+    fieldsets = (
+        ('Content', {'fields': ('heading', 'description', 'next_button_text')}),
+        ('Result Button', {'fields': ('cta_text', 'cta_internal_page', 'cta_external_url')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+    inlines = [QuizQuestionInline]
+
+
+class TeamMemberInline(nested_admin.NestedStackedInline):
+    model = TeamMember
+    extra = 1
+    readonly_fields = ('photo_preview_display',)
+    fieldsets = (
+        ('Content', {'fields': ('name', 'role', 'category', 'experience', 'credentials', 'quote', 'bio', 'highlights')}),
+        ('Photo', {'fields': ('photo', 'photo_preview_display', 'photo_alt')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+
+    def photo_preview_display(self, obj):
+        return image_preview(obj, 'photo')
+    photo_preview_display.short_description = 'Photo preview'
+
+
+class TeamSectionInline(nested_admin.NestedStackedInline):
+    model = TeamSection
+    extra = 0
+    max_num = 1
+    fieldsets = (
+        ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+    inlines = [TeamMemberInline]
+
+
+class GalleryImageInline(nested_admin.NestedTabularInline):
+    model = GalleryImage
+    extra = 1
+    fields = ('image', 'image_alt', 'caption', 'display_order', 'is_active')
+
+
+class LifeAtFinprovSectionInline(nested_admin.NestedStackedInline):
+    model = LifeAtFinprovSection
+    extra = 0
+    max_num = 1
+    fieldsets = (
+        ('Content', {'fields': ('heading', 'sub_heading', 'heading_level', 'paragraph')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+    inlines = [GalleryImageInline]
+
+
+class LegalSectionInline(nested_admin.NestedStackedInline):
+    model = LegalSection
+    extra = 1
+    fieldsets = (
+        ('Content', {'fields': ('title', 'body')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )

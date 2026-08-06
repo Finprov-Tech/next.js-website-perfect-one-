@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, Asterisk, Trophy } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { placementStats, testimonials } from "@/data/testimonials";
-import { resolveCmsLink, type CMSCTA } from "@/lib/cms";
+import { resolveCmsImageUrl, resolveCmsLink, type CMSCTA } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
 
@@ -23,9 +23,17 @@ export function LearningToEarning({ cta }: { cta?: CMSCTA | null }) {
     `Experienced instructors, hands-on software training, and a placement cell that stays with you. Every Finprov program carries 100% placement assistance — and our learners hold a ${placementStats.placementRecord}% placement record across cohorts.`;
   const ctaLabel = cta?.cta_text || "More Placements";
   const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/placements");
+  const bgImage = resolveCmsImageUrl(cta?.image);
 
   return (
     <section className="relative overflow-hidden bg-[oklch(0.24_0.07_250)] py-12 text-white">
+      {bgImage && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={bgImage} alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+          <div className="pointer-events-none absolute inset-0 bg-[oklch(0.24_0.07_250)]/80" />
+        </>
+      )}
       <div className="pointer-events-none absolute inset-0 bg-grid-white opacity-15" />
       <div className="pointer-events-none absolute -left-24 top-1/3 h-80 w-80 rounded-full bg-mint/10 blur-3xl animate-blob" />
 

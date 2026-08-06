@@ -303,7 +303,7 @@ function InteractiveCampusMap({
 const inputCls =
   "w-full rounded-xl border border-white/15 bg-white/[.07] px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none transition-colors focus:border-gold/70 focus:bg-white/10";
 
-export function ContactAdvisors() {
+export function ContactAdvisors({ heroHeading }: { heroHeading?: string | null } = {}) {
   const [sent, setSent] = useState(false);
   const [hoveredCampus, setHoveredCampus] = useState<string | null>(null);
   const [lockedCampus, setLockedCampus] = useState<string | null>(null);
@@ -331,7 +331,7 @@ export function ContactAdvisors() {
       <div className={`${container} relative grid items-center gap-16 lg:grid-cols-[1fr_1fr]`}>
         <Reveal>
           <h2 className="max-w-lg text-4xl font-bold leading-[1.15] tracking-tight text-navy sm:text-[44px]">
-            Reach Out To Our Learning Advisors To Choose The Right Program
+            {heroHeading || "Reach Out To Our Learning Advisors To Choose The Right Program"}
           </h2>
 
           <div className="mt-9 space-y-4">

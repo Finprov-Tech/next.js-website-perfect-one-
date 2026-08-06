@@ -1,21 +1,15 @@
-'use client';
+import type { Metadata } from "next";
+import { getPageBySlug } from "@/lib/cms";
+import { buildMetadata } from "@/lib/seo";
+import { ContactPageClient } from "../ContactPageClient";
 
-import { SiteHeader } from "@/components/site/SiteHeader";
-import { SiteFooter } from "@/components/site/SiteFooter";
-import { ContactAdvisors } from "@/components/home/ContactAdvisors";
-import { Faq } from "@/components/site/Faq";
+export async function generateMetadata(): Promise<Metadata> {
+  const cmsPage = await getPageBySlug("contact");
+  return buildMetadata(cmsPage, "/contact/");
+}
 
-export default function ContactPage() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
+export default async function ContactPage() {
+  const cmsPage = await getPageBySlug("contact");
 
-      <main className="pt-24 sm:pt-28">
-        <ContactAdvisors />
-      </main>
-
-      <Faq />
-      <SiteFooter />
-    </div>
-  );
+  return <ContactPageClient cmsPage={cmsPage} />;
 }

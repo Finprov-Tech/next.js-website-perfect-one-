@@ -5,6 +5,7 @@ import { ArrowUpRight, User } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { mentors } from "@/data/mentors";
+import { resolveCmsImageUrl, type CMSTeamSection } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[1340px] px-5 sm:px-8 lg:px-10";
 
@@ -17,7 +18,15 @@ function HandArrow() {
   );
 }
 
-export function MentorsBand({ onEnquire }: { onEnquire: () => void }) {
+export function MentorsBand({ onEnquire, team }: { onEnquire: () => void; team?: CMSTeamSection | null }) {
+  const heading = team?.heading || "Mentors who actually show up";
+  const paragraph =
+    team?.paragraph ||
+    "Our Founder, CEO, and academic heads don't just guide — they teach, review, and grow with you.";
+  const members = team?.members?.length
+    ? team.members.map((m) => ({ name: m.name, role: m.role, photo: resolveCmsImageUrl(m.photo) || undefined }))
+    : mentors.map((m) => ({ name: m.name, role: m.role, photo: typeof m.photo === "string" ? m.photo : (m.photo as any)?.src }));
+
   return (
     <section className="relative bg-white">
       <svg viewBox="0 0 1440 48" className="block w-full text-emerald-deep" preserveAspectRatio="none" aria-hidden>
@@ -45,16 +54,16 @@ export function MentorsBand({ onEnquire }: { onEnquire: () => void }) {
             <Reveal delay={0.1} className="lg:text-right">
               <p className="font-mono text-xs font-bold text-mint">03</p>
               <h2 className="mt-0.5 text-xl sm:text-2xl lg:text-3xl font-bold uppercase tracking-[.18em] text-white">
-                Mentors who actually show up
+                {heading}
               </h2>
               <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-white/75 max-w-md lg:ml-auto">
-                Our Founder, CEO, and academic heads don't just guide — they teach, review, and grow with you.
+                {paragraph}
               </p>
             </Reveal>
           </div>
 
           <StaggerGrid className="mt-10 grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-3 lg:grid-cols-6">
-            {mentors.map((m) => (
+            {members.map((m) => (
               <StaggerItem key={m.name}>
                 <div className="group flex flex-col items-center">
                   <div className="flex h-11 flex-col items-center justify-end">
@@ -68,7 +77,7 @@ export function MentorsBand({ onEnquire }: { onEnquire: () => void }) {
                   >
                     {m.photo ? (
                       <img
-                        src={typeof m.photo === "string" ? m.photo : (m.photo as any)?.src}
+                        src={m.photo}
                         alt={m.name}
                         className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
                         loading="lazy"
