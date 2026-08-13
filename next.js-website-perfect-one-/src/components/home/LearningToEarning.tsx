@@ -6,6 +6,7 @@ import { ArrowUpRight, Asterisk, Trophy } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import { placementStats, testimonials } from "@/data/testimonials";
 import { resolveCmsImageUrl, resolveCmsLink, type CMSCTA } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
 
@@ -30,7 +31,7 @@ export function LearningToEarning({ cta }: { cta?: CMSCTA | null }) {
       {bgImage && (
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={bgImage} alt="" className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
+          <img src={bgImage} alt={cta?.image_alt || ""} className="pointer-events-none absolute inset-0 h-full w-full object-cover" />
           <div className="pointer-events-none absolute inset-0 bg-[oklch(0.24_0.07_250)]/80" />
         </>
       )}
@@ -51,7 +52,7 @@ export function LearningToEarning({ cta }: { cta?: CMSCTA | null }) {
             </h2>
           )}
           <p className="mt-6 max-w-lg text-base leading-relaxed text-white/70">
-            {paragraph}
+            <RichText html={paragraph} />
           </p>
 
           <div className="glass-dark gloss-soft mt-8 flex items-center gap-4 rounded-2xl p-5">

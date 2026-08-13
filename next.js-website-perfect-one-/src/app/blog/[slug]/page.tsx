@@ -25,6 +25,7 @@ function fromCmsSummary(p: CMSBlogPostSummary): Post {
     author: { name: p.author_name, role: p.author_role },
     sections: [],
     coverImageUrl: resolveCmsImageUrl(p.cover_image) || undefined,
+    coverImageAlt: p.cover_image_alt || undefined,
   };
 }
 

@@ -18,6 +18,7 @@ import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { getRelatedCourses, type Course } from "@/data/courses";
+import type { CourseCatalogCourse } from "@/lib/courseCatalogCore";
 import { site } from "@/data/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { generateCourseSchema, generateBreadcrumbSchema, generateFaqSchema } from "@/lib/seoSchemas";
@@ -56,8 +57,8 @@ const categoryAccent: Record<string, { from: string; to: string; badge: string }
   Gulf: { from: "from-navy", to: "to-gold", badge: "bg-gold/20 text-amber-700" },
 };
 
-export function CourseDetailView({ course }: { course: Course }) {
-  const relatedCourses = getRelatedCourses(course);
+export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourses }: { course: CourseCatalogCourse; relatedCourses?: CourseCatalogCourse[] }) {
+  const relatedCourses = suppliedRelatedCourses || getRelatedCourses(course);
   const [modalOpen, setModalOpen] = useState(false);
   const [openModule, setOpenModule] = useState<number | null>(0);
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -246,7 +247,7 @@ export function CourseDetailView({ course }: { course: Course }) {
           >
             <PhotoSlot
               src={course.image}
-              alt={course.title}
+              alt={course.imageAlt || course.title}
               caption={course.category}
               subcaption={course.tool}
               gradient="from-teal/80 to-navy/70"

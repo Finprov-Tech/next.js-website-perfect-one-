@@ -13,6 +13,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel";
 import { resolveCmsImageUrl, type CMSTestimonial } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-10";
 
@@ -25,8 +26,10 @@ function fromCms(t: CMSTestimonial): StudentTestimonial {
     type: t.kind,
     quote: t.quote || undefined,
     photoUrl: resolveCmsImageUrl(t.avatar) || undefined,
+    photoAlt: t.avatar_alt || undefined,
     videoUrl: t.video_url || undefined,
     videoThumbnail: resolveCmsImageUrl(t.video_thumbnail) || undefined,
+    videoThumbnailAlt: t.video_thumbnail_alt || undefined,
   };
 }
 
@@ -82,7 +85,7 @@ export function StudentTestimonialsSection({ testimonials }: { testimonials?: CM
                         <div className="relative h-full overflow-hidden rounded-xl bg-navy shadow-inner">
                           <img
                             src={item.videoThumbnail}
-                            alt={item.name}
+                            alt={item.videoThumbnailAlt || item.name}
                             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                             loading="lazy"
                           />
@@ -129,7 +132,7 @@ export function StudentTestimonialsSection({ testimonials }: { testimonials?: CM
 
                           {/* Quote Text */}
                           <p className="mt-4 text-xs sm:text-sm leading-relaxed text-text-body/90 line-clamp-6">
-                            "{item.quote}"
+                            "<RichText html={item.quote} />"
                           </p>
                         </div>
 
@@ -138,7 +141,7 @@ export function StudentTestimonialsSection({ testimonials }: { testimonials?: CM
                           {item.photoUrl ? (
                             <img
                               src={item.photoUrl}
-                              alt={item.name}
+                              alt={item.photoAlt || item.name}
                               className="h-11 w-11 rounded-full object-cover ring-2 ring-emerald/30"
                               loading="lazy"
                             />

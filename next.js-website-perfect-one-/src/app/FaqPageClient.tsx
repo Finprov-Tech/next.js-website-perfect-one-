@@ -8,6 +8,7 @@ import { site } from "@/data/site";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { generateFaqSchema } from "@/lib/seoSchemas";
 import type { CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[960px] px-6 md:px-8";
 
@@ -105,7 +106,7 @@ export function FaqPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             {heroHeading}
           </h1>
           <p className="mt-4 text-base text-white/80 sm:text-lg">
-            {heroParagraph}
+            <RichText html={heroParagraph} />
           </p>
         </div>
       </section>
@@ -136,7 +137,7 @@ export function FaqPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
                   {isOpen && (
                     <div className="border-t border-border/60 bg-white/50 p-5 pt-4 text-sm leading-relaxed text-text-body">
-                      {faq.answer}
+                      <RichText html={faq.answer} as="div" />
                     </div>
                   )}
                 </div>

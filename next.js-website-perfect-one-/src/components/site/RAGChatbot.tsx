@@ -7,6 +7,7 @@ import Link from "next/link";
 import { searchRAG, RAGMessage } from "@/lib/ragEngine";
 import { Course } from "@/data/courses";
 import { EnquireModal } from "./EnquireModal";
+import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 
 const quickPrompts = [
   "Top 3 SAP Courses",
@@ -16,6 +17,7 @@ const quickPrompts = [
 ];
 
 export function RAGChatbot() {
+  const courses = useCourseCatalog();
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -57,7 +59,7 @@ export function RAGChatbot() {
     setIsTyping(true);
 
     setTimeout(() => {
-      const response = searchRAG(query);
+      const response = searchRAG(query, courses);
       setMessages((prev) => [
         ...prev,
         {

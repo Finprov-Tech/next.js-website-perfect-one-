@@ -8,6 +8,7 @@ urlpatterns = [
     path('_nested_admin/', include('nested_admin.urls')),
     path('admin/', cms_admin_site.urls),
     path('api/v1/', include('api.urls')),
+    path('api/v1/seo-panel/', include('seo_panel.urls')),
     path('', include('accounts.urls')),
 ]
 

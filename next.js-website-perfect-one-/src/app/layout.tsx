@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@/styles.css";
 import { ClientProviders } from "@/components/providers/ClientProviders";
 import { SITE_DEFAULT_DESCRIPTION, SITE_DEFAULT_IMAGE, SITE_DEFAULT_TITLE } from "@/lib/seo";
+import { getCourseCatalog } from "@/lib/courseCatalog";
 
 export const metadata: Metadata = {
   title: SITE_DEFAULT_TITLE,
@@ -29,7 +30,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const courseCatalog = await getCourseCatalog();
   return (
     <html lang="en">
       <head>
@@ -41,7 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="antialiased">
-        <ClientProviders>{children}</ClientProviders>
+        <ClientProviders courseCatalog={courseCatalog}>{children}</ClientProviders>
       </body>
     </html>
   );

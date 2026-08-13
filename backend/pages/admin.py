@@ -10,6 +10,8 @@ from modules.admin import (
     CTAInline,
     BannerInline,
     FAQItemInline,
+    HistorySectionInline,
+    LandingPageBodyInline,
     LegalSectionInline,
     LifeAtFinprovSectionInline,
     PartnerLogoInline,
@@ -43,7 +45,7 @@ PAGE_INLINE_MAP = {
         PlacementSectionInline, TestimonialInline, CTAInline, PartnerLogoInline, TeamSectionInline,
         WhyFinprovSectionInline, LifeAtFinprovSectionInline, FAQItemInline,
     ],
-    'about': [BannerInline, CredentialsInline, WhyFinprovSectionInline, CTAInline],
+    'about': [BannerInline, CredentialsInline, WhyFinprovSectionInline, TeamSectionInline, HistorySectionInline, CTAInline],
     'courses': [BannerInline],
     'placement': [PlacementSectionInline, TestimonialInline, PartnerLogoInline],
     'business': [BannerInline, WhyFinprovSectionInline, CTAInline, FAQItemInline],
@@ -59,7 +61,7 @@ PAGE_INLINE_MAP = {
     'privacy-policy': [BannerInline, LegalSectionInline],
     'terms-and-conditions': [BannerInline, LegalSectionInline],
 }
-DEFAULT_PAGE_INLINES = [BannerInline, CTAInline, FAQItemInline]
+DEFAULT_PAGE_INLINES = [BannerInline, CTAInline, FAQItemInline, LandingPageBodyInline]
 
 
 @admin.register(Page, site=cms_admin_site)
@@ -67,11 +69,12 @@ class PageAdmin(SimpleHistoryAdmin, nested_admin.NestedModelAdmin):
     list_display = ('name', 'slug', 'page_type', 'status', 'is_homepage', 'module_count', 'updated_at')
     list_filter = ('page_type', 'status', 'is_homepage')
     list_editable = ('status',)
-    search_fields = ('name', 'slug')
+    search_fields = ('name', 'slug', 'wp_post_id')
     prepopulated_fields = {'slug': ('name',)}
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('created_at', 'updated_at', 'wp_post_id')
     fieldsets = (
         (None, {'fields': ('name', 'slug', 'page_type', 'is_homepage', 'status')}),
+        ('Migration', {'fields': ('wp_post_id',)}),
         ('Timestamps', {'fields': ('created_at', 'updated_at')}),
     )
 
@@ -80,6 +83,7 @@ class PageAdmin(SimpleHistoryAdmin, nested_admin.NestedModelAdmin):
         'whyfinprovsection_set', 'placementsection_set',
         'cta_set', 'testimonial_set', 'partnerlogo_set', 'faqitem_set',
         'quiz_set', 'teamsection_set', 'lifeatfinprovsection_set', 'legalsection_set',
+        'landingpagebody_set', 'historysection_set',
     )
 
     @admin.display(description='Modules')

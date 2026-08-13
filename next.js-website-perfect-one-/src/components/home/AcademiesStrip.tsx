@@ -1,6 +1,7 @@
 import { Reveal } from "@/components/motion/Reveal";
 import { accreditations } from "@/data/site";
 import type { CMSCredentials } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 import { CmsIcon } from "@/lib/icons";
 
 type ChipItem = { key: string; name: string; icon: string };
@@ -44,7 +45,7 @@ export function AcademiesStrip({ credentials }: { credentials?: CMSCredentials |
         <Reveal className="mx-auto max-w-2xl px-6 text-center">
           <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{heading}</h2>
           <p className="mt-3 text-sm leading-relaxed text-white/70 sm:text-base">
-            {paragraph}
+            <RichText html={paragraph} />
           </p>
         </Reveal>
         <div className="mt-10">

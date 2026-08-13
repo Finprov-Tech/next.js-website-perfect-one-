@@ -1,4 +1,5 @@
-import { courses, Course, getCourseBySlug } from "@/data/courses";
+import { courses as localCourses, type Course } from "@/data/courses";
+import { findCourseInCatalog, type CourseCatalogCourse } from "@/lib/courseCatalogCore";
 
 export interface RAGMessage {
   id: string;
@@ -71,7 +72,8 @@ function calculateSimilarity(queryTokens: string[], docTokens: string[]): number
   return matchCount / Math.sqrt(queryTokens.length * docTokens.length);
 }
 
-export function searchRAG(query: string): { response: string; recommendedCourses: Course[] } {
+export function searchRAG(query: string, catalog: CourseCatalogCourse[] = localCourses): { response: string; recommendedCourses: Course[] } {
+  const courses = catalog.length ? catalog : localCourses;
   const rawTokens = query.toLowerCase().replace(/[^\w\s]/g, " ").split(/\s+/);
   const queryTokens = tokenize(query);
 
@@ -135,9 +137,9 @@ export function searchRAG(query: string): { response: string; recommendedCourses
 
   // Fallback to top flagship courses ONLY if query has no specific intent
   const recommendedCourses = topMatches.length > 0 ? topMatches : [
-    getCourseBySlug("pg-diploma-in-business-accounting-and-taxation-course-pgbat")!,
-    getCourseBySlug("pg-diploma-in-indian-and-foreign-accounting-course-pgdifa")!,
-    getCourseBySlug("certified-in-business-accounting-taxation-cbat") || courses[0],
+    findCourseInCatalog(courses, "pg-diploma-in-business-accounting-and-taxation-course-pgbat")!,
+    findCourseInCatalog(courses, "pg-diploma-in-indian-and-foreign-accounting-course-pgdifa")!,
+    findCourseInCatalog(courses, "certified-in-business-accounting-taxation-cbat") || courses[0],
   ].filter(Boolean);
 
   // Response Text Customization

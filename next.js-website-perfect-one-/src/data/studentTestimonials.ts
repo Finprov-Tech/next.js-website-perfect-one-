@@ -8,8 +8,10 @@ export type StudentTestimonial = {
   type: "text" | "video";
   quote?: string;
   photoUrl?: string;
+  photoAlt?: string;
   videoUrl?: string;
   videoThumbnail?: string;
+  videoThumbnailAlt?: string;
   badge?: string;
 };
 

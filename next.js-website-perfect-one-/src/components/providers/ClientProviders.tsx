@@ -7,8 +7,10 @@ import { SmoothScroll } from "@/components/motion/SmoothScroll";
 import { CursorFollower } from "@/components/motion/CursorFollower";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
 import { RAGChatbot } from "@/components/site/RAGChatbot";
+import { CourseCatalogProvider } from "@/components/providers/CourseCatalogProvider";
+import type { CourseCatalogCourse } from "@/lib/courseCatalogCore";
 
-export function ClientProviders({ children }: { children: React.ReactNode }) {
+export function ClientProviders({ children, courseCatalog }: { children: React.ReactNode; courseCatalog: CourseCatalogCourse[] }) {
   const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
@@ -20,12 +22,14 @@ export function ClientProviders({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <SmoothScroll>
-        <PageTransition>{children}</PageTransition>
-      </SmoothScroll>
-      <CursorFollower />
-      <WhatsAppButton />
-      <RAGChatbot />
+      <CourseCatalogProvider courses={courseCatalog}>
+        <SmoothScroll>
+          <PageTransition>{children}</PageTransition>
+        </SmoothScroll>
+        <CursorFollower />
+        <WhatsAppButton />
+        <RAGChatbot />
+      </CourseCatalogProvider>
     </QueryClientProvider>
   );
 }

@@ -1,0 +1,11 @@
+.runtime/
+.tmp_*/
+backups/current-*/
+backups/
+test-results/
+**/.env.local
+**/.next/
+**/.next-*/
+**/tsconfig.tsbuildinfo
+backend/db.sqlite3
+backend/media/

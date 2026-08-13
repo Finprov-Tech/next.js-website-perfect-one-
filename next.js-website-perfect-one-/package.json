@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint .",
+    "test:course-catalog": "node --experimental-strip-types --test tests/courseCatalog.test.ts",
+    "lint": "eslint src tests *.mjs *.js",
+    "typecheck": "tsc --noEmit --incremental false",
     "format": "prettier --write ."
   },
   "dependencies": {

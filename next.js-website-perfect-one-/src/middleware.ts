@@ -18,7 +18,8 @@ async function getRedirectMap(): Promise<Map<string, RedirectRow>> {
   try {
     const res = await fetch(`${CMS_API_URL}/api/v1/redirects/`);
     if (res.ok) {
-      const rows = (await res.json()) as RedirectRow[];
+      const payload = (await res.json()) as RedirectRow[] | { results?: RedirectRow[] };
+      const rows = Array.isArray(payload) ? payload : (payload.results ?? []);
       for (const row of rows) {
         map.set(row.old_path, row);
       }

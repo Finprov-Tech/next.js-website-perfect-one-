@@ -31,6 +31,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { parseCountValue, resolveCmsImageUrl, resolveCmsLink } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 import { CmsIcon } from "@/lib/icons";
 import type { CMSPage } from "@/lib/cms";
 
@@ -166,6 +167,24 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     ? whyFinprov.feature_cards.map((card) => ({ icon: null, iconKey: card.icon, title: card.title, desc: card.description }))
     : defaultCoreValues.map((v) => ({ icon: v.icon, iconKey: null as string | null, title: v.title, desc: v.desc }));
 
+  const teamMembers = cmsPage?.team?.members?.length
+    ? cmsPage.team.members.map((m) => ({
+        name: m.name,
+        role: m.role,
+        photo: resolveCmsImageUrl(m.photo) || getImageSrc(keralaStudents),
+        photoAlt: m.photo_alt || m.name,
+        bio: m.bio,
+      }))
+    : experts.map((e) => ({ ...e, photoAlt: e.name }));
+
+  const historyEyebrow = cmsPage?.history?.eyebrow || "Decade of Excellence";
+  const historyHeading = cmsPage?.history?.heading || "Finprov's History & Growth";
+  const historySubheading =
+    cmsPage?.history?.sub_heading || "From a single classroom in Kochi to a premier multi-city educational institution.";
+  const timelineItems = cmsPage?.history?.milestones?.length
+    ? cmsPage.history.milestones.map((m) => ({ year: m.year_label, title: m.title, desc: m.description }))
+    : timeline;
+
   const ctaHeading = cta?.heading || "Ready to Build a High-Growth Career?";
   const ctaParagraph =
     cta?.paragraph ||
@@ -221,7 +240,7 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/80 font-normal"
             >
-              {heroParagraph}
+              <RichText html={heroParagraph} />
             </motion.p>
           </div>
           <motion.div
@@ -316,14 +335,14 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
           </Reveal>
 
           <StaggerGrid className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {experts.map((e) => (
+            {teamMembers.map((e) => (
               <StaggerItem key={e.name}>
                 <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-slate-300 hover:shadow-2xl hover:shadow-[#0077c5]/10">
                   <div>
                     <div className="relative overflow-hidden rounded-2xl bg-slate-100 aspect-[4/4.8] w-full">
                       <img
                         src={e.photo}
-                        alt={e.name}
+                        alt={e.photoAlt}
                         className="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                         loading="lazy"
                       />
@@ -363,17 +382,17 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
         <div className="pointer-events-none absolute -right-20 top-20 h-96 w-96 rounded-full bg-teal/15 blur-3xl" />
         <div className={container}>
           <Reveal className="text-center">
-            <span className="text-xs font-bold uppercase tracking-wider text-mint">Decade of Excellence</span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">Finprov's History &amp; Growth</h2>
+            <span className="text-xs font-bold uppercase tracking-wider text-mint">{historyEyebrow}</span>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight sm:text-4xl">{historyHeading}</h2>
             <p className="mt-3 text-sm sm:text-base text-white/70 max-w-2xl mx-auto">
-              From a single classroom in Kochi to a premier multi-city educational institution.
+              {historySubheading}
             </p>
           </Reveal>
 
           <div className="relative mt-10">
             <div className="absolute left-4 top-0 bottom-0 w-px bg-white/20 md:left-1/2" />
             <div className="space-y-8">
-              {timeline.map((t, i) => (
+              {timelineItems.map((t, i) => (
                 <Reveal key={t.year} delay={i * 0.05}>
                   <div
                     className={`relative flex flex-col gap-4 pl-12 md:grid md:grid-cols-2 md:gap-8 md:pl-0 ${
@@ -463,7 +482,7 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             <Sparkles className="h-3.5 w-3.5" /> Start Your Learning Journey
           </span>
           <h2 className="mt-4 text-3xl font-bold sm:text-5xl">{ctaHeading}</h2>
-          <p className="mt-4 max-w-2xl mx-auto text-base text-white/80">{ctaParagraph}</p>
+          <p className="mt-4 max-w-2xl mx-auto text-base text-white/80"><RichText html={ctaParagraph} /></p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-4">
             <Link

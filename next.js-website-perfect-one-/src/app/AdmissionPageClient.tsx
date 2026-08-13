@@ -20,12 +20,13 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { courses } from "@/data/courses";
+import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import type { CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
 
@@ -53,6 +54,7 @@ const qualifications = [
 ];
 
 function AdmissionContent({ cmsPage }: { cmsPage: CMSPage | null }) {
+  const courses = useCourseCatalog();
   const searchParams = useSearchParams();
   const searchParamCourse = searchParams.get("course") || "";
 
@@ -98,7 +100,7 @@ function AdmissionContent({ cmsPage }: { cmsPage: CMSPage | null }) {
     if (searchParamCourse && courses.some((crs) => crs.slug === searchParamCourse)) {
       setFormData((prev) => ({ ...prev, selectedCourseSlug: searchParamCourse }));
     }
-  }, [searchParamCourse]);
+  }, [searchParamCourse, courses]);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [applicationId, setApplicationId] = useState("");
@@ -142,7 +144,7 @@ function AdmissionContent({ cmsPage }: { cmsPage: CMSPage | null }) {
             {heroHeading}
           </h1>
           <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-white/80 sm:text-base">
-            {heroParagraph}
+            <RichText html={heroParagraph} />
           </p>
         </div>
       </section>

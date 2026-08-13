@@ -154,6 +154,7 @@ class CourseSection(HeadingFieldsMixin, PageScopedModule):
 
 class CourseCard(OrderedToggleModel):
     course_section = models.ForeignKey(CourseSection, on_delete=models.CASCADE, related_name='cards')
+    course = models.ForeignKey('courses.Course', on_delete=models.SET_NULL, null=True, blank=True, related_name='homepage_cards')
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, help_text='Matches the course detail page slug, e.g. /courses/<slug>.')
     category = models.CharField(max_length=50, help_text='Finance, Taxation, Analytics, Marketing, or Gulf — matches the homepage tabs.')
@@ -195,6 +196,7 @@ class FeatureCard(OrderedToggleModel):
     icon = icon_field(help_text='Not currently rendered on the homepage; reserved for future use.')
     image = models.ImageField(upload_to='modules/%Y/%m/', blank=True, null=True,
                                help_text='Not currently rendered on the homepage; reserved for future use.')
+    image_alt = models.CharField(max_length=255, blank=True)
 
     class Meta(OrderedToggleModel.Meta):
         verbose_name = 'Feature Card'
@@ -260,6 +262,7 @@ class Testimonial(PageScopedModule):
     kind = models.CharField(max_length=10, choices=KIND_CHOICES, default=KIND_TEXT)
     video_url = models.URLField(blank=True, default='', help_text='Used when Kind is Video.')
     video_thumbnail = models.ImageField(upload_to='modules/%Y/%m/', blank=True, null=True, help_text='Used when Kind is Video.')
+    video_thumbnail_alt = models.CharField(max_length=255, blank=True)
 
     history = HistoricalRecords()
 
@@ -425,3 +428,50 @@ class LegalSection(PageScopedModule):
 
     def __str__(self):
         return f'{self.page.name} — {self.title}'
+
+
+class LandingPageBody(PageScopedModule):
+    """The single rich-text body for a programmatic SEO landing page (the
+    course/city long-tail pages migrated from WordPress). These pages don't
+    fit the modular Banner/Credentials/CTA structure used by the core site
+    pages — one H1 plus one sanitized HTML block is the whole page."""
+    h1 = models.CharField(max_length=255)
+    body = models.TextField(
+        help_text='Raw HTML. Supported tags: p, ul, ol, li, strong, em, b, i, u, a, br, h2-h6. '
+                   'Sanitized server-side before it reaches the API.'
+    )
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'Landing Page Body'
+
+    def __str__(self):
+        return f'{self.page.name} — Landing Page Body'
+
+
+class HistorySection(HeadingFieldsMixin, PageScopedModule):
+    """A chronological milestones timeline (e.g. About page's 'History &
+    Growth'). `sub_heading` doubles as the section's intro line."""
+    eyebrow = models.CharField(max_length=100, blank=True, help_text='Small label above the heading, e.g. "Decade of Excellence".')
+
+    history = HistoricalRecords()
+
+    class Meta(PageScopedModule.Meta):
+        verbose_name = 'History Section'
+
+    def __str__(self):
+        return f'{self.page.name} — History: {self.heading or "(untitled)"}'
+
+
+class HistoryMilestone(OrderedToggleModel):
+    section = models.ForeignKey(HistorySection, on_delete=models.CASCADE, related_name='milestones')
+    year_label = models.CharField(max_length=100, help_text='e.g. "2014 — The Foundation".')
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    class Meta(OrderedToggleModel.Meta):
+        verbose_name = 'History Milestone'
+
+    def __str__(self):
+        return f'{self.year_label}: {self.title}'

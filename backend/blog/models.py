@@ -26,6 +26,26 @@ class BlogCategory(models.Model):
         return self.name
 
 
+class Author(models.Model):
+    """A reusable byline — selected from a dropdown per post instead of
+    retyping name/role every time, with a profile (bio + photo) for an
+    'About the author' block."""
+
+    name = models.CharField(max_length=255)
+    role = models.CharField(max_length=255, blank=True)
+    bio = models.TextField(blank=True)
+    photo = models.ImageField(upload_to='authors/%Y/%m/', blank=True, null=True)
+    photo_alt = models.CharField(max_length=255, blank=True)
+
+    class Meta:
+        ordering = ['name']
+        verbose_name = 'Author'
+        verbose_name_plural = 'Authors'
+
+    def __str__(self):
+        return self.name
+
+
 class BlogPost(TimeStampedModel):
     STATUS_DRAFT = 'draft'
     STATUS_PUBLISHED = 'published'
@@ -42,8 +62,7 @@ class BlogPost(TimeStampedModel):
     excerpt = models.TextField(blank=True)
     cover_image = models.ImageField(upload_to='blog/%Y/%m/', blank=True, null=True)
     cover_image_alt = models.CharField(max_length=255, blank=True)
-    author_name = models.CharField(max_length=255, blank=True)
-    author_role = models.CharField(max_length=255, blank=True)
+    author = models.ForeignKey(Author, on_delete=models.SET_NULL, null=True, blank=True, related_name='posts')
     published_date = models.DateField(null=True, blank=True)
     read_time = models.CharField(max_length=50, blank=True, help_text='Free text, e.g. "5 min read".')
     is_featured = models.BooleanField(default=False)

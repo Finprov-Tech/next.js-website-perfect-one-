@@ -8,6 +8,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import { lifeAtFinprov } from "@/data/site";
 import { resolveCmsImageUrl, type CMSLifeAtFinprovSection } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
 
@@ -35,8 +36,8 @@ export function LifeAtFinprov({ lifeAtFinprov: cmsSection }: { lifeAtFinprov?: C
     cmsSection?.paragraph ||
     "Celebrations, presentations, and industry visits — learning here looks a lot like the workplaces you're headed to, with more cake.";
   const gallery = cmsSection?.images?.length
-    ? cmsSection.images.map((g) => ({ title: g.caption, photo: resolveCmsImageUrl(g.image) || undefined }))
-    : lifeAtFinprov.map((event, i) => ({ title: event.title, photo: i === 0 ? keralaStudentsSrc : undefined }));
+    ? cmsSection.images.map((g) => ({ title: g.caption, photo: resolveCmsImageUrl(g.image) || undefined, photoAlt: g.image_alt || g.caption }))
+    : lifeAtFinprov.map((event, i) => ({ title: event.title, photo: i === 0 ? keralaStudentsSrc : undefined, photoAlt: event.title }));
 
   return (
     <section className="section-ambient overflow-hidden py-12">
@@ -48,7 +49,7 @@ export function LifeAtFinprov({ lifeAtFinprov: cmsSection }: { lifeAtFinprov?: C
             </span>
             <h2 className="mt-4 text-4xl font-bold tracking-tight text-navy sm:text-5xl">{heading}</h2>
             <p className="mt-3 max-w-lg text-base text-text-body">
-              {paragraph}
+              <RichText html={paragraph} />
             </p>
           </Reveal>
           <Reveal delay={0.1} className="flex gap-2">
@@ -82,7 +83,7 @@ export function LifeAtFinprov({ lifeAtFinprov: cmsSection }: { lifeAtFinprov?: C
             >
               <PhotoSlot
                 src={event.photo}
-                alt={event.title}
+                alt={event.photoAlt}
                 gradient={gradients[i % gradients.length]}
                 className="aspect-[4/3] rounded-none ring-0"
                 hover={false}

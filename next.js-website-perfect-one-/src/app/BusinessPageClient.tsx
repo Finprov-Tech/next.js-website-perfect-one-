@@ -5,6 +5,7 @@ import { ArrowUpRight, BarChart3, Building2, Check, ChevronDown, Clock3, Handsha
 import { useState } from "react";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { RichText } from "@/components/site/RichText";
 import { Reveal } from "@/components/motion/Reveal";
 import { site } from "@/data/site";
 import { businessProgramAreas, businessProgramSlug, getBusinessProgramDuration, hasOriginalBusinessProgramDetail } from "@/data/business";
@@ -109,10 +110,10 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               {heroHeading}
             </h1>
             <p className="mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-white/85">
-              {heroParagraph1}
+              <RichText html={heroParagraph1} />
             </p>
             <p className="mt-2.5 max-w-2xl text-xs sm:text-sm leading-relaxed text-white/75">
-              {heroParagraph2}
+              <RichText html={heroParagraph2} />
             </p>
             <div className="mt-6 flex flex-wrap gap-3.5">
               <a
@@ -226,7 +227,7 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
       <section className="section-ambient py-24">
         <div className={container}>
-          <Reveal><p className="text-sm font-bold uppercase tracking-[0.18em] text-cta">{solutionsEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-navy sm:text-5xl">{solutionsHeading}</h2><p className="mt-4 max-w-2xl text-text-body">{solutionsParagraph}</p></Reveal>
+          <Reveal><p className="text-sm font-bold uppercase tracking-[0.18em] text-cta">{solutionsEyebrow}</p><h2 className="mt-3 text-3xl font-bold tracking-tight text-navy sm:text-5xl">{solutionsHeading}</h2><p className="mt-4 max-w-2xl text-text-body"><RichText html={solutionsParagraph} /></p></Reveal>
           <div className="mt-10 grid gap-5 md:grid-cols-2">
             {solutions.map((s, index) => (
               <Reveal key={s.title} delay={index * 0.06}>
@@ -241,7 +242,7 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
           <Reveal>
             <div className="mt-12 rounded-3xl bg-gradient-to-r from-cta via-teal to-cta p-8 text-center text-white shadow-xl shadow-cta/20 sm:p-12">
               <h2 className="text-3xl font-bold">{ctaHeading}</h2>
-              <p className="mx-auto mt-3 max-w-2xl text-white/80">{ctaParagraph}</p>
+              <p className="mx-auto mt-3 max-w-2xl text-white/80"><RichText html={ctaParagraph} /></p>
               <Link href={ctaHref} className="btn-gloss mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-bold text-navy">{ctaLabel} <ArrowUpRight className="h-4 w-4" /></Link>
             </div>
           </Reveal>

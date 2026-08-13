@@ -6,6 +6,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { mentors } from "@/data/mentors";
 import { resolveCmsImageUrl, type CMSTeamSection } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1340px] px-5 sm:px-8 lg:px-10";
 
@@ -24,8 +25,8 @@ export function MentorsBand({ onEnquire, team }: { onEnquire: () => void; team?:
     team?.paragraph ||
     "Our Founder, CEO, and academic heads don't just guide — they teach, review, and grow with you.";
   const members = team?.members?.length
-    ? team.members.map((m) => ({ name: m.name, role: m.role, photo: resolveCmsImageUrl(m.photo) || undefined }))
-    : mentors.map((m) => ({ name: m.name, role: m.role, photo: typeof m.photo === "string" ? m.photo : (m.photo as any)?.src }));
+    ? team.members.map((m) => ({ name: m.name, role: m.role, photo: resolveCmsImageUrl(m.photo) || undefined, photoAlt: m.photo_alt || m.name }))
+    : mentors.map((m) => ({ name: m.name, role: m.role, photo: typeof m.photo === "string" ? m.photo : (m.photo as any)?.src, photoAlt: m.name }));
 
   return (
     <section className="relative bg-white">
@@ -57,7 +58,7 @@ export function MentorsBand({ onEnquire, team }: { onEnquire: () => void; team?:
                 {heading}
               </h2>
               <p className="mt-1.5 text-xs sm:text-sm leading-relaxed text-white/75 max-w-md lg:ml-auto">
-                {paragraph}
+                <RichText html={paragraph} />
               </p>
             </Reveal>
           </div>
@@ -78,7 +79,7 @@ export function MentorsBand({ onEnquire, team }: { onEnquire: () => void; team?:
                     {m.photo ? (
                       <img
                         src={m.photo}
-                        alt={m.name}
+                        alt={m.photoAlt}
                         className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0"
                         loading="lazy"
                       />

@@ -9,6 +9,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { resolveCmsImageUrl, type CMSPage, type CMSTestimonial } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1240px] px-6 md:px-8";
 
@@ -21,8 +22,10 @@ function fromCmsTestimonial(t: CMSTestimonial): StudentTestimonial {
     type: t.kind,
     quote: t.quote || undefined,
     photoUrl: resolveCmsImageUrl(t.avatar) || undefined,
+    photoAlt: t.avatar_alt || undefined,
     videoUrl: t.video_url || undefined,
     videoThumbnail: resolveCmsImageUrl(t.video_thumbnail) || undefined,
+    videoThumbnailAlt: t.video_thumbnail_alt || undefined,
   };
 }
 
@@ -111,7 +114,7 @@ export function TestimonialsPageClient({ cmsPage }: { cmsPage: CMSPage | null })
             </div>
             <div>
               <p className="text-base leading-relaxed text-white/80 sm:text-lg">
-                {heroParagraph}
+                <RichText html={heroParagraph} />
               </p>
 
               <button
@@ -161,7 +164,7 @@ export function TestimonialsPageClient({ cmsPage }: { cmsPage: CMSPage | null })
                     <div className="relative overflow-hidden rounded-xl bg-navy aspect-[4/5]">
                       <img
                         src={item.videoThumbnail}
-                        alt={item.name}
+                        alt={item.videoThumbnailAlt || item.name}
                         className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy/90 via-navy/30 to-transparent" />
@@ -192,7 +195,7 @@ export function TestimonialsPageClient({ cmsPage }: { cmsPage: CMSPage | null })
                       </div>
 
                       <p className="mt-4 text-sm leading-relaxed text-text-body">
-                        "{item.quote}"
+                        "<RichText html={item.quote} />"
                       </p>
                     </div>
 
@@ -200,7 +203,7 @@ export function TestimonialsPageClient({ cmsPage }: { cmsPage: CMSPage | null })
                       {item.photoUrl ? (
                         <img
                           src={item.photoUrl}
-                          alt={item.name}
+                          alt={item.photoAlt || item.name}
                           className="h-11 w-11 rounded-full object-cover ring-2 ring-emerald/30"
                         />
                       ) : (

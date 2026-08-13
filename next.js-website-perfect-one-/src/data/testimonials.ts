@@ -6,6 +6,7 @@ export type Testimonial = {
   quote: string;
   program: string;
   photo?: string;
+  photoAlt?: string;
 };
 
 export const testimonials: Testimonial[] = [

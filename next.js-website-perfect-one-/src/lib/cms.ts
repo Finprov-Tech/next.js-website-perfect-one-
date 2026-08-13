@@ -119,6 +119,7 @@ export type CMSFeatureCard = {
   description: string;
   icon: string;
   image: string | null;
+  image_alt: string;
   display_order: number;
 };
 
@@ -167,6 +168,7 @@ export type CMSTestimonial = {
   kind: "text" | "video";
   video_url: string;
   video_thumbnail: string | null;
+  video_thumbnail_alt: string;
   display_order: number;
 };
 
@@ -329,6 +331,31 @@ export type CMSLifeAtFinprovSection = {
   display_order: number;
 };
 
+/** `body` is raw HTML, already sanitized server-side (see LandingPageBodySerializer). */
+export type CMSLandingPageBody = {
+  id: number;
+  h1: string;
+  body: string;
+};
+
+export type CMSHistoryMilestone = {
+  id: number;
+  year_label: string;
+  title: string;
+  description: string;
+  display_order: number;
+};
+
+export type CMSHistorySection = {
+  id: number;
+  eyebrow: string;
+  heading: string;
+  sub_heading: string;
+  heading_level: string;
+  milestones: CMSHistoryMilestone[];
+  display_order: number;
+};
+
 export type CMSPage = {
   id: number;
   name: string;
@@ -351,6 +378,8 @@ export type CMSPage = {
   team: CMSTeamSection | null;
   life_at_finprov: CMSLifeAtFinprovSection | null;
   legal_sections: CMSLegalSection[];
+  landing_page: CMSLandingPageBody | null;
+  history: CMSHistorySection | null;
 };
 
 /**

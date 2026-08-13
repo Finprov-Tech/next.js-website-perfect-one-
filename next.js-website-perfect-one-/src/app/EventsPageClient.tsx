@@ -27,6 +27,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import type { CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
 
@@ -102,7 +103,7 @@ export function EventsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mt-3 max-w-xl mx-auto text-sm sm:text-base text-white/80 font-normal"
           >
-            {heroParagraph}
+            <RichText html={heroParagraph} />
           </motion.p>
         </div>
       </section>

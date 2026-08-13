@@ -6,7 +6,9 @@ import { ArrowLeft, ArrowRight, PartyPopper, RotateCcw } from "lucide-react";
 import Link from "next/link";
 import keralaAdvisor from "@/assets/kerala-advisor.png";
 import { Reveal } from "@/components/motion/Reveal";
-import { courses, type Category } from "@/data/courses";
+import { type Category } from "@/data/courses";
+import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
+import type { CourseCatalogCourse } from "@/lib/courseCatalogCore";
 import { resolveCmsLink, type CMSQuiz } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10";
@@ -42,7 +44,7 @@ const fieldToCategory: Record<string, Category> = {
   "Gulf Careers": "Gulf",
 };
 
-function recommend(answers: string[]) {
+function recommend(answers: string[], courses: CourseCatalogCourse[]) {
   const category: Category = answers[1] === "Planning a Gulf Move" ? "Gulf" : (fieldToCategory[answers[0]] ?? "Finance");
   const pool = courses.filter((c) => c.category === category);
   if (answers[1] === "Working Professional") {
@@ -53,6 +55,7 @@ function recommend(answers: string[]) {
 }
 
 export function ProgramQuiz({ onEnquire, quiz }: { onEnquire: (course?: string) => void; quiz?: CMSQuiz | null }) {
+  const courses = useCourseCatalog();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<string[]>([]);
   const [done, setDone] = useState(false);
@@ -68,7 +71,7 @@ export function ProgramQuiz({ onEnquire, quiz }: { onEnquire: (course?: string) 
   const resultHref = resultHasLink ? resolveCmsLink(quiz?.cta_internal_page, quiz?.cta_external_url, "#") : null;
 
   const selected = answers[step];
-  const result = useMemo(() => (done ? recommend(answers) : null), [done, answers]);
+  const result = useMemo(() => (done ? recommend(answers, courses) : null), [done, answers, courses]);
 
   const choose = (option: string) => {
     const next = [...answers];

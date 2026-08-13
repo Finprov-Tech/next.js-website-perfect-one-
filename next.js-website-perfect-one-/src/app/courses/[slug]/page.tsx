@@ -1,13 +1,10 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { courses, getCourseBySlug } from "@/data/courses";
 import { CourseDetailView } from "@/components/courses/CourseDetailView";
+import { getCourseBySlugDualRead, getCourseCatalog } from "@/lib/courseCatalog";
+import { relatedCoursesFromCatalog } from "@/lib/courseCatalogCore";
 
-export async function generateStaticParams() {
-  return courses.map((c) => ({
-    slug: c.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -15,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
+  const course = await getCourseBySlugDualRead(slug);
 
   if (!course) {
     return {
@@ -26,7 +23,9 @@ export async function generateMetadata({
   const title = course.seoTitle || `${course.title} | Finprov Learning`;
   const description = course.metaDescription || course.heroDesc || course.shortDesc;
   const canonical = course.canonicalUrl || `https://finprov.com/courses/${course.slug}/`;
-  const image = course.image ? `https://finprov.com${course.image}` : "https://finprov.com/finprov-wordmark.jpeg";
+  const image = course.image
+    ? (/^https?:\/\//.test(course.image) ? course.image : `https://finprov.com${course.image}`)
+    : "https://finprov.com/finprov-wordmark.jpeg";
 
   return {
     title,
@@ -61,11 +60,12 @@ export default async function CourseDetailPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const course = getCourseBySlug(slug);
+  const course = await getCourseBySlugDualRead(slug);
 
   if (!course) {
     notFound();
   }
 
-  return <CourseDetailView course={course} />;
+  const catalog = await getCourseCatalog();
+  return <CourseDetailView course={course} relatedCourses={relatedCoursesFromCatalog(catalog, course)} />;
 }

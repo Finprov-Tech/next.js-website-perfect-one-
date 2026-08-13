@@ -8,6 +8,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import type { CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[960px] px-6 md:px-8";
 
@@ -93,7 +94,7 @@ export function VerifyCertificatePageClient({ cmsPage }: { cmsPage: CMSPage | nu
             {heroHeading}
           </h1>
           <p className="mt-4 text-base text-white/80 sm:text-lg">
-            {heroParagraph}
+            <RichText html={heroParagraph} />
           </p>
         </div>
       </section>

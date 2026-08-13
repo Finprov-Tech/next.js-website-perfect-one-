@@ -8,7 +8,7 @@ from core.models import TimeStampedModel
 class SEOMeta(TimeStampedModel):
     """The single SEO record for a Page OR a BlogPost — never per-module.
 
-    Exactly one of `page`/`blog_post` must be set; enforced in clean().
+    Exactly one of `page`/`blog_post`/`course` must be set; enforced in clean().
     """
 
     ROBOTS_INDEX_FOLLOW = 'index,follow'
@@ -37,6 +37,7 @@ class SEOMeta(TimeStampedModel):
 
     page = models.OneToOneField('pages.Page', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
     blog_post = models.OneToOneField('blog.BlogPost', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
+    course = models.OneToOneField('courses.Course', on_delete=models.CASCADE, related_name='seo', null=True, blank=True)
 
     # General SEO
     seo_title = models.CharField(max_length=255, blank=True)
@@ -49,6 +50,7 @@ class SEOMeta(TimeStampedModel):
     og_title = models.CharField(max_length=255, blank=True)
     og_description = models.CharField(max_length=320, blank=True)
     og_image = models.ImageField(upload_to='seo/%Y/%m/', blank=True, null=True)
+    og_image_alt = models.CharField(max_length=255, blank=True)
     og_url = models.URLField(blank=True)
 
     # Schema
@@ -72,11 +74,11 @@ class SEOMeta(TimeStampedModel):
 
     def clean(self):
         super().clean()
-        if bool(self.page_id) == bool(self.blog_post_id):
-            raise ValidationError('Exactly one of "page" or "blog_post" must be set.')
+        if sum(bool(value) for value in (self.page_id, self.blog_post_id, self.course_id)) != 1:
+            raise ValidationError('Exactly one of "page", "blog_post", or "course" must be set.')
 
     def __str__(self):
-        target = self.page or self.blog_post
+        target = self.page or self.blog_post or self.course
         return f'SEO — {target}' if target else 'SEO — (unattached)'
 
 

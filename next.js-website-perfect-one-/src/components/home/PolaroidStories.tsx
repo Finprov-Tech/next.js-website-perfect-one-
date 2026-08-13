@@ -8,7 +8,7 @@ import { resolveCmsImageUrl, type CMSTestimonial } from "@/lib/cms";
 
 const tilts = [-3, 2.5, -2, 3, -2.5, 2];
 
-function Polaroid({ name, role, company, photo, tilt }: { name: string; role: string; company: string; photo?: string; tilt: number }) {
+function Polaroid({ name, role, company, photo, photoAlt, tilt }: { name: string; role: string; company: string; photo?: string; photoAlt?: string; tilt: number }) {
   return (
     <div className="flex w-52 sm:w-56 shrink-0 flex-col items-center">
       <p className="mb-2 text-[11px] sm:text-xs font-extrabold uppercase tracking-wide text-navy/55">{company}</p>
@@ -22,7 +22,7 @@ function Polaroid({ name, role, company, photo, tilt }: { name: string; role: st
         <span className="absolute -top-2.5 left-1/2 h-4 w-16 -translate-x-1/2 -rotate-2 rounded-sm bg-gold/45 backdrop-blur-[1px] shadow-sm" />
         <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal/20 via-slate-50 to-mint/20 border border-slate-100">
           {photo ? (
-            <img src={photo} alt={name} className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0" loading="lazy" />
+            <img src={photo} alt={photoAlt || name} className="h-full w-full object-cover grayscale transition-all duration-500 group-hover:grayscale-0" loading="lazy" />
           ) : (
             <div className="grid h-full w-full place-items-center">
               <User className="h-12 w-12 text-navy/25" strokeWidth={1.25} />
@@ -38,8 +38,8 @@ function Polaroid({ name, role, company, photo, tilt }: { name: string; role: st
 
 export function PolaroidStories({ testimonials: cmsTestimonials }: { testimonials?: CMSTestimonial[] | null } = {}) {
   const stories = cmsTestimonials?.length
-    ? cmsTestimonials.map((t) => ({ name: t.name, role: t.designation, company: t.company, photo: resolveCmsImageUrl(t.avatar) || undefined }))
-    : testimonials.map((t) => ({ name: t.name, role: t.role, company: t.company, photo: t.photo }));
+    ? cmsTestimonials.map((t) => ({ name: t.name, role: t.designation, company: t.company, photo: resolveCmsImageUrl(t.avatar) || undefined, photoAlt: t.avatar_alt || undefined }))
+    : testimonials.map((t) => ({ name: t.name, role: t.role, company: t.company, photo: t.photo, photoAlt: t.name }));
 
   return (
     <section className="section-ambient overflow-hidden py-8 sm:py-12">
@@ -69,6 +69,7 @@ export function PolaroidStories({ testimonials: cmsTestimonials }: { testimonial
                     role={t.role}
                     company={t.company}
                     photo={t.photo}
+                    photoAlt={t.photoAlt}
                     tilt={tilts[i % tilts.length]}
                   />
                 ))}

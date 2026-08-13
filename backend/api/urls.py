@@ -17,10 +17,12 @@ from api.views import (
     SiteSettingsView,
     TestimonialViewSet,
     WhyFinprovSectionViewSet,
+    CourseViewSet,
 )
 
 router = DefaultRouter()
 router.register('pages', PageViewSet, basename='page')
+router.register('courses', CourseViewSet, basename='course')
 router.register('blog/categories', BlogCategoryViewSet, basename='blog-category')
 router.register('blog/posts', BlogPostViewSet, basename='blog-post')
 router.register('modules/banners', BannerViewSet, basename='banner')

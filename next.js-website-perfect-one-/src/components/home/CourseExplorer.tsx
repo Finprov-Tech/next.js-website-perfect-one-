@@ -6,7 +6,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ArrowRight, BarChart3, Clock3, MonitorSmartphone } from "lucide-react";
 import { Reveal } from "@/components/motion/Reveal";
 import CourseCardArt from "@/components/site/CardArt";
-import { categories, categoryLabels, courses, programTypes, type Category, type ProgramType } from "@/data/courses";
+import { categories, categoryLabels, programTypes, type Category, type ProgramType } from "@/data/courses";
+import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
+import { findCourseInCatalog, type CourseCatalogCourse } from "@/lib/courseCatalogCore";
 import { resolveCmsImageUrl, resolveCmsLink, type CMSCourseCard, type CMSCourseSection } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
@@ -25,6 +27,7 @@ const BADGE_CLS_BY_CATEGORY: Record<string, string> = {
 type DisplayCard = {
   slug: string;
   image?: string;
+  imageAlt?: string;
   badge: string;
   badgeCls: string;
   category: string;
@@ -38,28 +41,30 @@ type DisplayCard = {
   buttonText: string;
 };
 
-function fromCmsCard(c: CMSCourseCard): DisplayCard {
+function fromCmsCard(c: CMSCourseCard, course?: CourseCatalogCourse): DisplayCard {
   return {
-    slug: c.slug,
-    image: resolveCmsImageUrl(c.image) || undefined,
-    badge: c.badge,
-    badgeCls: BADGE_CLS_BY_CATEGORY[c.category] || "bg-navy/10 text-navy",
-    category: c.category,
-    programType: c.program_type,
-    title: c.title,
-    shortDesc: c.description,
-    duration: c.duration,
-    mode: c.mode,
-    tool: c.tool,
+    slug: course?.slug || c.slug,
+    image: course?.image || resolveCmsImageUrl(c.image) || undefined,
+    imageAlt: course?.imageAlt || c.image_alt || course?.title || c.title,
+    badge: course?.badge || c.badge,
+    badgeCls: course?.badgeCls || BADGE_CLS_BY_CATEGORY[course?.category || c.category] || "bg-navy/10 text-navy",
+    category: course?.category || c.category,
+    programType: course?.programType || c.program_type,
+    title: course?.title || c.title,
+    shortDesc: course?.shortDesc || c.description,
+    duration: course?.duration || c.duration,
+    mode: course?.mode || c.mode,
+    tool: course?.tool || c.tool,
     buttonHref: resolveCmsLink(c.button_internal_page, c.button_external_url, `/courses/${c.slug}`),
     buttonText: c.button_text || "View Details",
   };
 }
 
-function fromStaticCourse(c: (typeof courses)[number]): DisplayCard {
+function fromStaticCourse(c: CourseCatalogCourse): DisplayCard {
   return {
     slug: c.slug,
-    image: undefined,
+    image: c.image,
+    imageAlt: c.imageAlt || c.title,
     badge: c.badge,
     badgeCls: c.badgeCls,
     category: c.category,
@@ -81,6 +86,7 @@ export function CourseExplorer({
   onEnquire: (course?: string) => void;
   courseSection?: CMSCourseSection | null;
 }) {
+  const courses = useCourseCatalog();
   const [category, setCategory] = useState<Category>("Finance");
   const [programType, setProgramType] = useState<ProgramType | "All">("All");
   const [isHovered, setIsHovered] = useState(false);
@@ -92,9 +98,11 @@ export function CourseExplorer({
   const footerText = courseSection?.button_text || `Compare all ${courses.length} programs side-by-side`;
 
   const allCards: DisplayCard[] = useMemo(() => {
-    if (courseSection?.cards?.length) return courseSection.cards.map(fromCmsCard);
+    if (courseSection?.cards?.length) {
+      return courseSection.cards.map((card) => fromCmsCard(card, findCourseInCatalog(courses, card.slug)));
+    }
     return courses.map(fromStaticCourse);
-  }, [courseSection]);
+  }, [courseSection, courses]);
 
   const visible = useMemo(() => {
     const inCategory = allCards.filter((c) => c.category === category);
@@ -216,7 +224,7 @@ export function CourseExplorer({
                 <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald/40 hover:shadow-2xl">
                   {/* Top Image Artwork */}
                   <div>
-                    <CourseCardArt slug={c.slug} image={c.image} className="h-28 sm:h-32 overflow-hidden rounded-xl bg-navy/5" />
+                    <CourseCardArt slug={c.slug} image={c.image} alt={c.imageAlt} className="h-28 sm:h-32 overflow-hidden rounded-xl bg-navy/5" />
 
                     {/* Badge & Category Row */}
                     <div className="mt-2.5 flex items-center justify-between gap-2">

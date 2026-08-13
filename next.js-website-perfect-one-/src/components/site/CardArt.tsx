@@ -15,10 +15,11 @@ import basp from "@/assets/course-images/basp.png";
 interface CourseCardArtProps {
   slug: string;
   image?: string;
+  alt?: string;
   className?: string;
 }
 
-export default function CourseCardArt({ slug, image: propImage, className }: CourseCardArtProps) {
+export default function CourseCardArt({ slug, image: propImage, alt, className }: CourseCardArtProps) {
   const course = getCourseBySlug(slug);
   const rawImage = propImage || course?.image || tally;
   const imgSrc = typeof rawImage === "string" ? rawImage : (rawImage as any)?.src;
@@ -27,7 +28,7 @@ export default function CourseCardArt({ slug, image: propImage, className }: Cou
     <div className={className || "h-36 overflow-hidden rounded-xl bg-navy/5"}>
       <img
         src={imgSrc}
-        alt={course?.title || "Course thumbnail"}
+        alt={alt || course?.title || "Course thumbnail"}
         className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
         loading="lazy"
       />

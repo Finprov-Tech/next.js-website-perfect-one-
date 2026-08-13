@@ -11,14 +11,17 @@ import { Reveal } from "@/components/motion/Reveal";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import CourseCardArt from "@/components/site/CardArt";
-import { categories, courses, programTypes, type Category, type ProgramType } from "@/data/courses";
+import { categories, programTypes, type Category, type ProgramType } from "@/data/courses";
+import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 import { CmsIcon } from "@/lib/icons";
 import type { CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
 const ITEMS_PER_PAGE = 8;
 
 export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
+  const courses = useCourseCatalog();
   const banner = cmsPage?.banner ?? null;
 
   const heroBadge = banner?.badge_text || "Job-Oriented Certification Programs";
@@ -114,7 +117,7 @@ export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="mt-3.5 max-w-xl text-sm sm:text-base leading-relaxed text-white/80"
             >
-              {heroParagraph}
+              <RichText html={heroParagraph} />
             </motion.p>
 
             {/* Prominent High-Visibility Search Bar */}
@@ -229,7 +232,7 @@ export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                 <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-border/80 bg-white p-4 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-emerald/40 hover:shadow-xl">
                   {/* Top Image Artwork */}
                   <div>
-                    <CourseCardArt slug={c.slug} image={c.image} className="h-28 sm:h-32 overflow-hidden rounded-xl bg-navy/5" />
+                    <CourseCardArt slug={c.slug} image={c.image} alt={c.title} className="h-28 sm:h-32 overflow-hidden rounded-xl bg-navy/5" />
 
                     {/* Badge & Category Row */}
                     <div className="mt-2.5 flex items-center justify-between gap-2">

@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+/* Finprov brand tokens — same source values as the public site's
+ * src/styles.css, trimmed to what this admin panel actually uses. Keep
+ * these in sync if the brand palette ever changes. */
+@theme inline {
+  --font-sans: "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-navy: var(--navy);
+  --color-navy-dark: var(--navy-dark);
+  --color-teal: var(--teal);
+  --color-gold: var(--gold);
+  --color-cta: var(--cta);
+  --color-cta-hover: var(--cta-hover);
+  --color-bg-light: var(--bg-light);
+  --color-text-body: var(--text-body);
+  --color-emerald: var(--emerald);
+  --color-mint: var(--mint);
+  --color-destructive: var(--destructive);
+}
+
+:root {
+  --radius: 0.625rem;
+
+  --navy: oklch(0.21 0.06 258);
+  --navy-dark: oklch(0.16 0.05 258);
+  --teal: oklch(0.52 0.12 240);
+  --gold: oklch(0.78 0.16 75);
+  --cta: oklch(0.55 0.22 262);
+  --cta-hover: oklch(0.48 0.22 262);
+  --bg-light: oklch(0.977 0.008 235);
+  --text-body: oklch(0.40 0.03 250);
+  --emerald: oklch(0.36 0.11 252);
+  --mint: oklch(0.80 0.10 230);
+  --destructive: oklch(0.577 0.245 27.325);
+
+  --background: var(--bg-light);
+  --foreground: var(--navy);
+  --card: oklch(1 0 0);
+  --card-foreground: var(--navy);
+  --border: oklch(0.90 0.015 240);
+  --input: oklch(0.90 0.015 240);
+  --ring: var(--cta);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}

@@ -23,6 +23,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { resolveCmsImageUrl, resolveCmsLink, type CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 import anandPhoto from "@/assets/experts/anand-kumar.webp";
 import veenaPhoto from "@/assets/experts/veena-vijayan.webp";
@@ -39,6 +40,7 @@ interface TeamMember {
   role: string;
   category: "Management" | "Faculty";
   photo?: string;
+  photoAlt?: string;
   experience?: string;
   credentials?: string;
   quote?: string;
@@ -240,7 +242,7 @@ function ScrollMemberCard({
       className="absolute left-1/2 top-1/2 h-[min(58vh,540px)] w-[min(76vw,390px)] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-[1.75rem] border border-white/25 bg-[#102b4a] shadow-[0_30px_100px_rgba(0,0,0,.55)] [transform-style:preserve-3d]"
     >
       {member.photo ? (
-        <img src={member.photo} alt="" className="h-full w-full object-cover object-top" />
+        <img src={member.photo} alt={member.photoAlt || member.name} className="h-full w-full object-cover object-top" />
       ) : (
         <div className="flex h-full items-center justify-center bg-[radial-gradient(circle_at_50%_32%,rgba(48,167,203,.38),transparent_35%),linear-gradient(145deg,#153a59,#071426)]">
           <span className="text-8xl font-extrabold tracking-[-.1em] text-white/12">
@@ -294,6 +296,7 @@ export function TeamPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
         role: m.role,
         category: (m.category as "Management" | "Faculty") || "Management",
         photo: resolveCmsImageUrl(m.photo) ?? undefined,
+        photoAlt: m.photo_alt || undefined,
         experience: m.experience || undefined,
         credentials: m.credentials || undefined,
         quote: m.quote || undefined,
@@ -359,7 +362,7 @@ export function TeamPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
               <Reveal delay={0.15} className="lg:pb-3">
                 <p className="max-w-sm text-base leading-7 text-white/62">
-                  {heroParagraph}
+                  <RichText html={heroParagraph} />
                 </p>
                 <a href="#meet-the-team" className="mt-8 inline-flex items-center gap-3 text-sm font-bold text-white">
                   Explore our people
@@ -445,7 +448,7 @@ export function TeamPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                     transition={{ duration: 0.3 }}
                     className="hidden border-l border-white/15 pl-6 lg:block"
                   >
-                    <p className="line-clamp-3 text-xs leading-6 text-white/52">{activeMember.bio}</p>
+                    <p className="line-clamp-3 text-xs leading-6 text-white/52"><RichText html={activeMember.bio} /></p>
                     {activeMember.highlights && (
                       <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1">
                         {activeMember.highlights.map((highlight) => (

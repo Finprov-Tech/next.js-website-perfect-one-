@@ -50,6 +50,10 @@ class Page(TimeStampedModel):
         default=False, help_text='At most one page may be marked as the homepage.'
     )
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default=STATUS_DRAFT)
+    wp_post_id = models.PositiveIntegerField(
+        null=True, blank=True, unique=True,
+        help_text='Original WordPress post ID, for migration traceability. Null for pages not sourced from the WordPress import.'
+    )
 
     history = HistoricalRecords()
 

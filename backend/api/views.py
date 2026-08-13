@@ -36,6 +36,8 @@ from modules.models import (
 )
 from pages.models import Page
 from seo.models import Redirect
+from courses.models import Course, CourseAlias
+from courses.serializers import CourseDetailSerializer, CourseListSerializer
 
 
 class PageViewSet(viewsets.ReadOnlyModelViewSet):
@@ -50,6 +52,31 @@ class PageViewSet(viewsets.ReadOnlyModelViewSet):
         if self.action == 'retrieve':
             return PageDetailSerializer
         return PageListSerializer
+
+
+class CourseViewSet(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+    lookup_field = 'slug'
+    pagination_class = None
+
+    def get_queryset(self):
+        return Course.objects.filter(status=Course.STATUS_PUBLISHED, is_active=True).select_related('category', 'program_type', 'seo').prefetch_related(
+            'aliases', 'highlights', 'tools', 'hiring_partners', 'skills', 'audiences', 'job_opportunities',
+            'certifications', 'career_prospects', 'curriculum_modules__topics', 'faqs',
+        )
+
+    def get_serializer_class(self):
+        return CourseDetailSerializer if self.action == 'retrieve' else CourseListSerializer
+
+    def get_object(self):
+        slug = self.kwargs[self.lookup_field]
+        course = self.get_queryset().filter(slug=slug).first()
+        if course:
+            return course
+        alias = CourseAlias.objects.select_related('course').filter(slug=slug, course__status=Course.STATUS_PUBLISHED, course__is_active=True).first()
+        if alias:
+            return alias.course
+        return super().get_object()
 
 
 class ActiveModuleViewSet(viewsets.ReadOnlyModelViewSet):
@@ -117,6 +144,7 @@ class RedirectViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Redirect.objects.filter(is_active=True)
     serializer_class = RedirectSerializer
     permission_classes = [AllowAny]
+    pagination_class = None
 
 
 class SiteSettingsView(generics.RetrieveAPIView):

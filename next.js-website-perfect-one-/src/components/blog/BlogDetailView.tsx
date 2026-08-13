@@ -120,7 +120,7 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
           <div className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-2xl">
             <img
               src={heroImg}
-              alt={post.title}
+              alt={post.coverImageAlt || post.title}
               className="h-[320px] sm:h-[460px] w-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />

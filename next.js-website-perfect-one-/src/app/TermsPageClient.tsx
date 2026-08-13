@@ -9,9 +9,9 @@ import type { CMSPage } from "@/lib/cms";
 
 const container = "mx-auto w-full max-w-[860px] px-6 md:px-8";
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({ title, children, first = false }: { title: string; children: React.ReactNode; first?: boolean }) {
   return (
-    <div className="mt-10 border-t border-border pt-8">
+    <div className={first ? "" : "mt-10 border-t border-border pt-8"}>
       <h2 className="text-lg font-bold text-navy">{title}</h2>
       <div className="mt-3 space-y-4 text-sm leading-relaxed text-text-body">{children}</div>
     </div>
@@ -19,6 +19,13 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const defaultSections: { title: string; body: string }[] = [
+  {
+    title: "Terms and Conditions – Finprov",
+    body: `<p>This is a legal and binding agreement between you, the user (referred to as "user" or "you") of the Programs, as defined below, and Finprov (referred to as "we", "us" or "Finprov") stating the terms that govern your use of the Platform, as defined below. The website https://finprov.com/ and Other services (collectively referred to as the "Platform") and the information, and other materials contained therein are provided and operated by Finprov. Finprov offers curated and specially designed online higher education and industry-relevant programs and career assistance services ("Programs").</p>
+<p>Please review our Terms of Use, Privacy Policy and other policies available on the Platform (collectively referred to as the "Terms") that govern the use of the Platform and Programs. By accepting these Terms in any manner or accessing the website, you consent, agree and undertake to abide, be bound by and adhere to the Terms and if you do not agree to these Terms, you are not entitled to avail of/use the Programs and any use thereafter shall be unauthorised.</p>
+<h3>Terms &amp; Conditions</h3>
+<p>Finprov ("https://finprov.com/"). Owned by Finprov Learning Private Limited ("Company"), a company duly registered and incorporated under the Companies Act, 2013, Located at Kochi, Kerala, India. We maintain this Website as a service to our customers. By using our website, you are agreeing to comply with and be bound by the following Terms of Use. Please review the following Terms of Use carefully. If you do not agree to any of these terms, you should not use, review, or subscribe to the website, information and educational services we provide respectively.</p>`,
+  },
   {
     title: "Terms of Use",
     body: `<p>These Terms &amp; Conditions ("Terms") of (a) use of our website https://finprov.com/ ("Website"), or any products or services in connection with the Website/products ("Services") or (b) any modes of registrations or usage of products are between Finprov Learning Private Limited ("Company/We/Us/Our") and its users ("User/You/Your").</p>
@@ -81,40 +88,8 @@ export function TermsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
       {/* Content */}
       <section className="py-14">
         <div className={container}>
-          <h2 className="text-xl font-bold text-navy">Terms and Conditions – Finprov</h2>
-          <div className="mt-4 space-y-4 text-sm leading-relaxed text-text-body">
-            <p>
-              This is a legal and binding agreement between you, the user (referred to as "user" or
-              "you") of the Programs, as defined below, and Finprov (referred to as "we", "us" or
-              "Finprov") stating the terms that govern your use of the Platform, as defined below.
-              The website https://finprov.com/ and Other services (collectively referred to as the
-              "Platform") and the information, and other materials contained therein are provided and
-              operated by Finprov. Finprov offers curated and specially designed online higher
-              education and industry-relevant programs and career assistance services ("Programs").
-            </p>
-            <p>
-              Please review our Terms of Use, Privacy Policy and other policies available on the
-              Platform (collectively referred to as the "Terms") that govern the use of the Platform
-              and Programs. By accepting these Terms in any manner or accessing the website, you
-              consent, agree and undertake to abide, be bound by and adhere to the Terms and if you
-              do not agree to these Terms, you are not entitled to avail of/use the Programs and any
-              use thereafter shall be unauthorised.
-            </p>
-
-            <h3 className="pt-2 text-base font-bold text-navy">Terms &amp; Conditions</h3>
-            <p>
-              Finprov ("https://finprov.com/"). Owned by Finprov Learning Private Limited
-              ("Company"), a company duly registered and incorporated under the Companies Act, 2013,
-              Located at Kochi, Kerala, India. We maintain this Website as a service to our
-              customers. By using our website, you are agreeing to comply with and be bound by the
-              following Terms of Use. Please review the following Terms of Use carefully. If you do
-              not agree to any of these terms, you should not use, review, or subscribe to the
-              website, information and educational services we provide respectively.
-            </p>
-          </div>
-
-          {sections.map((section) => (
-            <Section key={section.title} title={section.title}>
+          {sections.map((section, i) => (
+            <Section key={section.title} title={section.title} first={i === 0}>
               <div
                 className="space-y-4 [&_ul]:list-disc [&_ul]:space-y-2 [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:space-y-2 [&_ol]:pl-5 [&_strong]:font-semibold [&_strong]:text-navy [&_a]:text-emerald [&_a]:underline"
                 dangerouslySetInnerHTML={{ __html: section.body }}

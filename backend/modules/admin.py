@@ -12,6 +12,9 @@ from modules.models import (
     FeatureCard,
     GalleryImage,
     HeroAnimatedWord,
+    HistoryMilestone,
+    HistorySection,
+    LandingPageBody,
     LegalSection,
     LifeAtFinprovSection,
     PartnerLogo,
@@ -293,3 +296,28 @@ class LegalSectionInline(nested_admin.NestedStackedInline):
         ('Content', {'fields': ('title', 'body')}),
         ('Display Settings', {'fields': ('display_order', 'is_active')}),
     )
+
+
+class LandingPageBodyInline(nested_admin.NestedStackedInline):
+    model = LandingPageBody
+    extra = 1
+    fieldsets = (
+        ('Content', {'fields': ('h1', 'body')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+
+
+class HistoryMilestoneInline(nested_admin.NestedTabularInline):
+    model = HistoryMilestone
+    extra = 1
+
+
+class HistorySectionInline(nested_admin.NestedStackedInline):
+    model = HistorySection
+    extra = 0
+    max_num = 1
+    fieldsets = (
+        ('Content', {'fields': ('eyebrow', 'heading', 'sub_heading', 'heading_level')}),
+        ('Display Settings', {'fields': ('display_order', 'is_active')}),
+    )
+    inlines = [HistoryMilestoneInline]

@@ -16,6 +16,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { resolveCmsLink, type CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
 
@@ -121,7 +122,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               transition={{ duration: 0.5, delay: 0.2 }}
               className="mt-6 text-lg text-white/80 leading-relaxed max-w-xl"
             >
-              {heroParagraph}
+              <RichText html={heroParagraph} />
             </motion.p>
 
             <motion.div
@@ -170,7 +171,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                 {perksHeading}
               </h2>
               <p className="mt-3 text-navy/70">
-                {perksParagraph}
+                <RichText html={perksParagraph} />
               </p>
             </div>
           </Reveal>
@@ -317,7 +318,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
           <div className="max-w-2xl mx-auto">
             <h2 className="text-2xl font-extrabold sm:text-3xl">{ctaHeading}</h2>
             <p className="mt-3 text-white/80 leading-relaxed text-sm sm:text-base">
-              {ctaParagraph}
+              <RichText html={ctaParagraph} />
             </p>
 
             <div className="mt-8 flex flex-wrap justify-center gap-4">

@@ -12,6 +12,7 @@ import { Typewriter } from "@/components/motion/Typewriter";
 import { Magnetic } from "@/components/motion/Magnetic";
 import { siteStats } from "@/data/site";
 import { resolveCmsImageUrl, resolveCmsLink, type CMSBanner } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 import { CmsIcon } from "@/lib/icons";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
@@ -220,7 +221,7 @@ export function HomeHero({
           </h1>
 
           <p data-hero-sub className="mt-3 max-w-[540px] text-xs leading-relaxed text-white/80 sm:text-base">
-            {subParagraph}
+            <RichText html={subParagraph} />
           </p>
 
           <div data-hero-ctas className="mt-5 flex flex-wrap items-center gap-3">

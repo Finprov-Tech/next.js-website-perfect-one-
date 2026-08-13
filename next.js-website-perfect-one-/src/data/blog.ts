@@ -10,6 +10,7 @@ export type Post = {
   sections: { heading: string; body: string }[];
   /** CMS-sourced cover image, when adapting a CMSBlogPostDetail — absent for local posts. */
   coverImageUrl?: string;
+  coverImageAlt?: string;
 };
 
 export type BlogPost = Post;

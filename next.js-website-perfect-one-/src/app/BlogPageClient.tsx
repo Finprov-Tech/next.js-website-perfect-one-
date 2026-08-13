@@ -14,6 +14,7 @@ import { SiteFooter } from "@/components/site/SiteFooter";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { posts as staticPosts, type Post } from "@/data/blog";
 import { resolveCmsImageUrl, type CMSBlogCategory, type CMSBlogPostSummary, type CMSPage } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
 const dateFmt = new Intl.DateTimeFormat("en-IN", { year: "numeric", month: "short", day: "numeric" });
@@ -117,7 +118,7 @@ export function BlogPageClient({
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg leading-relaxed text-slate-300 font-medium">
-            {heroParagraph}
+            <RichText html={heroParagraph} />
           </p>
 
           {/* Search Box */}
@@ -272,7 +273,7 @@ export function BlogPageClient({
               {ctaHeading}
             </h2>
             <p className="mt-2 text-xs sm:text-sm text-slate-300">
-              {ctaParagraph}
+              <RichText html={ctaParagraph} />
             </p>
 
             {subscribed ? (

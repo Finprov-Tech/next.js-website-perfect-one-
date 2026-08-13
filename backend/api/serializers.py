@@ -13,6 +13,9 @@ from modules.models import (
     FeatureCard,
     GalleryImage,
     HeroAnimatedWord,
+    HistoryMilestone,
+    HistorySection,
+    LandingPageBody,
     LegalSection,
     LifeAtFinprovSection,
     PartnerLogo,
@@ -90,6 +93,8 @@ class HeroAnimatedWordSerializer(serializers.ModelSerializer):
 
 class BannerSerializer(CTALinkMixinSerializer, SecondaryCTALinkMixinSerializer):
     animated_words = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
+    rich_text = serializers.SerializerMethodField()
 
     class Meta:
         model = Banner
@@ -109,6 +114,12 @@ class BannerSerializer(CTALinkMixinSerializer, SecondaryCTALinkMixinSerializer):
         words = obj.animated_words.filter(is_active=True)
         return HeroAnimatedWordSerializer(words, many=True, context=self.context).data
 
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
+
+    def get_rich_text(self, obj):
+        return sanitize_rich_text(obj.rich_text)
+
 
 class ScrollSectionSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
@@ -124,6 +135,7 @@ class ScrollSectionSerializer(serializers.ModelSerializer):
 
 class CredentialsSerializer(serializers.ModelSerializer):
     items = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
 
     class Meta:
         model = Credentials
@@ -135,6 +147,9 @@ class CredentialsSerializer(serializers.ModelSerializer):
     def get_items(self, obj):
         items = obj.items.filter(is_active=True)
         return CredentialItemSerializer(items, many=True, context=self.context).data
+
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
 
 
 class CourseCardSerializer(ButtonLinkMixinSerializer):
@@ -168,11 +183,12 @@ class CourseSectionSerializer(ButtonLinkMixinSerializer):
 class FeatureCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = FeatureCard
-        fields = ['id', 'title', 'description', 'icon', 'image', 'display_order']
+        fields = ['id', 'title', 'description', 'icon', 'image', 'image_alt', 'display_order']
 
 
 class WhyFinprovSectionSerializer(serializers.ModelSerializer):
     feature_cards = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
 
     class Meta:
         model = WhyFinprovSection
@@ -182,9 +198,13 @@ class WhyFinprovSectionSerializer(serializers.ModelSerializer):
         cards = obj.feature_cards.filter(is_active=True)
         return FeatureCardSerializer(cards, many=True, context=self.context).data
 
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
+
 
 class PlacementSectionSerializer(CTALinkMixinSerializer):
     stats = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
 
     class Meta:
         model = PlacementSection
@@ -198,8 +218,13 @@ class PlacementSectionSerializer(CTALinkMixinSerializer):
         stats = obj.stats.filter(is_active=True)
         return PlacementStatSerializer(stats, many=True, context=self.context).data
 
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
+
 
 class CTASerializer(CTALinkMixinSerializer, SecondaryCTALinkMixinSerializer):
+    paragraph = serializers.SerializerMethodField()
+
     class Meta:
         model = CTA
         fields = [
@@ -209,14 +234,22 @@ class CTASerializer(CTALinkMixinSerializer, SecondaryCTALinkMixinSerializer):
             'image', 'image_alt', 'display_order',
         ]
 
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
+
 
 class TestimonialSerializer(serializers.ModelSerializer):
+    quote = serializers.SerializerMethodField()
+
     class Meta:
         model = Testimonial
         fields = [
-            'id', 'name', 'company', 'designation', 'quote', 'avatar', 'avatar_alt', 'rating',
-            'kind', 'video_url', 'video_thumbnail', 'display_order',
+            'id', 'name', 'program', 'company', 'designation', 'quote', 'avatar', 'avatar_alt', 'rating',
+            'kind', 'video_url', 'video_thumbnail', 'video_thumbnail_alt', 'display_order',
         ]
+
+    def get_quote(self, obj):
+        return sanitize_rich_text(obj.quote)
 
 
 class PartnerLogoSerializer(serializers.ModelSerializer):
@@ -226,13 +259,32 @@ class PartnerLogoSerializer(serializers.ModelSerializer):
 
 
 class FAQItemSerializer(serializers.ModelSerializer):
+    answer = serializers.SerializerMethodField()
+
     class Meta:
         model = FAQItem
         fields = ['id', 'question', 'answer', 'display_order']
 
+    def get_answer(self, obj):
+        return sanitize_rich_text(obj.answer)
 
-LEGAL_SECTION_ALLOWED_TAGS = ['p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'a', 'br']
-LEGAL_SECTION_ALLOWED_ATTRS = {'a': ['href', 'target', 'rel']}
+
+# Shared allowlist for every CMS rich-text field (SEO panel + LegalSection).
+# Sanitization happens here, at the public read path, not at save time — the
+# stored value can be raw/untrusted (typed via the SEO panel's editor or the
+# admin's plain textarea); this is the one place it's guaranteed clean before
+# it reaches a browser via dangerouslySetInnerHTML.
+RICH_TEXT_ALLOWED_TAGS = [
+    'p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'u', 'a', 'br', 'img',
+    'h2', 'h3', 'h4', 'h5', 'h6',  # h1 deliberately excluded — stays the page's dedicated heading field
+]
+RICH_TEXT_ALLOWED_ATTRS = {'a': ['href', 'target', 'rel'], 'img': ['src', 'alt']}
+
+
+def sanitize_rich_text(html):
+    if not html:
+        return ''
+    return bleach.clean(html, tags=RICH_TEXT_ALLOWED_TAGS, attributes=RICH_TEXT_ALLOWED_ATTRS, strip=True)
 
 
 class LegalSectionSerializer(serializers.ModelSerializer):
@@ -243,12 +295,36 @@ class LegalSectionSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'body', 'display_order']
 
     def get_body(self, obj):
-        return bleach.clean(
-            obj.body,
-            tags=LEGAL_SECTION_ALLOWED_TAGS,
-            attributes=LEGAL_SECTION_ALLOWED_ATTRS,
-            strip=True,
-        )
+        return sanitize_rich_text(obj.body)
+
+
+class LandingPageBodySerializer(serializers.ModelSerializer):
+    body = serializers.SerializerMethodField()
+
+    class Meta:
+        model = LandingPageBody
+        fields = ['id', 'h1', 'body']
+
+    def get_body(self, obj):
+        return sanitize_rich_text(obj.body)
+
+
+class HistoryMilestoneSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HistoryMilestone
+        fields = ['id', 'year_label', 'title', 'description', 'display_order']
+
+
+class HistorySectionSerializer(serializers.ModelSerializer):
+    milestones = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HistorySection
+        fields = ['id', 'eyebrow', 'heading', 'sub_heading', 'heading_level', 'milestones', 'display_order']
+
+    def get_milestones(self, obj):
+        milestones = obj.milestones.filter(is_active=True)
+        return HistoryMilestoneSerializer(milestones, many=True, context=self.context).data
 
 
 class PageListSerializer(serializers.ModelSerializer):
@@ -314,13 +390,19 @@ class QuizSerializer(CTALinkMixinSerializer):
 
 
 class TeamMemberSerializer(serializers.ModelSerializer):
+    bio = serializers.SerializerMethodField()
+
     class Meta:
         model = TeamMember
         fields = ['id', 'name', 'role', 'category', 'experience', 'credentials', 'quote', 'photo', 'photo_alt', 'bio', 'highlights', 'display_order']
 
+    def get_bio(self, obj):
+        return sanitize_rich_text(obj.bio)
+
 
 class TeamSectionSerializer(serializers.ModelSerializer):
     members = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
 
     class Meta:
         model = TeamSection
@@ -329,6 +411,9 @@ class TeamSectionSerializer(serializers.ModelSerializer):
     def get_members(self, obj):
         members = obj.members.filter(is_active=True).order_by('display_order')
         return TeamMemberSerializer(members, many=True, context=self.context).data
+
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
 
 
 class GalleryImageSerializer(serializers.ModelSerializer):
@@ -339,6 +424,7 @@ class GalleryImageSerializer(serializers.ModelSerializer):
 
 class LifeAtFinprovSectionSerializer(serializers.ModelSerializer):
     images = serializers.SerializerMethodField()
+    paragraph = serializers.SerializerMethodField()
 
     class Meta:
         model = LifeAtFinprovSection
@@ -347,6 +433,9 @@ class LifeAtFinprovSectionSerializer(serializers.ModelSerializer):
     def get_images(self, obj):
         images = obj.images.filter(is_active=True).order_by('display_order')
         return GalleryImageSerializer(images, many=True, context=self.context).data
+
+    def get_paragraph(self, obj):
+        return sanitize_rich_text(obj.paragraph)
 
 
 class PageDetailSerializer(serializers.ModelSerializer):
@@ -372,6 +461,8 @@ class PageDetailSerializer(serializers.ModelSerializer):
     team = serializers.SerializerMethodField()
     life_at_finprov = serializers.SerializerMethodField()
     legal_sections = serializers.SerializerMethodField()
+    landing_page = serializers.SerializerMethodField()
+    history = serializers.SerializerMethodField()
 
     class Meta:
         model = Page
@@ -379,7 +470,7 @@ class PageDetailSerializer(serializers.ModelSerializer):
             'id', 'name', 'slug', 'page_type', 'is_homepage', 'status',
             'seo', 'banner', 'scroll_section', 'credentials', 'courses', 'why_finprov',
             'placements', 'testimonials', 'partner_logos', 'faq', 'cta',
-            'quiz', 'team', 'life_at_finprov', 'legal_sections',
+            'quiz', 'team', 'life_at_finprov', 'legal_sections', 'landing_page', 'history',
         ]
 
     def _active(self, related_manager):
@@ -433,6 +524,12 @@ class PageDetailSerializer(serializers.ModelSerializer):
     def get_legal_sections(self, obj):
         return LegalSectionSerializer(self._active(obj.legalsection_set), many=True, context=self.context).data
 
+    def get_landing_page(self, obj):
+        return self._first_active(obj.landingpagebody_set, LandingPageBodySerializer)
+
+    def get_history(self, obj):
+        return self._first_active(obj.historysection_set, HistorySectionSerializer)
+
 
 class BlogCategorySerializer(serializers.ModelSerializer):
     class Meta:
@@ -441,13 +538,42 @@ class BlogCategorySerializer(serializers.ModelSerializer):
 
 
 class BlogPostSectionSerializer(serializers.ModelSerializer):
+    body = serializers.SerializerMethodField()
+
     class Meta:
         model = BlogPostSection
         fields = ['id', 'heading', 'body', 'display_order']
 
+    def get_body(self, obj):
+        return sanitize_rich_text(obj.body)
 
-class BlogPostListSerializer(serializers.ModelSerializer):
+
+# Mixin so both list/detail blog serializers expose the same author_* shape
+# the public frontend already consumes (author_name/author_role as plain
+# strings), now sourced from the Author FK instead of free-text fields —
+# plus two new additive fields (photo/bio) for a richer byline later.
+class BlogPostAuthorFieldsMixin:
+    def get_author_name(self, obj):
+        return obj.author.name if obj.author_id else ''
+
+    def get_author_role(self, obj):
+        return obj.author.role if obj.author_id else ''
+
+    def get_author_photo(self, obj):
+        if not obj.author_id or not obj.author.photo:
+            return None
+        request = self.context.get('request')
+        url = obj.author.photo.url
+        return request.build_absolute_uri(url) if request else url
+
+    def get_author_bio(self, obj):
+        return obj.author.bio if obj.author_id else ''
+
+
+class BlogPostListSerializer(BlogPostAuthorFieldsMixin, serializers.ModelSerializer):
     category = BlogCategorySerializer(read_only=True)
+    author_name = serializers.SerializerMethodField()
+    author_role = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
@@ -457,17 +583,21 @@ class BlogPostListSerializer(serializers.ModelSerializer):
         ]
 
 
-class BlogPostDetailSerializer(serializers.ModelSerializer):
+class BlogPostDetailSerializer(BlogPostAuthorFieldsMixin, serializers.ModelSerializer):
     category = BlogCategorySerializer(read_only=True)
     seo = SEOMetaSerializer(read_only=True)
     sections = serializers.SerializerMethodField()
+    author_name = serializers.SerializerMethodField()
+    author_role = serializers.SerializerMethodField()
+    author_photo = serializers.SerializerMethodField()
+    author_bio = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
         fields = [
             'title', 'slug', 'excerpt', 'category', 'cover_image', 'cover_image_alt',
-            'author_name', 'author_role', 'published_date', 'read_time', 'is_featured',
-            'sections', 'seo',
+            'author_name', 'author_role', 'author_photo', 'author_bio',
+            'published_date', 'read_time', 'is_featured', 'sections', 'seo',
         ]
 
     def get_sections(self, obj):

@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
-import { courses } from "@/data/courses";
 import { posts } from "@/data/blog";
 import { jobOpenings } from "@/data/careers";
 import { businessProgramAreas, businessProgramSlug } from "@/data/business";
 import { getBlogPosts } from "@/lib/cms";
+import { publishedCourseEntries, type SitemapCourse } from "@/lib/courseSitemapCore";
 
 const STATIC_ROUTES = [
   "/about/",
@@ -43,8 +43,36 @@ async function getCmsPages(): Promise<CmsPageSummary[]> {
   }
 }
 
+async function getPublishedCmsCourses(): Promise<SitemapCourse[]> {
+  const base = process.env.NEXT_PUBLIC_CMS_API_URL || "http://127.0.0.1:8000";
+  try {
+    const res = await fetch(`${base}/api/v1/courses/`, { next: { revalidate: 300 } });
+    if (!res.ok) return [];
+    const payload: unknown = await res.json();
+    const rows = Array.isArray(payload)
+      ? payload
+      : payload && typeof payload === "object" && Array.isArray((payload as { results?: unknown }).results)
+        ? (payload as { results: unknown[] }).results
+        : null;
+    if (!rows) return [];
+
+    const courses: SitemapCourse[] = [];
+    for (const row of rows) {
+      if (!row || typeof row !== "object") return [];
+      const slug = (row as { slug?: unknown }).slug;
+      if (typeof slug !== "string" || !slug) return [];
+      // The public Django endpoint is filtered to published + active records.
+      courses.push({ slug, status: "published", is_active: true });
+    }
+    return courses;
+  } catch {
+    // Failure-closed: local draft/fallback courses must never enter the sitemap.
+    return [];
+  }
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const cmsPages = await getCmsPages();
+  const [cmsPages, publishedCourses] = await Promise.all([getCmsPages(), getPublishedCmsCourses()]);
 
   const cmsEntries: MetadataRoute.Sitemap = cmsPages
     .filter((p) => p.include_in_sitemap !== false)
@@ -61,11 +89,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6,
   }));
 
-  const courseEntries: MetadataRoute.Sitemap = courses.map((c) => ({
-    url: `${SITE_URL}/courses/${c.slug}/`,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const courseEntries: MetadataRoute.Sitemap = publishedCourseEntries(publishedCourses, SITE_URL);
 
   const cmsBlogPosts = await getBlogPosts();
   const blogPostSource = cmsBlogPosts.length ? cmsBlogPosts : posts;

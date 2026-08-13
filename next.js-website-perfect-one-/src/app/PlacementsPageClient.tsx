@@ -15,6 +15,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { parseCountValue, resolveCmsImageUrl, resolveCmsLink, type CMSPage, type CMSTestimonial } from "@/lib/cms";
+import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
 
@@ -32,6 +33,7 @@ function fromCmsTestimonial(t: CMSTestimonial): Testimonial {
     quote: t.quote,
     program: t.program,
     photo: resolveCmsImageUrl(t.avatar) || undefined,
+    photoAlt: t.avatar_alt || t.name,
   };
 }
 
@@ -130,7 +132,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             <h2 className="mt-3 text-4xl font-bold tracking-tight text-navy sm:text-5xl">
               From <span className="text-teal">Learning</span> to Earning.
             </h2>
-            <p className="mt-4 max-w-lg text-base leading-relaxed text-text-body">{learningParagraph}</p>
+            <p className="mt-4 max-w-lg text-base leading-relaxed text-text-body"><RichText html={learningParagraph} /></p>
             <div className="mt-8 flex items-center gap-4 rounded-2xl bg-bg-light p-5 ring-1 ring-border">
               <div className="btn-gloss grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-teal/15 text-teal">
                 <Target className="h-6 w-6" />
@@ -182,7 +184,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               <StaggerItem key={t.name}>
                 <motion.div whileHover={{ y: -6 }} className="glass gloss-soft flex h-full flex-col rounded-2xl p-6">
                   <div className="flex items-center gap-3">
-                    <PhotoSlot src={t.photo} alt={t.name} className="h-12 w-12 rounded-full" hover={false} />
+                    <PhotoSlot src={t.photo} alt={t.photoAlt || t.name} className="h-12 w-12 rounded-full" hover={false} />
                     <div>
                       <p className="font-bold text-navy">{t.name}</p>
                       <p className="text-xs text-text-body">
@@ -190,7 +192,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                       </p>
                     </div>
                   </div>
-                  <p className="mt-4 flex-1 text-sm italic leading-relaxed text-text-body">"{t.quote}"</p>
+                  <p className="mt-4 flex-1 text-sm italic leading-relaxed text-text-body">"<RichText html={t.quote} />"</p>
                   <p className="mt-4 text-xs font-semibold text-teal">{t.program}</p>
                 </motion.div>
               </StaggerItem>
