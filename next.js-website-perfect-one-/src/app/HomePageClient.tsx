@@ -78,7 +78,7 @@ function HeroToPrograms({
   }, []);
 
   return (
-    <div className="relative z-10 isolate">
+    <div className="relative z-10 isolate bg-navy">
       <div
         ref={backdropRef}
         className="sticky z-0 overflow-hidden bg-emerald"

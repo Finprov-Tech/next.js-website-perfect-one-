@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { ModuleForm } from "@/components/ModuleForm";
 import type { ModuleSchema } from "@/lib/moduleSchemas";
 
@@ -18,18 +21,64 @@ export function ModuleCard({ schema, data, nested = false }: { schema: ModuleSch
 
       {items && schema.itemSchema && (
         <div className="mt-4 space-y-3 border-t border-border/60 pt-4">
-          {items.map((item) => (
-            <ModuleCard key={item.id} schema={schema.itemSchema!} data={item} nested parentId={Number(data.id)} />
-          ))}
-          {schema.itemSchema.canCreate && schema.itemSchema.parentField && (
-            <details className="rounded-xl border border-dashed border-cta/40 p-4">
-              <summary className="cursor-pointer text-sm font-bold text-cta">Add {schema.itemSchema.title.toLowerCase()}</summary>
-              <div className="mt-4">
-                <ModuleForm endpoint={schema.itemSchema.endpoint} fields={schema.itemSchema.fields} initialData={{}} parentField={schema.itemSchema.parentField} parentId={Number(data.id)} />
-              </div>
-            </details>
-          )}
+          <SelectableModuleItems schema={schema.itemSchema} items={items} parentId={Number(data.id)} nested />
         </div>
+      )}
+    </div>
+  );
+}
+
+function itemLabel(item: ModuleData, schema: ModuleSchema, index: number): string {
+  const preferredFields = ["title", "name", "text", "question_text", "label", "heading", "year_label", "slug"];
+  for (const field of preferredFields) {
+    const value = item[field];
+    if (typeof value === "string" && value.trim()) return value.trim();
+  }
+  return `${schema.title} ${index + 1}`;
+}
+
+export function SelectableModuleItems({
+  schema,
+  items,
+  parentId,
+  nested = false,
+}: {
+  schema: ModuleSchema;
+  items: ModuleData[];
+  parentId: number;
+  nested?: boolean;
+}) {
+  const [selectedId, setSelectedId] = useState<string>(() => String(items[0]?.id ?? ""));
+  const selected = items.find((item) => String(item.id) === selectedId) ?? items[0];
+
+  return (
+    <div className="space-y-3">
+      {items.length > 0 && (
+        <div>
+          <label className="mb-1 block text-xs font-semibold text-text-body/70">Select {schema.title.toLowerCase()} to edit</label>
+          <select
+            value={String(selected?.id ?? "")}
+            onChange={(event) => setSelectedId(event.target.value)}
+            className="w-full rounded-lg border border-border bg-white px-3 py-2 text-sm font-semibold text-navy focus:border-cta focus:outline-none"
+          >
+            {items.map((item, index) => (
+              <option key={item.id} value={String(item.id)}>
+                {itemLabel(item, schema, index)}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
+      {selected && <ModuleCard key={selected.id} schema={schema} data={selected} nested={nested} parentId={parentId} />}
+
+      {schema.canCreate && schema.parentField && (
+        <details className="rounded-xl border border-dashed border-cta/40 bg-card p-4">
+          <summary className="cursor-pointer text-sm font-bold text-cta">Add {schema.title.toLowerCase()}</summary>
+          <div className="mt-4">
+            <ModuleForm endpoint={schema.endpoint} fields={schema.fields} initialData={{}} parentField={schema.parentField} parentId={parentId} />
+          </div>
+        </details>
       )}
     </div>
   );

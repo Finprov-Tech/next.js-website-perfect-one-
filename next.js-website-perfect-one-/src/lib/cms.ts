@@ -214,7 +214,7 @@ export type CMSCTA = {
   display_order: number;
 };
 
-export type CMSMetaRobots = "index,follow" | "noindex,follow" | "index,nofollow" | "noindex,nofollow";
+export type CMSMetaRobots = string;
 
 export type CMSSchemaType =
   | "none"

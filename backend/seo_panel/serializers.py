@@ -19,7 +19,7 @@ from django.apps import apps
 from django.db import transaction
 from rest_framework import serializers
 
-from core.models import HeadingFieldsMixin
+from core.models import HeadingFieldsMixin, SiteSettings
 from modules.models import (
     CTA,
     Banner,
@@ -400,13 +400,16 @@ class HistorySectionSEOPanelSerializer(serializers.ModelSerializer):
 class SEOMetaSEOPanelSerializer(serializers.ModelSerializer):
     canonical_url = plain_url_field()
     og_url = plain_url_field()
+    secondary_keywords = serializers.ListField(
+        child=serializers.CharField(max_length=255, allow_blank=True), required=False, allow_empty=True
+    )
     word_count = serializers.SerializerMethodField()
     warnings = serializers.SerializerMethodField()
 
     class Meta:
         model = SEOMeta
         fields = [
-            'id', 'seo_title', 'meta_description', 'focus_keyword', 'canonical_url', 'meta_robots',
+            'id', 'seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords', 'canonical_url', 'meta_robots',
             'og_title', 'og_description', 'og_image', 'og_image_alt', 'og_url', 'schema_type',
             'include_in_sitemap', 'word_count', 'warnings',
         ]
@@ -419,6 +422,50 @@ class SEOMetaSEOPanelSerializer(serializers.ModelSerializer):
         if obj.blog_post_id:
             return count_blog_post_words(obj.blog_post)
         return 0
+
+    def validate_secondary_keywords(self, values):
+        """Store clean, non-empty keywords while preserving their entered order."""
+        cleaned = []
+        seen = set()
+        for value in values:
+            keyword = value.strip()
+            normalized = keyword.casefold()
+            if keyword and normalized not in seen:
+                cleaned.append(keyword)
+                seen.add(normalized)
+        return cleaned
+
+    def validate_focus_keyword(self, value):
+        keyword = value.strip()
+        if not keyword:
+            return ''
+
+        duplicates = (
+            SEOMeta.objects.filter(focus_keyword__iexact=keyword)
+            .exclude(pk=self.instance.pk if self.instance else None)
+            .select_related('page', 'blog_post', 'course')
+        )
+        if duplicates.exists():
+            from seo_panel.utils import (
+                frontend_url_for,
+                frontend_url_for_blog_post,
+                frontend_url_for_course,
+            )
+
+            urls = []
+            for duplicate in duplicates:
+                if duplicate.page_id:
+                    urls.append(frontend_url_for(duplicate.page.slug))
+                elif duplicate.blog_post_id:
+                    urls.append(frontend_url_for_blog_post(duplicate.blog_post.slug))
+                elif duplicate.course_id:
+                    urls.append(frontend_url_for_course(duplicate.course.slug))
+
+            locations = ', '.join(urls) or 'another SEO record'
+            raise serializers.ValidationError(
+                f'This focus keyword is already used on: {locations}'
+            )
+        return keyword
 
     def get_warnings(self, obj):
         """Ported from the old admin's SEOMetaAdminForm.clean() (duplicate
@@ -469,6 +516,40 @@ class RedirectSEOPanelSerializer(serializers.ModelSerializer):
         fields = ['id', 'old_path', 'new_path', 'redirect_type', 'is_active', 'created_at', 'chain_warning']
         read_only_fields = ['created_at']
 
+    def validate(self, attrs):
+        old_path = attrs.get('old_path', getattr(self.instance, 'old_path', ''))
+        new_path = attrs.get('new_path', getattr(self.instance, 'new_path', ''))
+
+        if not old_path.startswith('/') or old_path.startswith('//'):
+            raise serializers.ValidationError({'old_path': 'Enter an internal path beginning with one slash, for example /old-page/.'})
+        if '?' in old_path or '#' in old_path:
+            raise serializers.ValidationError({'old_path': 'Query strings and fragments are not allowed in the source path.'})
+
+        old_path = '/' if old_path == '/' else f"/{old_path.strip('/')}/"
+        if new_path.startswith('/') and not new_path.startswith('//'):
+            new_path = '/' if new_path == '/' else f"/{new_path.strip('/')}/"
+        elif not (new_path.startswith('https://') or new_path.startswith('http://')):
+            raise serializers.ValidationError({'new_path': 'Enter an internal path or a complete http(s) URL.'})
+
+        if old_path == new_path:
+            raise serializers.ValidationError({'new_path': 'The destination must be different from the source.'})
+
+        qs = Redirect.objects.all()
+        if self.instance:
+            qs = qs.exclude(pk=self.instance.pk)
+        if new_path.startswith('/') and qs.filter(old_path=new_path, is_active=True).exists():
+            raise serializers.ValidationError({'new_path': 'This destination is another active redirect. Point directly to its final destination.'})
+
+        source_slug = old_path.strip('/')
+        if old_path == '/' and Page.objects.filter(is_homepage=True).exists():
+            raise serializers.ValidationError({'old_path': 'The homepage is a live page and cannot be used as a redirect source.'})
+        if source_slug and Page.objects.filter(slug=source_slug).exists():
+            raise serializers.ValidationError({'old_path': 'A live CMS page currently uses this path.'})
+
+        attrs['old_path'] = old_path
+        attrs['new_path'] = new_path
+        return attrs
+
     def get_chain_warning(self, obj):
         # Same check as RedirectAdmin.chain_warning in seo/admin.py: a
         # redirect whose new_path is itself another redirect's old_path.
@@ -477,10 +558,37 @@ class RedirectSEOPanelSerializer(serializers.ModelSerializer):
         return Redirect.objects.filter(old_path=obj.new_path).exclude(pk=obj.pk).exists()
 
 
+class SiteSettingsSEOPanelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SiteSettings
+        fields = ['id', 'custom_404_title', 'custom_404_message', 'custom_404_image']
+
+
 class PageTypeSEOPanelSerializer(serializers.ModelSerializer):
     class Meta:
         model = PageType
         fields = ['name', 'slug']
+
+
+class PageSlugUpdateSerializer(serializers.Serializer):
+    slug = serializers.SlugField(max_length=255)
+
+    def validate_slug(self, value):
+        page = self.context['page']
+        value = value.strip().lower()
+        if page.is_homepage and value != page.slug:
+            raise serializers.ValidationError('The homepage slug cannot be changed.')
+        if Page.objects.exclude(pk=page.pk).filter(slug__iexact=value).exists():
+            raise serializers.ValidationError('This slug is already used by another page.')
+
+        new_path = f'/{value}/'
+        conflict = Redirect.objects.filter(old_path=new_path).first()
+        if conflict:
+            raise serializers.ValidationError(
+                f'This URL is already the source of a redirect to {conflict.new_path}. '
+                'Resolve that redirect before using this slug.'
+            )
+        return value
 
 
 class PageListSEOPanelSerializer(serializers.ModelSerializer):

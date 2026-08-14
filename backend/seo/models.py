@@ -43,8 +43,9 @@ class SEOMeta(TimeStampedModel):
     seo_title = models.CharField(max_length=255, blank=True)
     meta_description = models.CharField(max_length=320, blank=True)
     focus_keyword = models.CharField(max_length=255, blank=True, db_index=True)
+    secondary_keywords = models.JSONField(default=list, blank=True)
     canonical_url = models.URLField(blank=True)
-    meta_robots = models.CharField(max_length=20, choices=ROBOTS_CHOICES, default=ROBOTS_INDEX_FOLLOW)
+    meta_robots = models.CharField(max_length=64, blank=True, default=ROBOTS_INDEX_FOLLOW)
 
     # Social Sharing
     og_title = models.CharField(max_length=255, blank=True)

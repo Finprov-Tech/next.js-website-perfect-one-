@@ -164,7 +164,7 @@ export function SiteHeader() {
       initial={{ y: -72, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="sticky top-0 z-40 px-3 pt-3 sm:px-5"
+      className="sticky top-0 z-40 bg-navy px-3 pt-3 sm:px-5"
     >
       <div
         className={cn(

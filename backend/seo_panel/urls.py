@@ -34,6 +34,7 @@ from seo_panel.views import (
     ScrollItemSEOPanelViewSet,
     ScrollSectionSEOPanelViewSet,
     SEOMetaSEOPanelViewSet,
+    SiteSettingsSEOPanelViewSet,
     TeamMemberSEOPanelViewSet,
     TeamSectionSEOPanelViewSet,
     TestimonialSEOPanelViewSet,
@@ -50,6 +51,7 @@ router = DefaultRouter()
 router.register('pages', PageSEOPanelViewSet, basename='seo-panel-page')
 router.register('seo-meta', SEOMetaSEOPanelViewSet, basename='seo-panel-seo-meta')
 router.register('redirects', RedirectSEOPanelViewSet, basename='seo-panel-redirect')
+router.register('site-settings', SiteSettingsSEOPanelViewSet, basename='seo-panel-site-settings')
 router.register('modules/banners', BannerSEOPanelViewSet, basename='seo-panel-banner')
 router.register('modules/credentials', CredentialsSEOPanelViewSet, basename='seo-panel-credentials')
 router.register('modules/credential-items', CredentialItemSEOPanelViewSet, basename='seo-panel-credential-item')

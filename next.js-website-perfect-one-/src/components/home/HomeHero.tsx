@@ -220,9 +220,9 @@ export function HomeHero({
             </span>
           </h1>
 
-          <p data-hero-sub className="mt-3 max-w-[540px] text-xs leading-relaxed text-white/80 sm:text-base">
-            <RichText html={subParagraph} />
-          </p>
+          <div data-hero-sub className="mt-3 max-w-[540px] text-xs leading-relaxed text-white/80 sm:text-base">
+            <RichText html={subParagraph} as="div" />
+          </div>
 
           <div data-hero-ctas className="mt-5 flex flex-wrap items-center gap-3">
             <Magnetic strength={0.2}>

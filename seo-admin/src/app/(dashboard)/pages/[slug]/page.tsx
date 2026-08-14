@@ -1,9 +1,9 @@
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, ExternalLink, FileText } from "lucide-react";
 import { TopBar } from "@/components/TopBar";
-import { ModuleCard } from "@/components/ModuleCard";
-import { ModuleForm } from "@/components/ModuleForm";
+import { ModuleCard, SelectableModuleItems } from "@/components/ModuleCard";
+import { PageUrlManager } from "@/components/PageUrlManager";
 import { SEOMetaCard } from "@/components/SEOMetaCard";
 import { djangoFetch, ApiError, SessionExpiredError } from "@/lib/api";
 import { PAGE_SECTIONS, orderedSectionKeysForPage } from "@/lib/moduleSchemas";
@@ -15,7 +15,7 @@ type PageDetail = {
   status: string;
   page_type: { name: string; slug: string } | null;
   live_url: string;
-  seo: (Record<string, unknown> & { id: number }) | null;
+  seo: (Record<string, unknown> & { id: number; word_count?: number }) | null;
 } & Record<string, unknown>;
 
 async function getPageDetail(slug: string): Promise<PageDetail> {
@@ -43,18 +43,25 @@ export default async function PageEditorPage({ params }: { params: Promise<{ slu
             <ArrowLeft className="h-4 w-4" />
             Back to Pages
           </Link>
-          <a
-            href={page.live_url}
-            target="_blank"
-            rel="noreferrer"
-            className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-bold text-cta hover:border-cta"
-          >
-            <ExternalLink className="h-3.5 w-3.5" />
-            View Live Page
-          </a>
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold text-text-body">
+              <FileText className="h-3.5 w-3.5 text-cta" />
+              {(page.seo?.word_count ?? 0).toLocaleString()} total words
+            </span>
+            <a
+              href={page.live_url}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-bold text-cta hover:border-cta"
+            >
+              <ExternalLink className="h-3.5 w-3.5" />
+              View Live Page
+            </a>
+          </div>
         </div>
 
         <div className="mx-auto max-w-3xl space-y-5">
+          <PageUrlManager currentSlug={page.slug} liveUrl={page.live_url} />
           {page.seo && <SEOMetaCard data={page.seo} />}
 
           {orderedSectionKeysForPage(page.slug).map((key) => {
@@ -70,19 +77,7 @@ export default async function PageEditorPage({ params }: { params: Promise<{ slu
             return (
               <div key={key}>
                 <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-body/60">{schema.title}s</h2>
-                <div className="space-y-4">
-                  {list.map((item) => (
-                    <ModuleCard key={item.id} schema={schema} data={item} parentId={page.id} />
-                  ))}
-                  {schema.canCreate && schema.parentField && (
-                    <details className="rounded-xl border border-dashed border-cta/40 bg-card p-4">
-                      <summary className="cursor-pointer text-sm font-bold text-cta">Add {schema.title.toLowerCase()}</summary>
-                      <div className="mt-4">
-                        <ModuleForm endpoint={schema.endpoint} fields={schema.fields} initialData={{}} parentField={schema.parentField} parentId={page.id} />
-                      </div>
-                    </details>
-                  )}
-                </div>
+                <SelectableModuleItems schema={schema} items={list} parentId={page.id} />
               </div>
             );
           })}

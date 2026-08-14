@@ -14,13 +14,13 @@ function absoluteUrl(path: string): string {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 }
 
-/** Parses the CMS's combined "index,follow" style value into Next's robots object. */
+/** Parses the CMS's selected robot directives into Next's robots object. */
 function parseRobots(metaRobots: string | undefined): Metadata["robots"] {
   if (!metaRobots) return undefined;
-  const [indexPart, followPart] = metaRobots.split(",");
+  const directives = new Set(metaRobots.split(",").map((value) => value.trim()).filter(Boolean));
   return {
-    index: indexPart !== "noindex",
-    follow: followPart !== "nofollow",
+    index: directives.has("noindex") ? false : directives.has("index") ? true : undefined,
+    follow: directives.has("nofollow") ? false : directives.has("follow") ? true : undefined,
   };
 }
 

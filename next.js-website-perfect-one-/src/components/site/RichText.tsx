@@ -10,10 +10,27 @@ type RichTextProps = {
   as?: "span" | "div";
 };
 
+/** CMS rich text can contain block tags, while many compact copy placements
+ * intentionally render inside an existing paragraph. Browsers re-parent block
+ * tags found inside <p>, which causes the hydrated DOM to differ from SSR.
+ * Convert block markup to equivalent inline markup for the default span mode;
+ * callers using `as="div"` retain the original semantic blocks. */
+function toInlineHtml(html: string): string {
+  return html
+    .replace(/<\/p>\s*<p(?:\s[^>]*)?>/gi, "<br />")
+    .replace(/<\/?p(?:\s[^>]*)?>/gi, "")
+    .replace(/<h[2-6][^>]*>/gi, "<strong>")
+    .replace(/<\/h[2-6]>/gi, "</strong><br />")
+    .replace(/<\/?(?:ul|ol)[^>]*>/gi, "")
+    .replace(/<li[^>]*>/gi, "• ")
+    .replace(/<\/li>/gi, "<br />");
+}
+
 /** Renders CMS rich-text fields. Same allowed-tag styling convention as the
  * Privacy Policy / Terms pages (the first fields to support HTML content). */
 export function RichText({ html, className, as = "span" }: RichTextProps) {
   const Tag = as;
+  const renderedHtml = as === "span" ? toInlineHtml(html ?? "") : (html ?? "");
   return (
     <Tag
       className={cn(
@@ -27,7 +44,7 @@ export function RichText({ html, className, as = "span" }: RichTextProps) {
         "[&_img]:my-4 [&_img]:block [&_img]:max-w-full [&_img]:h-auto [&_img]:rounded-xl [&_img]:border [&_img]:border-border",
         className,
       )}
-      dangerouslySetInnerHTML={{ __html: html ?? "" }}
+      dangerouslySetInnerHTML={{ __html: renderedHtml }}
     />
   );
 }

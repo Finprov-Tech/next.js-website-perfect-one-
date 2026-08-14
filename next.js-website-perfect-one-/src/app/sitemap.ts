@@ -34,7 +34,7 @@ type CmsPageSummary = {
 async function getCmsPages(): Promise<CmsPageSummary[]> {
   const base = process.env.NEXT_PUBLIC_CMS_API_URL || "http://127.0.0.1:8000";
   try {
-    const res = await fetch(`${base}/api/v1/pages/`, { next: { revalidate: 3600 } });
+    const res = await fetch(`${base}/api/v1/pages/`, { cache: "no-store" });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.results ?? data) as CmsPageSummary[];

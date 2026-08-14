@@ -167,6 +167,8 @@ export function PagesTable({ pages }: { pages: PageListItem[] }) {
                     </a>
                     <Link
                       href={`/pages/${p.slug}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1.5 rounded-lg bg-cta/10 px-3 py-1.5 text-xs font-bold text-cta hover:bg-cta/20"
                     >
                       <Pencil className="h-3 w-3" />

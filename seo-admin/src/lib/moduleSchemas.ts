@@ -4,7 +4,7 @@
  * active flags/heading_level/structure are never editable from this panel).
  * Keep these two files in sync if the allowlist ever changes. */
 
-export type FieldType = "text" | "richtext" | "textarea" | "select" | "image" | "number" | "boolean";
+export type FieldType = "text" | "richtext" | "textarea" | "select" | "image" | "number" | "boolean" | "keywords" | "checkboxes";
 
 export type FieldSchema = {
   name: string;
@@ -302,16 +302,17 @@ export const SEO_META_SCHEMA: ModuleSchema = {
     { name: "seo_title", label: "SEO title", type: "text", counter: { min: 50, max: 60 } },
     { name: "meta_description", label: "Meta description", type: "textarea", counter: { min: 150, max: 160 } },
     text("focus_keyword", "Focus keyword"),
+    { name: "secondary_keywords", label: "Secondary keywords", type: "keywords" },
     text("canonical_url", "Canonical URL — leave blank to auto-use this page's own URL"),
     {
       name: "meta_robots",
       label: "Robots",
-      type: "select",
+      type: "checkboxes",
       options: [
-        { value: "index,follow", label: "Index, Follow" },
-        { value: "noindex,follow", label: "Noindex, Follow" },
-        { value: "index,nofollow", label: "Index, Nofollow" },
-        { value: "noindex,nofollow", label: "Noindex, Nofollow" },
+        { value: "index", label: "Index" },
+        { value: "noindex", label: "Noindex" },
+        { value: "follow", label: "Follow" },
+        { value: "nofollow", label: "Nofollow" },
       ],
     },
     { name: "include_in_sitemap", label: "Include in sitemap", type: "boolean" },

@@ -42,6 +42,7 @@ from modules.models import (
     WhyFinprovSection,
 )
 from pages.models import Page
+from core.models import SiteSettings
 from blog.models import Author, BlogCategory, BlogPost, BlogPostSection
 from seo.models import Redirect, SEOMeta
 from courses.models import (
@@ -72,6 +73,7 @@ from seo_panel.serializers import (
     LifeAtFinprovSectionSEOPanelSerializer,
     PageDetailSEOPanelSerializer,
     PageListSEOPanelSerializer,
+    PageSlugUpdateSerializer,
     PartnerLogoSEOPanelSerializer,
     PlacementSectionSEOPanelSerializer,
     PlacementStatSEOPanelSerializer,
@@ -82,6 +84,7 @@ from seo_panel.serializers import (
     ScrollItemSEOPanelSerializer,
     ScrollSectionSEOPanelSerializer,
     SEOMetaSEOPanelSerializer,
+    SiteSettingsSEOPanelSerializer,
     TeamMemberSEOPanelSerializer,
     TeamSectionSEOPanelSerializer,
     TestimonialSEOPanelSerializer,
@@ -451,6 +454,16 @@ class RedirectSEOPanelViewSet(viewsets.ModelViewSet):
     search_fields = ['old_path', 'new_path']
 
 
+class SiteSettingsSEOPanelViewSet(mixins.RetrieveModelMixin, mixins.UpdateModelMixin, viewsets.GenericViewSet):
+    serializer_class = SiteSettingsSEOPanelSerializer
+    permission_classes = [IsSEOTeamMember]
+
+    def get_object(self):
+        obj = SiteSettings.load()
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+
 class PageSEOPanelViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     """Read-only — structural fields (slug/status/page_type/homepage) are
     never editable through this panel, only via /admin/."""
@@ -471,6 +484,42 @@ class PageSEOPanelViewSet(mixins.ListModelMixin, mixins.RetrieveModelMixin, view
         if self.action == 'retrieve':
             return PageDetailSEOPanelSerializer
         return PageListSEOPanelSerializer
+
+    @action(detail=True, methods=['patch'], url_path='slug')
+    def change_slug(self, request, slug=None):
+        from urllib.parse import urlsplit, urlunsplit
+        from seo_panel.utils import frontend_url_for
+
+        page = self.get_object()
+        serializer = PageSlugUpdateSerializer(data=request.data, context={'page': page})
+        serializer.is_valid(raise_exception=True)
+        new_slug = serializer.validated_data['slug']
+        old_slug = page.slug
+
+        if new_slug == old_slug:
+            return Response({'slug': page.slug, 'live_url': frontend_url_for(page.slug), 'redirect_created': False})
+
+        old_path = '/' if page.is_homepage else f'/{old_slug}/'
+        new_path = '/' if page.is_homepage else f'/{new_slug}/'
+
+        with transaction.atomic():
+            page.slug = new_slug
+            page.save(update_fields=['slug', 'updated_at'])
+
+            seo = getattr(page, 'seo', None)
+            if seo and seo.canonical_url:
+                parsed = urlsplit(seo.canonical_url)
+                canonical_path = parsed.path.rstrip('/') + '/'
+                if canonical_path == old_path:
+                    seo.canonical_url = urlunsplit((parsed.scheme, parsed.netloc, new_path, parsed.query, parsed.fragment))
+                    seo.save(update_fields=['canonical_url', 'updated_at'])
+
+        return Response({
+            'slug': page.slug,
+            'live_url': frontend_url_for(page.slug),
+            'redirect_created': True,
+            'redirect': {'old_path': old_path, 'new_path': new_path, 'redirect_type': 301},
+        })
 
 
 class BlogCategorySEOPanelViewSet(mixins.ListModelMixin, mixins.CreateModelMixin, viewsets.GenericViewSet):

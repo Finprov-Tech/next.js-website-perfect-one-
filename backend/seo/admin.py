@@ -70,7 +70,7 @@ class SEOMetaInline(nested_admin.NestedStackedInline):
     can_delete = False
     fieldsets = (
         ('General SEO', {
-            'fields': ('seo_title', 'meta_description', 'focus_keyword', 'canonical_url', 'meta_robots', 'h1_status'),
+            'fields': ('seo_title', 'meta_description', 'focus_keyword', 'secondary_keywords', 'canonical_url', 'meta_robots', 'h1_status'),
         }),
         ('Social Sharing', {
             'fields': ('og_title', 'og_description', 'og_image', 'og_image_preview', 'og_url'),

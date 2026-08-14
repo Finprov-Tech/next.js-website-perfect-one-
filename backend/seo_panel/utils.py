@@ -11,3 +11,7 @@ def frontend_url_for(slug):
 
 def frontend_url_for_blog_post(slug):
     return f'{settings.FRONTEND_BASE_URL}/blog/{slug}'
+
+
+def frontend_url_for_course(slug):
+    return f'{settings.FRONTEND_BASE_URL}/courses/{slug}'
