@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { notFound, redirect } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, FileText } from "lucide-react";
@@ -5,6 +6,7 @@ import { TopBar } from "@/components/TopBar";
 import { ModuleCard, SelectableModuleItems } from "@/components/ModuleCard";
 import { PageUrlManager } from "@/components/PageUrlManager";
 import { SEOMetaCard } from "@/components/SEOMetaCard";
+import { SectionNav } from "@/components/SectionNav";
 import { djangoFetch, ApiError, SessionExpiredError } from "@/lib/api";
 import { PAGE_SECTIONS, orderedSectionKeysForPage } from "@/lib/moduleSchemas";
 
@@ -34,10 +36,51 @@ export default async function PageEditorPage({ params }: { params: Promise<{ slu
   const { slug } = await params;
   const page = await getPageDetail(slug);
 
+  type SectionEntry = { id: string; label: string; node: ReactNode };
+
+  const moduleSections: SectionEntry[] = orderedSectionKeysForPage(page.slug)
+    .map((key): SectionEntry | null => {
+      const { kind, schema } = PAGE_SECTIONS[key];
+      const value = page[key];
+      const id = `section-${key}`;
+      if (kind === "single") {
+        if (!value) return null;
+        const data = value as Record<string, unknown> & { id: number };
+        return {
+          id,
+          label: schema.title,
+          node: (
+            <div key={key} id={id} className="scroll-mt-16">
+              <ModuleCard schema={schema} data={data} />
+            </div>
+          ),
+        };
+      }
+      const list = (value as (Record<string, unknown> & { id: number })[] | undefined) ?? [];
+      if (list.length === 0 && !schema.canCreate) return null;
+      return {
+        id,
+        label: schema.title,
+        node: (
+          <div key={key} id={id} className="scroll-mt-16">
+            <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-body/60">{schema.title}s</h2>
+            <SelectableModuleItems schema={schema} items={list} parentId={page.id} />
+          </div>
+        ),
+      };
+    })
+    .filter((s): s is SectionEntry => s !== null);
+
+  const navSections = [
+    { id: "section-url", label: "URL Management" },
+    ...(page.seo ? [{ id: "section-seo", label: "SEO" }] : []),
+    ...moduleSections.map(({ id, label }) => ({ id, label })),
+  ];
+
   return (
     <>
       <TopBar title={page.name} />
-      <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 overflow-y-auto scroll-smooth p-6">
         <div className="mb-5 flex items-center justify-between">
           <Link href="/pages" className="flex items-center gap-1.5 text-sm font-semibold text-text-body hover:text-navy">
             <ArrowLeft className="h-4 w-4" />
@@ -60,27 +103,18 @@ export default async function PageEditorPage({ params }: { params: Promise<{ slu
           </div>
         </div>
 
-        <div className="mx-auto max-w-3xl space-y-5">
-          <PageUrlManager currentSlug={page.slug} liveUrl={page.live_url} />
-          {page.seo && <SEOMetaCard data={page.seo} />}
+        <SectionNav sections={navSections} />
 
-          {orderedSectionKeysForPage(page.slug).map((key) => {
-            const { kind, schema } = PAGE_SECTIONS[key];
-            const value = page[key];
-            if (kind === "single") {
-              if (!value) return null;
-              const data = value as Record<string, unknown> & { id: number };
-              return <ModuleCard key={key} schema={schema} data={data} />;
-            }
-            const list = (value as (Record<string, unknown> & { id: number })[] | undefined) ?? [];
-            if (list.length === 0 && !schema.canCreate) return null;
-            return (
-              <div key={key}>
-                <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-text-body/60">{schema.title}s</h2>
-                <SelectableModuleItems schema={schema} items={list} parentId={page.id} />
-              </div>
-            );
-          })}
+        <div className="mx-auto max-w-3xl space-y-5">
+          <div id="section-url" className="scroll-mt-16">
+            <PageUrlManager currentSlug={page.slug} liveUrl={page.live_url} />
+          </div>
+          {page.seo && (
+            <div id="section-seo" className="scroll-mt-16">
+              <SEOMetaCard data={page.seo} />
+            </div>
+          )}
+          {moduleSections.map((s) => s.node)}
         </div>
       </main>
     </>

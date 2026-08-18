@@ -4,7 +4,7 @@
  * active flags/heading_level/structure are never editable from this panel).
  * Keep these two files in sync if the allowlist ever changes. */
 
-export type FieldType = "text" | "richtext" | "textarea" | "select" | "image" | "number" | "boolean" | "keywords" | "checkboxes";
+export type FieldType = "text" | "richtext" | "textarea" | "select" | "image" | "number" | "boolean" | "keywords" | "checkboxes" | "canonical";
 
 export type FieldSchema = {
   name: string;
@@ -14,6 +14,10 @@ export type FieldSchema = {
   /** Shows a live character counter + green/amber/red bar under the input —
    * same thresholds as the old admin's seo_counters.js. */
   counter?: { min: number; max: number };
+  /** Mirrors the field's `blank` attribute on the Django model — the
+   * backend rejects an empty value for these, so the form always sends
+   * the full record on save. */
+  required?: boolean;
 };
 
 export type ModuleSchema = {
@@ -31,6 +35,9 @@ const text = (name: string, label: string): FieldSchema => ({ name, label, type:
 const rich = (name: string, label: string): FieldSchema => ({ name, label, type: "richtext" });
 const textarea = (name: string, label: string): FieldSchema => ({ name, label, type: "textarea" });
 const image = (name: string, label: string): FieldSchema => ({ name, label, type: "image" });
+/** Marks a field required — used where the Django model field doesn't
+ * declare `blank=True`, so saving an empty value fails server-side. */
+const req = (field: FieldSchema): FieldSchema => ({ ...field, required: true });
 const ORDER_FIELDS: FieldSchema[] = [
   { name: "display_order", label: "Display order", type: "number" },
   { name: "is_active", label: "Visible on website", type: "boolean" },
@@ -68,14 +75,14 @@ export const BANNER_SCHEMA: ModuleSchema = {
 export const CREDENTIAL_ITEM_SCHEMA: ModuleSchema = {
   title: "Credential item",
   endpoint: "modules/credential-items",
-  fields: [text("title", "Title"), text("value", "Value"), ...ORDER_FIELDS],
+  fields: [req(text("title", "Title")), text("value", "Value"), ...ORDER_FIELDS],
   parentField: "credentials", canCreate: true, canDelete: true,
 };
 
 export const SCROLL_ITEM_SCHEMA: ModuleSchema = {
   title: "Ticker item",
   endpoint: "modules/scroll-items",
-  fields: [text("text", "Text"), ...ORDER_FIELDS],
+  fields: [req(text("text", "Text")), ...ORDER_FIELDS],
   parentField: "scroll_section", canCreate: true, canDelete: true,
 };
 
@@ -99,11 +106,11 @@ export const COURSE_CARD_SCHEMA: ModuleSchema = {
   title: "Course card",
   endpoint: "modules/course-cards",
   fields: [
-    text("title", "Title"),
-    text("slug", "Course slug"),
-    text("category", "Category"),
-    text("program_type", "Program type"),
-    text("badge", "Badge"),
+    req(text("title", "Title")),
+    req(text("slug", "Course slug")),
+    req(text("category", "Category")),
+    req(text("program_type", "Program type")),
+    req(text("badge", "Badge")),
     text("duration", "Duration"),
     text("mode", "Mode"),
     text("tool", "Tool"),
@@ -127,7 +134,7 @@ export const COURSE_SECTION_SCHEMA: ModuleSchema = {
 export const FEATURE_CARD_SCHEMA: ModuleSchema = {
   title: "Feature card",
   endpoint: "modules/feature-cards",
-  fields: [text("title", "Title"), textarea("description", "Description"), image("image", "Card image"), text("image_alt", "Card image alt text"), ...ORDER_FIELDS],
+  fields: [req(text("title", "Title")), textarea("description", "Description"), image("image", "Card image"), text("image_alt", "Card image alt text"), ...ORDER_FIELDS],
   parentField: "why_finprov_section", canCreate: true, canDelete: true,
 };
 
@@ -142,7 +149,7 @@ export const WHY_FINPROV_SCHEMA: ModuleSchema = {
 export const PLACEMENT_STAT_SCHEMA: ModuleSchema = {
   title: "Placement stat",
   endpoint: "modules/placement-stats",
-  fields: [text("label", "Label"), text("value", "Value"), ...ORDER_FIELDS],
+  fields: [req(text("label", "Label")), req(text("value", "Value")), ...ORDER_FIELDS],
   parentField: "placement_section", canCreate: true, canDelete: true,
 };
 
@@ -170,7 +177,7 @@ export const TESTIMONIAL_SCHEMA: ModuleSchema = {
   title: "Testimonial",
   endpoint: "modules/testimonials",
   fields: [
-    text("name", "Name"),
+    req(text("name", "Name")),
     text("company", "Company"),
     text("designation", "Designation"),
     text("program", "Program"),
@@ -190,28 +197,28 @@ export const TESTIMONIAL_SCHEMA: ModuleSchema = {
 export const PARTNER_LOGO_SCHEMA: ModuleSchema = {
   title: "Partner logo",
   endpoint: "modules/partner-logos",
-  fields: [text("name", "Name"), { name: "kind", label: "Type", type: "select", options: [{ value: "partner", label: "Hiring partner" }, { value: "tool", label: "Software tool" }] }, image("logo", "Logo"), text("logo_alt", "Logo alt text"), text("website_url", "Website link"), ...ORDER_FIELDS],
+  fields: [req(text("name", "Name")), { name: "kind", label: "Type", type: "select", options: [{ value: "partner", label: "Hiring partner" }, { value: "tool", label: "Software tool" }] }, image("logo", "Logo"), text("logo_alt", "Logo alt text"), text("website_url", "Website link"), ...ORDER_FIELDS],
   parentField: "page", canCreate: true, canDelete: true,
 };
 
 export const FAQ_SCHEMA: ModuleSchema = {
   title: "FAQ",
   endpoint: "modules/faqs",
-  fields: [text("question", "Question"), rich("answer", "Answer"), ...ORDER_FIELDS],
+  fields: [req(text("question", "Question")), req(rich("answer", "Answer")), ...ORDER_FIELDS],
   parentField: "page", canCreate: true, canDelete: true,
 };
 
 export const QUIZ_OPTION_SCHEMA: ModuleSchema = {
   title: "Option",
   endpoint: "modules/quiz-options",
-  fields: [text("label", "Label"), text("category", "Recommendation category"), ...ORDER_FIELDS],
+  fields: [req(text("label", "Label")), text("category", "Recommendation category"), ...ORDER_FIELDS],
   parentField: "question", canCreate: true, canDelete: true,
 };
 
 export const QUIZ_QUESTION_SCHEMA: ModuleSchema = {
   title: "Question",
   endpoint: "modules/quiz-questions",
-  fields: [text("question_text", "Question text"), ...ORDER_FIELDS],
+  fields: [req(text("question_text", "Question text")), ...ORDER_FIELDS],
   parentField: "quiz", canCreate: true, canDelete: true,
   itemsKey: "options",
   itemSchema: QUIZ_OPTION_SCHEMA,
@@ -229,7 +236,7 @@ export const TEAM_MEMBER_SCHEMA: ModuleSchema = {
   title: "Team member",
   endpoint: "modules/team-members",
   fields: [
-    text("name", "Name"),
+    req(text("name", "Name")),
     text("role", "Role"),
     text("category", "Category"),
     text("experience", "Experience"),
@@ -270,20 +277,20 @@ export const LIFE_AT_FINPROV_SCHEMA: ModuleSchema = {
 export const LEGAL_SECTION_SCHEMA: ModuleSchema = {
   title: "Legal section",
   endpoint: "modules/legal-sections",
-  fields: [text("title", "Title"), rich("body", "Body"), ...ORDER_FIELDS],
+  fields: [req(text("title", "Title")), req(rich("body", "Body")), ...ORDER_FIELDS],
   parentField: "page", canCreate: true, canDelete: true,
 };
 
 export const LANDING_PAGE_BODY_SCHEMA: ModuleSchema = {
   title: "Landing page content",
   endpoint: "modules/landing-page-bodies",
-  fields: [text("h1", "H1 heading"), rich("body", "Body"), ...ORDER_FIELDS],
+  fields: [req(text("h1", "H1 heading")), req(rich("body", "Body")), ...ORDER_FIELDS],
 };
 
 export const HISTORY_MILESTONE_SCHEMA: ModuleSchema = {
   title: "Milestone",
   endpoint: "modules/history-milestones",
-  fields: [text("year_label", "Year label"), text("title", "Title"), textarea("description", "Description"), ...ORDER_FIELDS],
+  fields: [req(text("year_label", "Year label")), req(text("title", "Title")), textarea("description", "Description"), ...ORDER_FIELDS],
   parentField: "section", canCreate: true, canDelete: true,
 };
 
@@ -303,7 +310,7 @@ export const SEO_META_SCHEMA: ModuleSchema = {
     { name: "meta_description", label: "Meta description", type: "textarea", counter: { min: 150, max: 160 } },
     text("focus_keyword", "Focus keyword"),
     { name: "secondary_keywords", label: "Secondary keywords", type: "keywords" },
-    text("canonical_url", "Canonical URL — leave blank to auto-use this page's own URL"),
+    { name: "canonical_url", label: "Canonical URL — leave blank to auto-use this page's own URL", type: "canonical" },
     {
       name: "meta_robots",
       label: "Robots",

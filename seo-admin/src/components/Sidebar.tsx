@@ -18,7 +18,7 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-white/10 bg-navy">
+    <aside className="flex h-screen w-60 shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-navy">
       <div className="flex items-center gap-2.5 border-b border-white/10 px-5 py-5">
         <div className="h-8 w-8 overflow-hidden rounded-lg border border-white/15">
           <Image src="/finprov-mark.jpeg" alt="Finprov" width={32} height={32} className="h-full w-full object-cover" />

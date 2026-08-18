@@ -190,7 +190,10 @@ function Field({
   return (
     <div>
       {field.type !== "boolean" && (
-        <label className="mb-1 block text-xs font-semibold text-text-body/70">{field.label}</label>
+        <label className="mb-1 block text-xs font-semibold text-text-body/70">
+          {field.label}
+          {field.required && <span className="ml-0.5 text-destructive">*</span>}
+        </label>
       )}
       {field.type === "richtext" && <RichTextEditor value={stringValue} onChange={onChange} />}
       {field.type === "textarea" && (
@@ -215,6 +218,7 @@ function Field({
           {field.counter && <CharCounter length={stringValue.length} min={field.counter.min} max={field.counter.max} />}
         </>
       )}
+      {field.type === "canonical" && <CanonicalUrlField value={stringValue} onChange={onChange} />}
       {field.type === "keywords" && (
         <KeywordList values={Array.isArray(value) ? value : []} onChange={onChange} />
       )}
@@ -234,6 +238,7 @@ function Field({
             className="h-4 w-4 rounded border-border accent-cta"
           />
           {field.label}
+          {field.required && <span className="ml-0.5 text-destructive">*</span>}
         </label>
       )}
       {field.type === "number" && (
@@ -308,6 +313,31 @@ function CheckboxList({
           {option.label}
         </label>
       ))}
+    </div>
+  );
+}
+
+const CANONICAL_DOMAIN = "https://finprov.com/";
+
+/** The domain is fixed — only the path slug is ever editable here, so a
+ * pasted or previously-saved absolute URL can't drift onto another host. */
+function CanonicalUrlField({ value, onChange }: { value: string; onChange: (value: string) => void }) {
+  const slug = value.replace(/^https?:\/\/[^/]+\/?/, "").replace(/\/+$/, "");
+
+  function handleSlugChange(next: string) {
+    const cleaned = next.trim().replace(/^\/+/, "");
+    onChange(cleaned ? `${CANONICAL_DOMAIN}${cleaned}/` : "");
+  }
+
+  return (
+    <div className="flex items-stretch overflow-hidden rounded-lg border border-border focus-within:border-cta">
+      <span className="flex items-center whitespace-nowrap bg-bg-light px-3 text-sm text-text-body/60">{CANONICAL_DOMAIN}</span>
+      <input
+        type="text"
+        value={slug}
+        onChange={(e) => handleSlugChange(e.target.value)}
+        className="w-full min-w-0 rounded-r-lg px-3 py-2 text-sm text-navy outline-none"
+      />
     </div>
   );
 }

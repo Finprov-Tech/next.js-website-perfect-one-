@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { ExternalLink, Pencil, Search, TriangleAlert, X } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ChevronLeft, ChevronRight, ExternalLink, Pencil, Search, TriangleAlert, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export type PageListItem = {
@@ -68,6 +68,17 @@ export function PagesTable({ pages }: { pages: PageListItem[] }) {
     if (missingFilter === "keyword" && p.focus_keyword) return false;
     return true;
   });
+
+  const PAGE_SIZE = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [query, status, pageType, missingFilter]);
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(currentPage, totalPages);
+  const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   return (
     <div>
@@ -138,7 +149,7 @@ export function PagesTable({ pages }: { pages: PageListItem[] }) {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((p) => (
+            {paginated.map((p) => (
               <tr key={p.id} className="border-b border-border/60 last:border-0 hover:bg-bg-light/60">
                 <td className="px-5 py-3 font-semibold text-navy">{p.name}</td>
                 <td className="px-5 py-3 font-mono text-xs text-text-body">/{p.slug}</td>
@@ -188,6 +199,65 @@ export function PagesTable({ pages }: { pages: PageListItem[] }) {
           </tbody>
         </table>
       </div>
+
+      {filtered.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-xs text-text-body/60">
+            Showing {(safePage - 1) * PAGE_SIZE + 1}–{Math.min(safePage * PAGE_SIZE, filtered.length)} of{" "}
+            {filtered.length}
+          </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={safePage === 1}
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-text-body disabled:cursor-not-allowed disabled:opacity-40 enabled:hover:bg-bg-light"
+              aria-label="Previous page"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            {getPageItems(safePage, totalPages).map((item, i) =>
+              item === "ellipsis" ? (
+                <span key={`ellipsis-${i}`} className="px-1.5 text-sm text-text-body/40">
+                  …
+                </span>
+              ) : (
+                <button
+                  key={item}
+                  onClick={() => setCurrentPage(item)}
+                  className={cn(
+                    "flex h-8 w-8 items-center justify-center rounded-lg text-sm font-semibold",
+                    item === safePage ? "bg-gold text-navy" : "border border-border bg-card text-text-body hover:bg-bg-light",
+                  )}
+                >
+                  {item}
+                </button>
+              ),
+            )}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={safePage === totalPages}
+              className="flex h-8 w-8 items-center justify-center rounded-lg border border-border bg-card text-text-body disabled:cursor-not-allowed disabled:opacity-40 enabled:hover:bg-bg-light"
+              aria-label="Next page"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
+}
+
+function getPageItems(current: number, total: number): (number | "ellipsis")[] {
+  const items: (number | "ellipsis")[] = [];
+  const add = (n: number | "ellipsis") => items.push(n);
+  const window = new Set([1, total, current, current - 1, current + 1]);
+
+  let prev = 0;
+  for (const n of Array.from(window).filter((n) => n >= 1 && n <= total).sort((a, b) => a - b)) {
+    if (prev && n - prev > 1) add("ellipsis");
+    add(n);
+    prev = n;
+  }
+  return items;
 }
