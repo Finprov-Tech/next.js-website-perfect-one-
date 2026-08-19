@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/seo";
-import { posts } from "@/data/blog";
 import { jobOpenings } from "@/data/careers";
 import { businessProgramAreas, businessProgramSlug } from "@/data/business";
 import { getBlogPosts } from "@/lib/cms";
@@ -13,7 +12,7 @@ const STATIC_ROUTES = [
   "/business/",
   "/career/",
   "/contact/",
-  "/courses/",
+  "/all-courses/",
   "/events/",
   "/faq/",
   "/placement/",
@@ -92,9 +91,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const courseEntries: MetadataRoute.Sitemap = publishedCourseEntries(publishedCourses, SITE_URL);
 
   const cmsBlogPosts = await getBlogPosts();
-  const blogPostSource = cmsBlogPosts.length ? cmsBlogPosts : posts;
-  const blogEntries: MetadataRoute.Sitemap = blogPostSource.map((p) => ({
-    url: `${SITE_URL}/blog/${p.slug}/`,
+  const blogEntries: MetadataRoute.Sitemap = cmsBlogPosts.map((p) => ({
+    url: `${SITE_URL}/${p.slug}/`,
     changeFrequency: "monthly",
     priority: 0.5,
   }));

@@ -1,0 +1,163 @@
+{
+  "source_folder": "C:\\Users\\FINPROV\\Desktop\\finprov\\Sitemap",
+  "files_parsed": 17,
+  "total_urls_raw": 1356,
+  "total_urls_unique": 1292,
+  "by_url_type": {
+    "business": 14,
+    "cms-landing": 1143,
+    "course": 84,
+    "home": 1,
+    "other": 37,
+    "static": 13
+  },
+  "by_migration_status": {
+    "blog-cms": 845,
+    "course-cms": 83,
+    "landing-cms": 277,
+    "landing-cms-seed": 3,
+    "missing": 13,
+    "out-of-scope": 37,
+    "redirect-source": 6,
+    "static-nextjs": 28
+  },
+  "coverage": {
+    "migratable_urls": 1227,
+    "covered": 1214,
+    "missing_migratable": 13
+  },
+  "missing_sample": [
+    {
+      "url": "https://finprov.com/accounting-courses-online/",
+      "slug": "accounting-courses-online",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/all-courses-new/",
+      "slug": "all-courses-new",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/business-old/",
+      "slug": "business-old",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/calicut-dm-copy/",
+      "slug": "calicut-dm-copy",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/career-counsellor-test/",
+      "slug": "career-counsellor-test",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/finprov-login-2/",
+      "slug": "finprov-login-2",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/gallery-1/",
+      "slug": "gallery-1",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/hire-from-us-2/",
+      "slug": "hire-from-us-2",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/job-oriented-courses-after-tenth/",
+      "slug": "job-oriented-courses-after-tenth",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/locations.kml",
+      "slug": "locations.kml",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/project-manager/",
+      "slug": "project-manager",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/test-new/",
+      "slug": "test-new",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/test-page-3/",
+      "slug": "test-page-3",
+      "type": "cms-landing"
+    }
+  ],
+  "missing_all": [
+    {
+      "url": "https://finprov.com/accounting-courses-online/",
+      "slug": "accounting-courses-online",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/all-courses-new/",
+      "slug": "all-courses-new",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/business-old/",
+      "slug": "business-old",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/calicut-dm-copy/",
+      "slug": "calicut-dm-copy",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/career-counsellor-test/",
+      "slug": "career-counsellor-test",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/finprov-login-2/",
+      "slug": "finprov-login-2",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/gallery-1/",
+      "slug": "gallery-1",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/hire-from-us-2/",
+      "slug": "hire-from-us-2",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/job-oriented-courses-after-tenth/",
+      "slug": "job-oriented-courses-after-tenth",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/locations.kml",
+      "slug": "locations.kml",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/project-manager/",
+      "slug": "project-manager",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/test-new/",
+      "slug": "test-new",
+      "type": "cms-landing"
+    },
+    {
+      "url": "https://finprov.com/test-page-3/",
+      "slug": "test-page-3",
+      "type": "cms-landing"
+    }
+  ]
+}

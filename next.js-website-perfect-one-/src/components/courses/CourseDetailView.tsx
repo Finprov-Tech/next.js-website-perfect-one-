@@ -67,7 +67,7 @@ export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourse
   const courseSchema = generateCourseSchema(course);
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
-    { name: "Courses", url: "/courses" },
+    { name: "Courses", url: "/all-courses" },
     { name: course.title, url: `/courses/${course.slug}` },
   ]);
   const faqSchema = course.faqs && course.faqs.length > 0 ? generateFaqSchema(course.faqs) : null;
@@ -153,7 +153,7 @@ export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourse
             <div className="flex items-center gap-2 text-xs font-semibold text-white/60 mb-5 flex-wrap">
               <Link href="/" className="hover:text-white transition-colors">Home</Link>
               <ChevronRight className="h-3 w-3 text-white/30" />
-              <Link href="/courses" className="hover:text-white transition-colors">Courses</Link>
+              <Link href="/all-courses" className="hover:text-white transition-colors">Courses</Link>
               <ChevronRight className="h-3 w-3 text-white/30" />
               <span className="text-gold/90 truncate max-w-[220px]">{course.title}</span>
             </div>
@@ -251,7 +251,8 @@ export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourse
               caption={course.category}
               subcaption={course.tool}
               gradient="from-teal/80 to-navy/70"
-              className="aspect-[4/3] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/15"
+              fit="contain"
+              className="aspect-[16/9] w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-white/15"
             />
           </motion.div>
         </div>

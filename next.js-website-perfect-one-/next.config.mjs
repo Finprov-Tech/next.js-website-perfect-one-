@@ -27,8 +27,19 @@ export default function nextConfig(phase) {
       ],
     };
   },
+  experimental: {
+    optimizePackageImports: [
+      'lucide-react',
+      'framer-motion',
+      '@radix-ui/react-accordion',
+      '@radix-ui/react-dialog',
+      '@radix-ui/react-tabs',
+      '@radix-ui/react-dropdown-menu',
+      '@radix-ui/react-select',
+      'embla-carousel-react',
+    ],
+  },
   images: {
-    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',

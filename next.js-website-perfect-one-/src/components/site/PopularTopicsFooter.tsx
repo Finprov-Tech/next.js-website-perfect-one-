@@ -35,11 +35,11 @@ export const upskillLinks = [
 ];
 
 export const blogLinks = [
-  { label: "How Cloud-Based Accounting Is Transforming The Industry?", to: "/blog/cloud-based-accounting-transforming-industry" },
-  { label: "5 Innovative TallyPrime Features That Simplify GST Compliance For Your Business", to: "/blog/tallyprime-features-simplify-gst-compliance" },
-  { label: "Top 10 Reasons To Choose Tally For Your Business", to: "/blog/top-10-reasons-choose-tally-software" },
-  { label: "Understanding Accrual Vs. Cash Accounting: Which Method Is Right For You?", to: "/blog/accrual-vs-cash-accounting-method" },
-  { label: "10 Simple Steps To Begin Learning Tally Prime", to: "/blog/10-simple-steps-begin-learning-tally-prime" },
+  { label: "How Cloud-Based Accounting Is Transforming The Industry?", to: "/how-cloud-based-accounting-is-transforming-industry" },
+  { label: "5 Innovative TallyPrime Features That Simplify GST Compliance For Your Business", to: "/tallyprime-features-that-simplify-gst-compliance" },
+  { label: "Top 10 Reasons To Choose Tally For Your Business", to: "/reasons-to-choose-tally-software-for-your-business" },
+  { label: "Understanding Accrual Vs. Cash Accounting: Which Method Is Right For You?", to: "/accrual-and-cash-accounting-differences" },
+  { label: "10 Simple Steps To Begin Learning Tally Prime", to: "/steps-to-learn-tally-prime" },
 ];
 
 export function PopularTopicsFooter() {

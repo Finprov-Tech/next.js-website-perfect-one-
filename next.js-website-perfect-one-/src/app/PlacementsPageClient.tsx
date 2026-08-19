@@ -58,7 +58,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     `Our supportive environment combines experienced instructors with hands-on, tool-led learning. We back every cohort with 100% placement assistance and a ${placementStats.placementRecord}% placement record.`;
 
   const ctaLabel = placements?.cta_text || "Explore Programs";
-  const ctaHref = resolveCmsLink(placements?.cta_internal_page, placements?.cta_external_url, "/courses");
+  const ctaHref = resolveCmsLink(placements?.cta_internal_page, placements?.cta_external_url, "/all-courses");
 
   const testimonials: Testimonial[] = cmsPage?.testimonials?.length
     ? cmsPage.testimonials.map(fromCmsTestimonial)

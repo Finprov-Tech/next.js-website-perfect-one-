@@ -390,7 +390,7 @@ export type CMSPage = {
 export async function getPageBySlug(slug: string): Promise<CMSPage | null> {
   try {
     const res = await fetch(`${CMS_API_URL}/api/v1/pages/${slug}/`, {
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
     if (!res.ok) return null;
     return (await res.json()) as CMSPage;
@@ -427,16 +427,37 @@ export type CMSBlogPostSummary = {
 
 export type CMSBlogPostDetail = CMSBlogPostSummary & {
   sections: CMSBlogPostSection[];
+  author_bio: string;
+  author_photo: string | null;
   seo: CMSSeoMeta | null;
+};
+
+export type CMSAuthorDetail = {
+  name: string;
+  slug: string;
+  role: string;
+  bio: string;
+  photo: string | null;
+  posts: CMSBlogPostSummary[];
 };
 
 /** Fetches all published blog posts (list shape, no sections/seo). Returns [] on any failure. */
 export async function getBlogPosts(): Promise<CMSBlogPostSummary[]> {
   try {
-    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/`, { cache: "no-store" });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return (data.results ?? data) as CMSBlogPostSummary[];
+    const all: CMSBlogPostSummary[] = [];
+    let url: string | null = `${CMS_API_URL}/api/v1/blog/posts/`;
+    while (url) {
+      const res = await fetch(url, { next: { revalidate: 60 } });
+      if (!res.ok) return all.length ? all : [];
+      const data = (await res.json()) as CMSBlogPostSummary[] | { results?: CMSBlogPostSummary[]; next?: string | null };
+      if (Array.isArray(data)) {
+        all.push(...data);
+        break;
+      }
+      all.push(...(data.results ?? []));
+      url = data.next ?? null;
+    }
+    return all;
   } catch {
     return [];
   }
@@ -445,7 +466,7 @@ export async function getBlogPosts(): Promise<CMSBlogPostSummary[]> {
 /** Fetches all blog categories. Returns [] on any failure. */
 export async function getBlogCategories(): Promise<CMSBlogCategory[]> {
   try {
-    const res = await fetch(`${CMS_API_URL}/api/v1/blog/categories/`, { cache: "no-store" });
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/categories/`, { next: { revalidate: 60 } });
     if (!res.ok) return [];
     const data = await res.json();
     return (data.results ?? data) as CMSBlogCategory[];
@@ -457,9 +478,20 @@ export async function getBlogCategories(): Promise<CMSBlogCategory[]> {
 /** Fetches one published blog post by slug (full detail incl. sections + seo). Null on any failure. */
 export async function getBlogPostBySlug(slug: string): Promise<CMSBlogPostDetail | null> {
   try {
-    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/${slug}/`, { cache: "no-store" });
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/${slug}/`, { next: { revalidate: 60 } });
     if (!res.ok) return null;
     return (await res.json()) as CMSBlogPostDetail;
+  } catch {
+    return null;
+  }
+}
+
+/** Fetches one author archive (profile + published posts). Null on any failure. */
+export async function getAuthorBySlug(slug: string): Promise<CMSAuthorDetail | null> {
+  try {
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/authors/${slug}/`, { next: { revalidate: 60 } });
+    if (!res.ok) return null;
+    return (await res.json()) as CMSAuthorDetail;
   } catch {
     return null;
   }

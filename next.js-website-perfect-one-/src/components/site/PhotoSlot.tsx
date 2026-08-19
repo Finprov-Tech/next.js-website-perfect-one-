@@ -10,6 +10,11 @@ type PhotoSlotProps = {
   className?: string;
   gradient?: string;
   hover?: boolean;
+  /** "cover" (default) fills the box and crops — right for headshots/photos.
+   * "contain" always shows the whole image, letterboxing instead of
+   * cropping — use for graphics/banners where cropping would cut off
+   * baked-in text or logos. */
+  fit?: "cover" | "contain";
 };
 
 export function PhotoSlot({
@@ -20,14 +25,15 @@ export function PhotoSlot({
   className,
   gradient = "from-navy/85 via-teal/50 to-cta/60",
   hover = true,
+  fit = "cover",
 }: PhotoSlotProps) {
   return (
     <motion.div
       whileHover={hover ? { y: -4 } : undefined}
-      className={cn("relative overflow-hidden rounded-3xl ring-1 ring-border", className)}
+      className={cn("relative overflow-hidden rounded-3xl ring-1 ring-border", fit === "contain" && "bg-white", className)}
     >
       {src ? (
-        <img src={src} alt={alt} className="h-full w-full object-cover" loading="lazy" />
+        <img src={src} alt={alt} className={cn("h-full w-full", fit === "contain" ? "object-contain" : "object-cover")} loading="lazy" />
       ) : (
         <div className={cn("relative flex h-full w-full items-center justify-center bg-gradient-to-br", gradient)}>
           <div className="absolute inset-0 bg-grid-white opacity-30" />

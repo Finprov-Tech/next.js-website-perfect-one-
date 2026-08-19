@@ -32,6 +32,7 @@ class Author(models.Model):
     'About the author' block."""
 
     name = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     role = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     photo = models.ImageField(upload_to='authors/%Y/%m/', blank=True, null=True)
@@ -41,6 +42,17 @@ class Author(models.Model):
         ordering = ['name']
         verbose_name = 'Author'
         verbose_name_plural = 'Authors'
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base = slugify(self.name) or "author"
+            slug = base
+            suffix = 1
+            while Author.objects.exclude(pk=self.pk).filter(slug=slug).exists():
+                suffix += 1
+                slug = f"{base}-{suffix}"
+            self.slug = slug
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name

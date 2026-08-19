@@ -308,7 +308,7 @@ export function TeamPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
   const ctaEyebrow = cta?.sub_heading || "Learn from people who do the work";
   const ctaHeading = cta?.heading || "Your next mentor is already here.";
   const ctaLabel = cta?.cta_text || "Explore programs";
-  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/courses");
+  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/all-courses");
   const secondaryLabel = cta?.secondary_cta_text || "Talk to an advisor";
   const secondaryHasLink = Boolean(cta?.secondary_cta_internal_page || cta?.secondary_cta_external_url);
   const secondaryHref = secondaryHasLink

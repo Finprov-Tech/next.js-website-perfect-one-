@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 
 from api.views import (
+    AuthorViewSet,
     BannerViewSet,
     BlogCategoryViewSet,
     BlogPostViewSet,
@@ -25,6 +26,7 @@ router.register('pages', PageViewSet, basename='page')
 router.register('courses', CourseViewSet, basename='course')
 router.register('blog/categories', BlogCategoryViewSet, basename='blog-category')
 router.register('blog/posts', BlogPostViewSet, basename='blog-post')
+router.register('blog/authors', AuthorViewSet, basename='blog-author')
 router.register('modules/banners', BannerViewSet, basename='banner')
 router.register('modules/scroll-sections', ScrollSectionViewSet, basename='scroll-section')
 router.register('modules/credentials', CredentialsViewSet, basename='credentials')

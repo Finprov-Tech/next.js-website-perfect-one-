@@ -19,9 +19,12 @@ import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Reveal } from "@/components/motion/Reveal";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { getRelatedPosts, type BlogPost } from "@/data/blog";
+import { type BlogPost } from "@/data/blog";
+import { RichText } from "@/components/site/RichText";
+import { BlogAuthorCard } from "@/components/blog/BlogAuthorCard";
 
-const container = "mx-auto w-full max-w-[900px] px-5 sm:px-8";
+const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
+const articleContainer = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
 const dateFmt = new Intl.DateTimeFormat("en-IN", { year: "numeric", month: "long", day: "numeric" });
 
 const postImages: Record<string, string> = {
@@ -35,8 +38,7 @@ const postImages: Record<string, string> = {
 
 const defaultImage = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80";
 
-export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost; related?: BlogPost[] }) {
-  const related = relatedProp ?? getRelatedPosts(post);
+export function BlogDetailView({ post, related = [] }: { post: BlogPost; related?: BlogPost[] }) {
   const [copied, setCopied] = useState(false);
 
   const heroImg = post.coverImageUrl || postImages[post.slug] || defaultImage;
@@ -61,39 +63,29 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
         <div className="pointer-events-none absolute -left-20 bottom-0 h-96 w-96 rounded-full bg-gold/15 blur-3xl" />
 
         <div className={`${container} relative z-10`}>
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-200 backdrop-blur-md transition-all hover:bg-white/20 hover:text-white"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> BACK TO JOURNAL
-          </Link>
-
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="mt-6"
+            className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"
           >
-            <span className="inline-block rounded-md bg-gold px-3.5 py-1 text-[11px] font-black uppercase tracking-wider text-navy shadow-md">
-              {post.category}
-            </span>
+            <div>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-200 backdrop-blur-md transition-all hover:bg-white/20 hover:text-white"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" /> BACK TO JOURNAL
+              </Link>
 
-            <h1 className="mt-4 text-3xl font-black uppercase leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-              {post.title}
-            </h1>
+              <span className="mt-6 inline-block rounded-md bg-gold px-3.5 py-1 text-[11px] font-black uppercase tracking-wider text-navy shadow-md">
+                {post.category.replace(/&amp;/g, "&")}
+              </span>
 
-            <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-6 text-xs text-slate-300 font-medium">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gold text-navy font-black text-sm shadow-md">
-                  {post.author.name[0]}
-                </div>
-                <div>
-                  <div className="text-sm font-extrabold text-white">{post.author.name}</div>
-                  <div className="text-[11px] text-slate-400">{post.author.role}</div>
-                </div>
-              </div>
+              <h1 className="mt-4 text-3xl font-black uppercase leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
+                {post.title}
+              </h1>
 
-              <div className="flex items-center gap-4 text-slate-300">
+              <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/10 pt-6 text-xs text-slate-300 font-medium">
                 <span className="flex items-center gap-1.5">
                   <Calendar className="h-3.5 w-3.5 text-gold" /> {dateFmt.format(new Date(post.date))}
                 </span>
@@ -110,13 +102,15 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
                 </button>
               </div>
             </div>
+
+            <BlogAuthorCard post={post} className="lg:sticky lg:top-24" />
           </motion.div>
         </div>
       </section>
 
       {/* Main Reading Canvas */}
       <article className="py-14 sm:py-20">
-        <div className={container}>
+        <div className={`${articleContainer} max-w-[900px]`}>
           <div className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-2xl">
             <img
               src={heroImg}
@@ -157,14 +151,18 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
 
           <div className="mt-12 space-y-12 text-slate-700">
             {post.sections.map((s, i) => (
-              <Reveal key={s.heading} delay={i * 0.05}>
-                <div id={s.heading.toLowerCase().replace(/\s+/g, "-")} className="scroll-mt-28">
-                  <h2 className="text-xl sm:text-2xl font-black uppercase leading-tight tracking-tight text-navy border-b border-slate-200 pb-3">
-                    <span className="text-gold mr-2">#</span> {s.heading}
-                  </h2>
-                  <p className="mt-4 text-base sm:text-lg leading-relaxed text-slate-700 font-normal">
-                    {s.body}
-                  </p>
+              <Reveal key={s.heading || `section-${i}`} delay={i * 0.05}>
+                <div id={s.heading ? s.heading.toLowerCase().replace(/\s+/g, "-") : undefined} className="scroll-mt-28">
+                  {s.heading ? (
+                    <h2 className="text-xl sm:text-2xl font-black uppercase leading-tight tracking-tight text-navy border-b border-slate-200 pb-3">
+                      <span className="text-gold mr-2">#</span> {s.heading}
+                    </h2>
+                  ) : null}
+                  <RichText
+                    html={s.body}
+                    as="div"
+                    className={`prose prose-slate max-w-none text-base sm:text-lg leading-relaxed ${s.heading ? "mt-4" : ""}`}
+                  />
                 </div>
               </Reveal>
             ))}
@@ -196,7 +194,7 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
               </p>
               <div className="mt-6 flex flex-wrap items-center gap-4">
                 <Link
-                  href="/courses"
+                  href="/all-courses"
                   className="rounded-md bg-gold px-6 py-3 text-xs font-black uppercase tracking-wider text-navy shadow-lg hover:bg-gold-light hover:scale-105 transition-all inline-flex items-center gap-2"
                 >
                   EXPLORE CERTIFICATION PROGRAMS <ArrowRight className="h-4 w-4" />
@@ -229,7 +227,7 @@ export function BlogDetailView({ post, related: relatedProp }: { post: BlogPost;
               {related.map((p) => {
                 const bgImg = p.coverImageUrl || postImages[p.slug] || defaultImage;
                 return (
-                  <Link key={p.slug} href={`/blog/${p.slug}`} className="block">
+                  <Link key={p.slug} href={`/${p.slug}`} className="block">
                     <article className="group relative h-[360px] w-full overflow-hidden rounded-xl border border-white/10 bg-navy shadow-xl transition-all duration-300 hover:border-gold/50">
                       <div
                         className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"

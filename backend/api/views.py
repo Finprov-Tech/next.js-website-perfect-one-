@@ -6,6 +6,7 @@ from api.serializers import (
     BlogCategorySerializer,
     BlogPostDetailSerializer,
     BlogPostListSerializer,
+    AuthorDetailSerializer,
     CourseSectionSerializer,
     CredentialsSerializer,
     CTASerializer,
@@ -20,7 +21,7 @@ from api.serializers import (
     TestimonialSerializer,
     WhyFinprovSectionSerializer,
 )
-from blog.models import BlogCategory, BlogPost
+from blog.models import BlogCategory, BlogPost, Author
 from core.models import SiteSettings
 from modules.models import (
     CTA,
@@ -161,6 +162,7 @@ class BlogCategoryViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BlogCategory.objects.all()
     serializer_class = BlogCategorySerializer
     permission_classes = [AllowAny]
+    pagination_class = None
 
 
 class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
@@ -170,8 +172,19 @@ class BlogPostViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = BlogPost.objects.filter(status=BlogPost.STATUS_PUBLISHED).select_related('category', 'seo')
     lookup_field = 'slug'
     permission_classes = [AllowAny]
+    pagination_class = None
 
     def get_serializer_class(self):
         if self.action == 'retrieve':
             return BlogPostDetailSerializer
         return BlogPostListSerializer
+
+
+class AuthorViewSet(viewsets.ReadOnlyModelViewSet):
+    """GET /api/v1/blog/authors/{slug}/ — author profile and published posts."""
+
+    queryset = Author.objects.filter(posts__status=BlogPost.STATUS_PUBLISHED).distinct()
+    lookup_field = 'slug'
+    permission_classes = [AllowAny]
+    pagination_class = None
+    serializer_class = AuthorDetailSerializer

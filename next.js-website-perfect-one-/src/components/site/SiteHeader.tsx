@@ -7,7 +7,7 @@ import { Menu, PhoneCall } from "lucide-react";
 import { useEffect, useState } from "react";
 import { EnquireModal } from "@/components/site/EnquireModal";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import finprovMark from "@/assets/finprov-mark.jpeg";
+import finprovLogo from "@/assets/finprov-logo-full.png";
 import { cn } from "@/lib/utils";
 import { scrollToSection, scrollToTop } from "@/lib/scroll";
 
@@ -18,7 +18,7 @@ type NavItem = { label: string; hash?: string; to?: string };
 const navLinks: NavItem[] = [
   { label: "Home", to: "/" },
   { label: "About", to: "/about" },
-  { label: "Courses", to: "/courses" },
+  { label: "Courses", to: "/all-courses" },
   { label: "Placements", to: "/placement" },
   { label: "Business", to: "/business" },
   { label: "Blog", to: "/blog" },
@@ -27,7 +27,7 @@ const navLinks: NavItem[] = [
 
 const sectionIds = ["home", "about", "courses", "placements"];
 
-const logoSrc = typeof finprovMark === "string" ? finprovMark : (finprovMark as any)?.src || "/finprov-mark.jpeg";
+const logoSrc = typeof finprovLogo === "string" ? finprovLogo : (finprovLogo as any)?.src || "/finprov-mark.jpeg";
 
 export function SiteHeader() {
   const pathname = usePathname();
@@ -164,7 +164,7 @@ export function SiteHeader() {
       initial={{ y: -72, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-      className="sticky top-0 z-40 bg-navy px-3 pt-3 sm:px-5"
+      className="sticky top-0 z-40 bg-navy px-3 pb-5 pt-3 sm:px-5"
     >
       <div
         className={cn(
@@ -175,20 +175,16 @@ export function SiteHeader() {
         <Link
           href="/"
           onClick={handleHomeNavigation}
-          className="flex shrink-0 items-center gap-2.5"
+          className="flex shrink-0 items-center"
           aria-label="Finprov home"
         >
-          <motion.div
-            whileHover={{ scale: 1.05 }}
+          <motion.img
+            src={logoSrc}
+            alt="Finprov — Skill Up Rise Up"
+            whileHover={{ scale: 1.03 }}
             transition={{ type: "spring", stiffness: 320, damping: 22 }}
-            className="h-11 w-11 overflow-hidden rounded-2xl bg-white shadow-e2 ring-1 ring-navy/5"
-          >
-            <img src={logoSrc} alt="" className="h-full w-full object-cover" />
-          </motion.div>
-          <span className="text-xl font-extrabold tracking-wide text-navy">
-            FINPROV
-            <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-cta" />
-          </span>
+            className="h-9 w-auto sm:h-10"
+          />
         </Link>
 
         <motion.nav

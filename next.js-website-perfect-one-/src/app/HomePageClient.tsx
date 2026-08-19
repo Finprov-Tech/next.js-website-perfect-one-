@@ -1,25 +1,27 @@
 'use client';
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
-import { EnquireModal } from "@/components/site/EnquireModal";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
-import { Faq } from "@/components/site/Faq";
 import { HomeHero } from "@/components/home/HomeHero";
 import { AcademiesStrip } from "@/components/home/AcademiesStrip";
 import { CourseExplorer } from "@/components/home/CourseExplorer";
-import { ProgramQuiz } from "@/components/home/ProgramQuiz";
 import { AboutBand } from "@/components/home/AboutBand";
 import { PlacementHighlights } from "@/components/home/PlacementHighlights";
-import { PolaroidStories } from "@/components/home/PolaroidStories";
-import { StudentTestimonialsSection } from "@/components/home/StudentTestimonialsSection";
-import { LearningToEarning } from "@/components/home/LearningToEarning";
-import { ToolsMarquee } from "@/components/home/ToolsMarquee";
-import { MentorsBand } from "@/components/home/MentorsBand";
-import { WhyChooseUs } from "@/components/home/WhyChooseUs";
-import { LifeAtFinprov } from "@/components/home/LifeAtFinprov";
 import { scrollToSection } from "@/lib/scroll";
+
+const EnquireModal = dynamic(() => import("@/components/site/EnquireModal").then((m) => m.EnquireModal), { ssr: false });
+const ProgramQuiz = dynamic(() => import("@/components/home/ProgramQuiz").then((m) => m.ProgramQuiz));
+const StudentTestimonialsSection = dynamic(() => import("@/components/home/StudentTestimonialsSection").then((m) => m.StudentTestimonialsSection));
+const PolaroidStories = dynamic(() => import("@/components/home/PolaroidStories").then((m) => m.PolaroidStories));
+const LearningToEarning = dynamic(() => import("@/components/home/LearningToEarning").then((m) => m.LearningToEarning));
+const ToolsMarquee = dynamic(() => import("@/components/home/ToolsMarquee").then((m) => m.ToolsMarquee));
+const MentorsBand = dynamic(() => import("@/components/home/MentorsBand").then((m) => m.MentorsBand));
+const WhyChooseUs = dynamic(() => import("@/components/home/WhyChooseUs").then((m) => m.WhyChooseUs));
+const LifeAtFinprov = dynamic(() => import("@/components/home/LifeAtFinprov").then((m) => m.LifeAtFinprov));
+const Faq = dynamic(() => import("@/components/site/Faq").then((m) => m.Faq));
 import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";

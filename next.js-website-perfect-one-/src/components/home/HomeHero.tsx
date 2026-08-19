@@ -35,7 +35,7 @@ export function HomeHero({
     heroBanner?.paragraph ||
     `Finprov transforms aspiring professionals into industry-ready talent through real workplace exposure — ${siteStats.coursesOffered}+ programs in accounting, taxation, data analytics, and digital marketing, with a curriculum that evolves as fast as the industry does.`;
   const ctaLabel = heroBanner?.cta_text || "Explore Courses";
-  const ctaHref = resolveCmsLink(heroBanner?.cta_internal_page, heroBanner?.cta_external_url, "/courses");
+  const ctaHref = resolveCmsLink(heroBanner?.cta_internal_page, heroBanner?.cta_external_url, "/all-courses");
   const heroImageSrc = resolveCmsImageUrl(heroBanner?.image) || heroStudentSrc;
   const heroImageAlt = heroBanner?.image_alt || "Finprov learner ready for a finance career";
 

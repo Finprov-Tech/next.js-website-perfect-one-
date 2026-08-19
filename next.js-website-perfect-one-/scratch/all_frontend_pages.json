@@ -1,0 +1,976 @@
+{
+  "generatedAt": "2026-08-19T05:46:42.136Z",
+  "counts": {
+    "static": 16,
+    "coursePrimary": 70,
+    "courseAliases": 43,
+    "courseTotalUnique": 113,
+    "blog": 8,
+    "career": 18,
+    "business": 37,
+    "totalListed": 192,
+    "totalUniquePaths": 192
+  },
+  "pages": [
+    {
+      "path": "/",
+      "slug": "(home)",
+      "type": "static"
+    },
+    {
+      "path": "/about/",
+      "slug": "about",
+      "type": "static"
+    },
+    {
+      "path": "/admission/",
+      "slug": "admission",
+      "type": "static"
+    },
+    {
+      "path": "/blog/",
+      "slug": "blog",
+      "type": "static-index"
+    },
+    {
+      "path": "/business/",
+      "slug": "business",
+      "type": "static-index"
+    },
+    {
+      "path": "/career/",
+      "slug": "career",
+      "type": "static-index"
+    },
+    {
+      "path": "/contact/",
+      "slug": "contact",
+      "type": "static"
+    },
+    {
+      "path": "/all-courses/",
+      "slug": "all-courses",
+      "type": "static"
+    },
+    {
+      "path": "/events/",
+      "slug": "events",
+      "type": "static"
+    },
+    {
+      "path": "/faq/",
+      "slug": "faq",
+      "type": "static"
+    },
+    {
+      "path": "/placement/",
+      "slug": "placement",
+      "type": "static"
+    },
+    {
+      "path": "/privacy-policy/",
+      "slug": "privacy-policy",
+      "type": "static"
+    },
+    {
+      "path": "/team/",
+      "slug": "team",
+      "type": "static"
+    },
+    {
+      "path": "/terms-and-conditions/",
+      "slug": "terms-and-conditions",
+      "type": "static"
+    },
+    {
+      "path": "/testimonials/",
+      "slug": "testimonials",
+      "type": "static"
+    },
+    {
+      "path": "/verify-student-certificate/",
+      "slug": "verify-student-certificate",
+      "type": "static"
+    },
+    {
+      "path": "/courses/advanced-program-in-business-finance-and-analytics/",
+      "slug": "advanced-program-in-business-finance-and-analytics",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/ifrs-course/",
+      "slug": "ifrs-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/business-analyst-course/",
+      "slug": "business-analyst-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/financial-analyst-course/",
+      "slug": "financial-analyst-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/mis-analyst-course/",
+      "slug": "mis-analyst-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/creators-cut-program/",
+      "slug": "creators-cut-program",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/sage-50-course/",
+      "slug": "sage-50-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/operations-executive-program/",
+      "slug": "operations-executive-program",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/ai-bootcamp/",
+      "slug": "ai-bootcamp",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/pg-diploma-in-indian-and-foreign-accounting-course-pgdifa/",
+      "slug": "pg-diploma-in-indian-and-foreign-accounting-course-pgdifa",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/iit-ihub-certified-digital-marketing-program/",
+      "slug": "iit-ihub-certified-digital-marketing-program",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/sap-s-4hana-fi/",
+      "slug": "sap-s-4hana-fi",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/digital-marketing-specialist-program/",
+      "slug": "digital-marketing-specialist-program",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/certification-in-business-accounting-taxation-cbat/",
+      "slug": "certification-in-business-accounting-taxation-cbat",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/diploma-in-indian-accounting-dia/",
+      "slug": "diploma-in-indian-accounting-dia",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/basics-of-digital-marketing-course/",
+      "slug": "basics-of-digital-marketing-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/data-analytics-course/",
+      "slug": "data-analytics-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/practical-accounting/",
+      "slug": "practical-accounting",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/llp-compliances-form-8/",
+      "slug": "llp-compliances-form-8",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-apply-for-tan-online/",
+      "slug": "how-to-apply-for-tan-online",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/startup-planning-and-fundraising-strategies-course/",
+      "slug": "startup-planning-and-fundraising-strategies-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/mca-compliances-form-aoc-4/",
+      "slug": "mca-compliances-form-aoc-4",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/post-graduate-diploma-in-management-pgdm-finance-specialization-course/",
+      "slug": "post-graduate-diploma-in-management-pgdm-finance-specialization-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-file-gstr-3b/",
+      "slug": "how-to-file-gstr-3b",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-file-itr-1-online/",
+      "slug": "how-to-file-itr-1-online",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/basics-of-microsoft-excel/",
+      "slug": "basics-of-microsoft-excel",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/basics-of-cash-flow-statement/",
+      "slug": "basics-of-cash-flow-statement",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/advanced-ms-excel/",
+      "slug": "advanced-ms-excel",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/quickbooks-online/",
+      "slug": "quickbooks-online",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/language-lab/",
+      "slug": "language-lab",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/credit-score/",
+      "slug": "credit-score",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/professional-skills/",
+      "slug": "professional-skills",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/blue-ocean-strategy/",
+      "slug": "blue-ocean-strategy",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/llp-compliances-form-11/",
+      "slug": "llp-compliances-form-11",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/advanced-uae-vat/",
+      "slug": "advanced-uae-vat",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/business-valuation/",
+      "slug": "business-valuation",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/annual-filing-of-fla-return/",
+      "slug": "annual-filing-of-fla-return",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/mis-for-accountant/",
+      "slug": "mis-for-accountant",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/e-invoicing/",
+      "slug": "e-invoicing",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/e-way-bill/",
+      "slug": "e-way-bill",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/income-tax-tds-tcs-advance-tax/",
+      "slug": "income-tax-tds-tcs-advance-tax",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/good-length-pitching-for-startups/",
+      "slug": "good-length-pitching-for-startups",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/esi-and-epf-calculation/",
+      "slug": "esi-and-epf-calculation",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-apply-pan-card-online/",
+      "slug": "how-to-apply-pan-card-online",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/working-capital-management/",
+      "slug": "working-capital-management",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-view-download-form-26as/",
+      "slug": "how-to-view-download-form-26as",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/partnership-deed/",
+      "slug": "partnership-deed",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/business-law/",
+      "slug": "business-law",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/prevalidation-of-bank-account/",
+      "slug": "prevalidation-of-bank-account",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/basics-of-business-laws/",
+      "slug": "basics-of-business-laws",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/how-to-verify-and-update-your-din-kyc/",
+      "slug": "how-to-verify-and-update-your-din-kyc",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/uae-corporate-tax/",
+      "slug": "uae-corporate-tax",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/tally-prime-with-certification/",
+      "slug": "tally-prime-with-certification",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/certified-accounting-specialist-foundation-course-cas-foundation/",
+      "slug": "certified-accounting-specialist-foundation-course-cas-foundation",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/cas-executive/",
+      "slug": "cas-executive",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/post-graduate-diploma-in-management-pgdm-in-business-analytics-with-logistics-course/",
+      "slug": "post-graduate-diploma-in-management-pgdm-in-business-analytics-with-logistics-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/gst-simulation-software/",
+      "slug": "gst-simulation-software",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/gulf-accounting-analyst-programme-gaap/",
+      "slug": "gulf-accounting-analyst-programme-gaap",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/post-graduate-diploma-in-management-pgdm-with-acca-course/",
+      "slug": "post-graduate-diploma-in-management-pgdm-with-acca-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/zoho-books/",
+      "slug": "zoho-books",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/international-business-accounting-professional-ibap/",
+      "slug": "international-business-accounting-professional-ibap",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/pg-diploma-in-business-accounting-and-taxation-course-pgbat/",
+      "slug": "pg-diploma-in-business-accounting-and-taxation-course-pgbat",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/gulf-vat/",
+      "slug": "gulf-vat",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/sap-s-4hana-mm-materials-management/",
+      "slug": "sap-s-4hana-mm-materials-management",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/ms-office-certification-course/",
+      "slug": "ms-office-certification-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/business-accounting-specialist-program-basp/",
+      "slug": "business-accounting-specialist-program-basp",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/ppc-specialist-program/",
+      "slug": "ppc-specialist-program",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/seo-specialist-course/",
+      "slug": "seo-specialist-course",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/advanced-tally-prime-and-gulf-vat-courses-finprov-learning/",
+      "slug": "advanced-tally-prime-and-gulf-vat-courses-finprov-learning",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/business-accounting-professional-bap/",
+      "slug": "business-accounting-professional-bap",
+      "type": "course-primary"
+    },
+    {
+      "path": "/courses/certification-in-business-finance-and-analytics/",
+      "slug": "certification-in-business-finance-and-analytics",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/advanced-program-in-business-finance-analytics/",
+      "slug": "advanced-program-in-business-finance-analytics",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/business-accounting-specialist-program/",
+      "slug": "business-accounting-specialist-program",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/certified-finance-manager/",
+      "slug": "certified-finance-manager",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/mis-analyst/",
+      "slug": "mis-analyst",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/management-information-system/",
+      "slug": "management-information-system",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/sage-50-course-uae/",
+      "slug": "sage-50-course-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/ai-bootcamp-corporate/",
+      "slug": "ai-bootcamp-corporate",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/pg-diploma-in-indian-and-foreign-accounting-course/",
+      "slug": "pg-diploma-in-indian-and-foreign-accounting-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/iit-ihub-certified-digital-marketing-program-uae/",
+      "slug": "iit-ihub-certified-digital-marketing-program-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/sap-s-4hana-fi-uae/",
+      "slug": "sap-s-4hana-fi-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/sap-fico-course/",
+      "slug": "sap-fico-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/advanced-digital-marketing-course/",
+      "slug": "advanced-digital-marketing-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/certification-in-business-accounting-taxation/",
+      "slug": "certification-in-business-accounting-taxation",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/data-analytics-course-uae/",
+      "slug": "data-analytics-course-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/data-analytics-courses/",
+      "slug": "data-analytics-courses",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/llp-compliance-course-form-8/",
+      "slug": "llp-compliance-course-form-8",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/startup-planning-and-fundraising-strategies/",
+      "slug": "startup-planning-and-fundraising-strategies",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/mca-compliances-form-aoc-4-filing/",
+      "slug": "mca-compliances-form-aoc-4-filing",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/pgdm-with-finance-specialization/",
+      "slug": "pgdm-with-finance-specialization",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/ms-office-certification-course-uae/",
+      "slug": "ms-office-certification-course-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/ms-office-course/",
+      "slug": "ms-office-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/quickbooks-online-course/",
+      "slug": "quickbooks-online-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/advanced-uae-vat-uae/",
+      "slug": "advanced-uae-vat-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/esi-epf-calculation/",
+      "slug": "esi-epf-calculation",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/pre-validation-of-bank-account/",
+      "slug": "pre-validation-of-bank-account",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/uae-corporate-tax-uae/",
+      "slug": "uae-corporate-tax-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/tally-prime-with-certification-uae/",
+      "slug": "tally-prime-with-certification-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/tally-prime-certification/",
+      "slug": "tally-prime-certification",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/cas-foundation/",
+      "slug": "cas-foundation",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/pgdm-business-analytics-course/",
+      "slug": "pgdm-business-analytics-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/gulf-accounting-analyst/",
+      "slug": "gulf-accounting-analyst",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/gulf-accounting-analyst-programme-gaap-uae/",
+      "slug": "gulf-accounting-analyst-programme-gaap-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/pgdm-with-acca/",
+      "slug": "pgdm-with-acca",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/zoho-books-uae/",
+      "slug": "zoho-books-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/sap-mm-material-management/",
+      "slug": "sap-mm-material-management",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/sap-s-4hana-mm-materials-management-uae/",
+      "slug": "sap-s-4hana-mm-materials-management-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/ppc-specialist-program-uae/",
+      "slug": "ppc-specialist-program-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/seo-specialist-course-uae/",
+      "slug": "seo-specialist-course-uae",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/advanced-tally-prime-and-gulf-vat/",
+      "slug": "advanced-tally-prime-and-gulf-vat",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/bap/",
+      "slug": "bap",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/bap-course/",
+      "slug": "bap-course",
+      "type": "course-alias"
+    },
+    {
+      "path": "/courses/business-accounting-professional/",
+      "slug": "business-accounting-professional",
+      "type": "course-alias"
+    },
+    {
+      "path": "/blog/cloud-based-accounting-transforming-industry/",
+      "slug": "cloud-based-accounting-transforming-industry",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/tallyprime-features-simplify-gst-compliance/",
+      "slug": "tallyprime-features-simplify-gst-compliance",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/top-10-reasons-choose-tally-software/",
+      "slug": "top-10-reasons-choose-tally-software",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/accrual-vs-cash-accounting-method/",
+      "slug": "accrual-vs-cash-accounting-method",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/10-simple-steps-begin-learning-tally-prime/",
+      "slug": "10-simple-steps-begin-learning-tally-prime",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/sap-fico-vs-tally-which-to-learn-first/",
+      "slug": "sap-fico-vs-tally-which-to-learn-first",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/5-power-bi-dashboards-every-analyst-should-know/",
+      "slug": "5-power-bi-dashboards-every-analyst-should-know",
+      "type": "blog"
+    },
+    {
+      "path": "/blog/how-to-crack-your-first-finance-interview/",
+      "slug": "how-to-crack-your-first-finance-interview",
+      "type": "blog"
+    },
+    {
+      "path": "/career/vp-growth/",
+      "slug": "vp-growth",
+      "type": "career"
+    },
+    {
+      "path": "/career/seo-content-writer/",
+      "slug": "seo-content-writer",
+      "type": "career"
+    },
+    {
+      "path": "/career/senior-manager-performance-marketing/",
+      "slug": "senior-manager-performance-marketing",
+      "type": "career"
+    },
+    {
+      "path": "/career/performance-marketing-executive/",
+      "slug": "performance-marketing-executive",
+      "type": "career"
+    },
+    {
+      "path": "/career/seo-executive/",
+      "slug": "seo-executive",
+      "type": "career"
+    },
+    {
+      "path": "/career/placement-intern/",
+      "slug": "placement-intern",
+      "type": "career"
+    },
+    {
+      "path": "/career/senior-python-developer/",
+      "slug": "senior-python-developer",
+      "type": "career"
+    },
+    {
+      "path": "/career/pmo/",
+      "slug": "pmo",
+      "type": "career"
+    },
+    {
+      "path": "/career/content-social-media-lead/",
+      "slug": "content-social-media-lead",
+      "type": "career"
+    },
+    {
+      "path": "/career/academic-mentor/",
+      "slug": "academic-mentor",
+      "type": "career"
+    },
+    {
+      "path": "/career/growth-manager-spotgiraffe/",
+      "slug": "growth-manager-spotgiraffe",
+      "type": "career"
+    },
+    {
+      "path": "/career/software-development-ai-intern/",
+      "slug": "software-development-ai-intern",
+      "type": "career"
+    },
+    {
+      "path": "/career/career-counsellor/",
+      "slug": "career-counsellor",
+      "type": "career"
+    },
+    {
+      "path": "/career/operations-manager/",
+      "slug": "operations-manager",
+      "type": "career"
+    },
+    {
+      "path": "/career/vertical-head-online-sales/",
+      "slug": "vertical-head-online-sales",
+      "type": "career"
+    },
+    {
+      "path": "/career/digital-marketing-manager/",
+      "slug": "digital-marketing-manager",
+      "type": "career"
+    },
+    {
+      "path": "/career/digital-marketing-trainer/",
+      "slug": "digital-marketing-trainer",
+      "type": "career"
+    },
+    {
+      "path": "/career/associate-trainer-accounts/",
+      "slug": "associate-trainer-accounts",
+      "type": "career"
+    },
+    {
+      "path": "/business/digital-marketing-for-startups/",
+      "slug": "digital-marketing-for-startups",
+      "type": "business"
+    },
+    {
+      "path": "/business/cybersecurity-awareness-and-data-privacy-for-employees/",
+      "slug": "cybersecurity-awareness-and-data-privacy-for-employees",
+      "type": "business"
+    },
+    {
+      "path": "/business/data-analytics-for-business-decision-making/",
+      "slug": "data-analytics-for-business-decision-making",
+      "type": "business"
+    },
+    {
+      "path": "/business/ms-office-productivity-suite/",
+      "slug": "ms-office-productivity-suite",
+      "type": "business"
+    },
+    {
+      "path": "/business/project-management-tools/",
+      "slug": "project-management-tools",
+      "type": "business"
+    },
+    {
+      "path": "/business/ai-tools-for-productivity-and-automation/",
+      "slug": "ai-tools-for-productivity-and-automation",
+      "type": "business"
+    },
+    {
+      "path": "/business/generative-ai-for-business-leaders/",
+      "slug": "generative-ai-for-business-leaders",
+      "type": "business"
+    },
+    {
+      "path": "/business/accounting-software-and-erp-training/",
+      "slug": "accounting-software-and-erp-training",
+      "type": "business"
+    },
+    {
+      "path": "/business/advanced-excel-and-financial-modeling/",
+      "slug": "advanced-excel-and-financial-modeling",
+      "type": "business"
+    },
+    {
+      "path": "/business/corporate-finance-and-statutory-compliance/",
+      "slug": "corporate-finance-and-statutory-compliance",
+      "type": "business"
+    },
+    {
+      "path": "/business/indian-accounting-standards-ind-as/",
+      "slug": "indian-accounting-standards-ind-as",
+      "type": "business"
+    },
+    {
+      "path": "/business/ifrs-and-gaap-compliance/",
+      "slug": "ifrs-and-gaap-compliance",
+      "type": "business"
+    },
+    {
+      "path": "/business/taxation-and-compliance-updates/",
+      "slug": "taxation-and-compliance-updates",
+      "type": "business"
+    },
+    {
+      "path": "/business/valuation-and-due-diligence/",
+      "slug": "valuation-and-due-diligence",
+      "type": "business"
+    },
+    {
+      "path": "/business/international-taxation-and-transfer-pricing/",
+      "slug": "international-taxation-and-transfer-pricing",
+      "type": "business"
+    },
+    {
+      "path": "/business/financial-modeling-and-analysis/",
+      "slug": "financial-modeling-and-analysis",
+      "type": "business"
+    },
+    {
+      "path": "/business/finance-for-non-finance-managers/",
+      "slug": "finance-for-non-finance-managers",
+      "type": "business"
+    },
+    {
+      "path": "/business/finance-for-entrepreneurs/",
+      "slug": "finance-for-entrepreneurs",
+      "type": "business"
+    },
+    {
+      "path": "/business/high-performance-team-building/",
+      "slug": "high-performance-team-building",
+      "type": "business"
+    },
+    {
+      "path": "/business/strategic-leadership-and-change-management/",
+      "slug": "strategic-leadership-and-change-management",
+      "type": "business"
+    },
+    {
+      "path": "/business/emotional-resilience-and-mental-well-being/",
+      "slug": "emotional-resilience-and-mental-well-being",
+      "type": "business"
+    },
+    {
+      "path": "/business/manager-to-leader-first-time-manager-program/",
+      "slug": "manager-to-leader-first-time-manager-program",
+      "type": "business"
+    },
+    {
+      "path": "/business/creative-problem-solving-and-design-thinking/",
+      "slug": "creative-problem-solving-and-design-thinking",
+      "type": "business"
+    },
+    {
+      "path": "/business/agile-project-management-and-scrum-practices/",
+      "slug": "agile-project-management-and-scrum-practices",
+      "type": "business"
+    },
+    {
+      "path": "/business/customer-relationship-management-crm-tools/",
+      "slug": "customer-relationship-management-crm-tools",
+      "type": "business"
+    },
+    {
+      "path": "/business/customer-handling-and-sales-psychology/",
+      "slug": "customer-handling-and-sales-psychology",
+      "type": "business"
+    },
+    {
+      "path": "/business/emotional-intelligence-in-customer-handling/",
+      "slug": "emotional-intelligence-in-customer-handling",
+      "type": "business"
+    },
+    {
+      "path": "/business/compliance-and-ethical-selling/",
+      "slug": "compliance-and-ethical-selling",
+      "type": "business"
+    },
+    {
+      "path": "/business/shop-floor-communication-and-team-cohesion/",
+      "slug": "shop-floor-communication-and-team-cohesion",
+      "type": "business"
+    },
+    {
+      "path": "/business/upselling-cross-selling-and-negotiation-skills/",
+      "slug": "upselling-cross-selling-and-negotiation-skills",
+      "type": "business"
+    },
+    {
+      "path": "/business/esg-reporting-and-framework/",
+      "slug": "esg-reporting-and-framework",
+      "type": "business"
+    },
+    {
+      "path": "/business/decision-making-in-a-vuca-environment/",
+      "slug": "decision-making-in-a-vuca-environment",
+      "type": "business"
+    },
+    {
+      "path": "/business/entrepreneurial-mindset-in-global-scenario/",
+      "slug": "entrepreneurial-mindset-in-global-scenario",
+      "type": "business"
+    },
+    {
+      "path": "/business/global-business-strategy-and-innovation/",
+      "slug": "global-business-strategy-and-innovation",
+      "type": "business"
+    },
+    {
+      "path": "/business/strategic-thinking-collaboration-and-people-development/",
+      "slug": "strategic-thinking-collaboration-and-people-development",
+      "type": "business"
+    },
+    {
+      "path": "/business/managing-organisational-changes/",
+      "slug": "managing-organisational-changes",
+      "type": "business"
+    },
+    {
+      "path": "/business/people-analytics-and-data-driven-hr-decisions/",
+      "slug": "people-analytics-and-data-driven-hr-decisions",
+      "type": "business"
+    }
+  ]
+}

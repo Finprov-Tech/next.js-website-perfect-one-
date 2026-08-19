@@ -1,0 +1,478 @@
+{
+  "database_hint": "finprovadmin_finprov",
+  "siteurl": "https://staging2.finprov.com",
+  "home": "https://staging2.finprov.com",
+  "total_rows": 44623,
+  "by_type": {
+    "page": 367,
+    "wpforms": 2,
+    "attachment": 3776,
+    "custom_css": 3,
+    "sfwd-lessons": 3185,
+    "sfwd-topic": 14725,
+    "elementor_library": 107,
+    "sfwd-transactions": 3,
+    "nav_menu_item": 38,
+    "post": 747,
+    "sfwd-quiz": 4017,
+    "_pods_pod": 19,
+    "product": 111,
+    "_pods_field": 205,
+    "instructor": 1,
+    "e-landing-page": 28,
+    "shop_order": 2337,
+    "sfwd-courses": 127,
+    "sfwd-question": 11667,
+    "sfwd-certificates": 4,
+    "mt_pp": 2114,
+    "oembed_cache": 62,
+    "groups": 4,
+    "mec_calendars": 3,
+    "custom-css-js": 3,
+    "points-type": 3,
+    "points-award": 5,
+    "achievement-type": 2,
+    "test": 2,
+    "elementor_snippet": 7,
+    "shop_coupon": 153,
+    "mec-events": 96,
+    "news_update": 11,
+    "socialproof": 1,
+    "ld-achievement": 1,
+    "points-deduct": 2,
+    "rank-type": 1,
+    "level": 1,
+    "badge": 1,
+    "sfwd-assignment": 625,
+    "user_registration": 1,
+    "um_form": 3,
+    "um_directory": 1,
+    "elementskit_template": 1,
+    "elementskit_content": 1,
+    "_pods_group": 19,
+    "shop_order_refund": 2,
+    "wp_global_styles": 1,
+    "learncab": 5,
+    "lancaster": 4,
+    "forum": 1,
+    "flashcard_set": 11,
+    "topic": 1,
+    "wp_navigation": 1,
+    "revision": 5
+  },
+  "by_status": {
+    "publish": 35639,
+    "inherit": 3781,
+    "draft": 2793,
+    "trash": 66,
+    "private": 5,
+    "wc-completed": 2191,
+    "wc-cancelled": 109,
+    "wc-pending": 13,
+    "wc-failed": 24,
+    "wc-refunded": 2
+  },
+  "published_by_type": {
+    "page": 321,
+    "wpforms": 2,
+    "custom_css": 3,
+    "sfwd-lessons": 3055,
+    "sfwd-topic": 13039,
+    "elementor_library": 93,
+    "nav_menu_item": 38,
+    "post": 712,
+    "sfwd-quiz": 3127,
+    "_pods_pod": 19,
+    "_pods_field": 205,
+    "instructor": 1,
+    "e-landing-page": 25,
+    "sfwd-courses": 98,
+    "sfwd-question": 11666,
+    "product": 106,
+    "mt_pp": 2114,
+    "oembed_cache": 62,
+    "groups": 4,
+    "mec_calendars": 3,
+    "sfwd-certificates": 3,
+    "custom-css-js": 3,
+    "points-type": 3,
+    "points-award": 5,
+    "achievement-type": 2,
+    "test": 1,
+    "elementor_snippet": 5,
+    "shop_coupon": 150,
+    "mec-events": 86,
+    "news_update": 11,
+    "socialproof": 1,
+    "ld-achievement": 1,
+    "points-deduct": 2,
+    "rank-type": 1,
+    "level": 1,
+    "badge": 1,
+    "sfwd-assignment": 625,
+    "user_registration": 1,
+    "um_form": 3,
+    "um_directory": 1,
+    "elementskit_template": 1,
+    "elementskit_content": 1,
+    "_pods_group": 19,
+    "wp_global_styles": 1,
+    "lancaster": 3,
+    "learncab": 2,
+    "forum": 1,
+    "flashcard_set": 10,
+    "topic": 1,
+    "wp_navigation": 1
+  },
+  "migration_targets": {
+    "cms_page_or_landing": 321,
+    "review_or_skip": 34508,
+    "blog_post": 712,
+    "course": 98
+  },
+  "sample_slugs": {
+    "page": [
+      "sample-page",
+      "privacy-policy",
+      "certification-in-business-accounting-taxation",
+      "faq",
+      "all-courses",
+      "course-details",
+      "entrepreuers-managers",
+      "blog"
+    ],
+    "wpforms": [
+      "subscribe-form",
+      "contact-form"
+    ],
+    "custom_css": [
+      "astra",
+      "astra-child",
+      "astra-child-2"
+    ],
+    "sfwd-lessons": [
+      "defining-e-commerce",
+      "e-commerce-marketing",
+      "introduction-to-wordpress",
+      "first-steps-with-wordpress",
+      "introduction-to-html",
+      "introduction-and-basics-of-css",
+      "lesson-3",
+      "working-capital-management"
+    ],
+    "sfwd-topic": [
+      "introduction",
+      "basics-of-e-commerce",
+      "management-of-risk",
+      "electronic-payment-systems",
+      "what-is-wordpress",
+      "how-wordpress-works",
+      "wordpress-semantics-learning-the-jargon",
+      "post-formats"
+    ],
+    "elementor_library": [
+      "default-kit",
+      "default-kit-2",
+      "default-footer",
+      "default-header",
+      "learndash-single-course",
+      "learndash-single-lesson",
+      "learndash-single-quiz",
+      "learndash-single-topic"
+    ],
+    "nav_menu_item": [
+      "lms-interactive-content",
+      "become-a-php-master",
+      "html5-css3-essentials",
+      "javascript-development",
+      "wordpress-basic-tutorial",
+      "introduction-to-coding",
+      "courses",
+      "course-1"
+    ],
+    "post": [
+      "best-courses-after-bcom-career-options-for-bcom",
+      "how-to-face-accounting-interview-questions",
+      "gst-practitioner-a-career-path-for-future",
+      "demand-and-availability-of-quality-accountants",
+      "best-accounting-software",
+      "getting-ready-for-a-job",
+      "reduced-taxes-increased-compliance-india-marks-4-years-gst-experiment",
+      "10-secrets-to-sure-shot-success-in-ca-foundation"
+    ],
+    "sfwd-quiz": [
+      "quiz-1",
+      "quiz",
+      "quiz-2",
+      "quiz-3",
+      "quickbooks-quiz-1-9",
+      "quickbooks-quiz-2",
+      "quickbooks-quiz-2-2",
+      "qb-quiz-3"
+    ],
+    "_pods_pod": [
+      "sfwd-courses",
+      "audience_type",
+      "delivery_mode",
+      "hot_filter",
+      "topic",
+      "instructor_field",
+      "instructor",
+      "faq"
+    ],
+    "_pods_field": [
+      "about_the_course",
+      "what_youll_learn",
+      "lectures",
+      "quizzes",
+      "language",
+      "assessments",
+      "product_id",
+      "name"
+    ],
+    "instructor": [
+      "inst1"
+    ],
+    "e-landing-page": [
+      "demo-class-certified-online-accountant",
+      "demo-class-cbat",
+      "demo-class-pgbat",
+      "demo-class-pgdifa",
+      "demo-class-sap-fico",
+      "demo-class-diploma-in-indian-accounting",
+      "demo-class-advanced-tally-prime-and-gulf-vat",
+      "demo-class-ca-foundation"
+    ],
+    "sfwd-courses": [
+      "certification-in-business-accounting-taxation",
+      "sap-fico-course",
+      "working-capital-management",
+      "gst-return-filing",
+      "blue-ocean-strategy",
+      "tally-prime-certification",
+      "quickbooks-and-tally-prime-with-certification",
+      "certification-in-quickbooks"
+    ],
+    "sfwd-question": [
+      "question",
+      "question-2",
+      "question-3",
+      "question-4",
+      "question-5",
+      "question-6",
+      "basic-accounting-quiz",
+      "question-8"
+    ],
+    "product": [
+      "sap-fico",
+      "quickbooks-online",
+      "blue-ocean-strategy",
+      "basic-accounting",
+      "gst-for-accountants",
+      "ca-foundation",
+      "advanced-tally-prime-and-gulf-vat",
+      "pg-diploma-in-business-accounting-and-taxation-course-pgbat"
+    ],
+    "mt_pp": [
+      "srijidh-km",
+      "ashna-bharath-pillai",
+      "saranya",
+      "qtech",
+      "editor",
+      "yadhu-au",
+      "anse-c-e",
+      "ca-adharsh-joseph"
+    ],
+    "oembed_cache": [
+      "29a60cb5254eb066604e6ee30bd07b88",
+      "01f793523b5db42b45e1f0cf7737f436",
+      "556421321cca73bb4994f5cd717bc848",
+      "ec209d7485f8072eb3319d897041f32c",
+      "fca3ad2d8b315cd0f1ba89696ce80b54",
+      "a33451401d7c7eb267456418f883d857",
+      "5604ad1017271bdd03d0a793ce24bc4d",
+      "a98a25c90ff4a148e7fabab81e499691"
+    ],
+    "groups": [
+      "biz-test",
+      "qtech-business-team",
+      "cbat-november",
+      "cbat-december-2021"
+    ],
+    "mec_calendars": [
+      "event-carousel",
+      "next-event",
+      "event-list"
+    ],
+    "sfwd-certificates": [
+      "elearning-certificate",
+      "cbat",
+      "elearning"
+    ],
+    "custom-css-js": [
+      "custom",
+      "google-search-concole",
+      "135822"
+    ],
+    "points-type": [
+      "lesson-point",
+      "course-point",
+      "credit-points"
+    ],
+    "points-award": [
+      "8627-2",
+      "8639-2",
+      "10966-2",
+      "course-completion-2",
+      "11300-2"
+    ],
+    "achievement-type": [
+      "test",
+      "badge"
+    ],
+    "test": [
+      "starter"
+    ],
+    "elementor_snippet": [
+      "google-tag-manager-head",
+      "google-tag-manager",
+      "chatr",
+      "drift",
+      "fb-instant-article"
+    ],
+    "shop_coupon": [
+      "friend",
+      "launch100",
+      "test",
+      "test50",
+      "test55",
+      "kmeagst",
+      "kmeaexcel",
+      "kmeaqb"
+    ],
+    "mec-events": [
+      "sap-fico",
+      "certification-in-business-accounting-taxation-cbat",
+      "certification-in-business-accounting-taxation-cbat-2",
+      "pg-diploma-in-business-accounting-and-taxation",
+      "certification-in-business-accounting-taxation-cbat-2-562",
+      "gst-free-class-manjeri",
+      "quickbooks-online-free-class-manjeri",
+      "ecommerce-analyst"
+    ],
+    "news_update": [
+      "icai-has-announced-an-extension-for-admission-in-foundation-exam-to-be-held-in-december",
+      "ca-foundation-exams",
+      "income-tax-return-filing-extension",
+      "income-tax-aadhaar-card-to-dmat5-financial-deadlines-of-september",
+      "icmai-cma-2022",
+      "icai-ca-admit-card-2022-out",
+      "icai-releases-the-ca-foundation-admit-card-2022",
+      "icmai-releases-the-cma-admit-card-in-2022"
+    ],
+    "socialproof": [
+      "11047"
+    ],
+    "ld-achievement": [
+      "power-learner"
+    ],
+    "points-deduct": [
+      "11119-2",
+      "119096-2"
+    ],
+    "rank-type": [
+      "level"
+    ],
+    "level": [
+      "level-1"
+    ],
+    "badge": [
+      "premium-badge"
+    ],
+    "sfwd-assignment": [
+      "assignment_9120_162978970725_1-webp",
+      "assignment_6093_164016375566_assignment_1-pdf",
+      "assignment_4836_164558678481_screenshot_20220223_085614_samsung_internet-jpg",
+      "assignment_26320_165104012085_module_1-pdf",
+      "assignment_26320_165114451749_module_1-pdf",
+      "assignment_38012_165208570629_module_1-pdf",
+      "assignment_26320_165254645126_module_1-pdf",
+      "assignment_40689_165371398634_module_3accounting_terms-pdf"
+    ],
+    "user_registration": [
+      "default-form"
+    ],
+    "um_form": [
+      "default-registration",
+      "default-login",
+      "default-profile"
+    ],
+    "um_directory": [
+      "members"
+    ],
+    "elementskit_template": [
+      "elementskit_lite-template-1633919753"
+    ],
+    "elementskit_content": [
+      "dynamic-content-megamenu-menuitem15363"
+    ],
+    "_pods_group": [
+      "more_fields",
+      "more_fields",
+      "more_fields",
+      "details",
+      "details",
+      "more_fields",
+      "more_fields",
+      "more_fields"
+    ],
+    "wp_global_styles": [
+      "wp-global-styles-astra-child"
+    ],
+    "lancaster": [
+      "test-lancaster",
+      "lancaster-test1",
+      "lancaster-university"
+    ],
+    "learncab": [
+      "cma-inter",
+      "bank-coaching-program"
+    ],
+    "forum": [
+      "qa"
+    ],
+    "flashcard_set": [
+      "test",
+      "tally-flash-cards",
+      "gst-flash-cards",
+      "excel-flash-cards",
+      "practical-accounting-flash-cards",
+      "test-2",
+      "excel-flashcard2",
+      "gst-flashcard"
+    ],
+    "topic": [
+      "how-usefull-is-quickbooks-tool-hub"
+    ],
+    "wp_navigation": [
+      "primary-menu"
+    ]
+  },
+  "static_page_slugs": [
+    "all-courses",
+    "blog",
+    "business",
+    "career",
+    "contact",
+    "faq",
+    "home",
+    "placement",
+    "privacy-policy",
+    "sample-page",
+    "team",
+    "terms-and-conditions",
+    "testimonials",
+    "verify-student-certificate"
+  ],
+  "rank_math_redirects": 1
+}

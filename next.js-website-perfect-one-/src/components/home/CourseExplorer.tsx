@@ -94,7 +94,7 @@ export function CourseExplorer({
 
   const heading = courseSection?.heading || "Future-Ready Programs Tailored for You";
   const subHeading = courseSection?.sub_heading || "Pick a school, then a track — every program ends in placement support.";
-  const footerHref = resolveCmsLink(courseSection?.button_internal_page, courseSection?.button_external_url, "/courses");
+  const footerHref = resolveCmsLink(courseSection?.button_internal_page, courseSection?.button_external_url, "/all-courses");
   const footerText = courseSection?.button_text || `Compare all ${courses.length} programs side-by-side`;
 
   const allCards: DisplayCard[] = useMemo(() => {

@@ -12,7 +12,7 @@ import {
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
-import { posts as staticPosts, type Post } from "@/data/blog";
+import { type Post } from "@/data/blog";
 import { resolveCmsImageUrl, type CMSBlogCategory, type CMSBlogPostSummary, type CMSPage } from "@/lib/cms";
 import { RichText } from "@/components/site/RichText";
 
@@ -72,11 +72,17 @@ export function BlogPageClient({
   const ctaHeading = cta?.heading || "Stay Updated on Corporate Tax & SAP Trends";
   const ctaParagraph = cta?.paragraph || "Join 12,000+ finance professionals receiving weekly updates directly in their inbox.";
 
-  const posts: Post[] = cmsPosts.length ? cmsPosts.map(fromCmsSummary) : staticPosts;
+  const posts: Post[] = useMemo(
+    () =>
+      cmsPosts
+        .map(fromCmsSummary)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+    [cmsPosts],
+  );
 
   const categories = useMemo(() => {
     if (cmsCategories.length) return ["All", ...cmsCategories.map((c) => c.name)];
-    return ["All", ...Array.from(new Set(posts.map((p) => p.category)))];
+    return ["All", ...Array.from(new Set(posts.map((p) => p.category).filter(Boolean)))];
   }, [cmsCategories, posts]);
 
   const filtered = useMemo(() => {
@@ -202,7 +208,7 @@ export function BlogPageClient({
 
                 return (
                   <StaggerItem key={p.slug}>
-                    <Link href={`/blog/${p.slug}`} className="block h-full">
+                    <Link href={`/${p.slug}`} className="block h-full">
                       <article className="group relative h-[440px] w-full overflow-hidden rounded-2xl border border-white/10 bg-navy shadow-2xl transition-all duration-500 hover:border-gold/50 hover:shadow-emerald/20">
                         <div
                           className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"

@@ -36,7 +36,7 @@ export function TrackCards() {
             const TrackIcon = categoryIcons[t.category];
             return (
               <StaggerItem key={t.category}>
-                <Link href="/courses" className="group relative block h-full">
+                <Link href="/all-courses" className="group relative block h-full">
                   <PhotoSlot
                     alt={`${t.category} track`}
                     caption={t.category}

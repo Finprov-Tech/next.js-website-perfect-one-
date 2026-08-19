@@ -190,7 +190,7 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
     cta?.paragraph ||
     "Join over 4,500+ successful graduates placed in top MNCs, Big 4 audit firms, and leading technology companies across India.";
   const ctaLabel = cta?.cta_text || "Explore Our Programs";
-  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/courses");
+  const ctaHref = resolveCmsLink(cta?.cta_internal_page, cta?.cta_external_url, "/all-courses");
   const secondaryLabel = cta?.secondary_cta_text || "Speak with a Counselor";
   const secondaryHasLink = Boolean(cta?.secondary_cta_internal_page || cta?.secondary_cta_external_url);
   const secondaryHref = secondaryHasLink

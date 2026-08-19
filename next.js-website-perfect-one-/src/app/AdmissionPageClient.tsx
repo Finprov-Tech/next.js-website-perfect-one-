@@ -582,7 +582,7 @@ function AdmissionContent({ cmsPage }: { cmsPage: CMSPage | null }) {
                   <Download className="h-4 w-4" /> Download Admission Receipt
                 </button>
                 <Link
-                  href="/courses"
+                  href="/all-courses"
                   className="flex items-center gap-2 rounded-xl border border-border px-6 py-3 text-xs font-bold text-navy hover:bg-bg-light"
                 >
                   Explore Other Courses

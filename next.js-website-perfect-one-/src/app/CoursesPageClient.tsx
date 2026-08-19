@@ -16,9 +16,11 @@ import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 import { CmsIcon } from "@/lib/icons";
 import type { CMSPage } from "@/lib/cms";
 import { RichText } from "@/components/site/RichText";
+import learnersPhoto from "@/assets/kerala-students.png";
 
 const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
-const ITEMS_PER_PAGE = 8;
+const ITEMS_PER_PAGE = 9; // divides evenly into the 3-column grid — no dangling partial row
+const learnersPhotoSrc = typeof learnersPhoto === "string" ? learnersPhoto : (learnersPhoto as { src: string }).src;
 
 export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
   const courses = useCourseCatalog();
@@ -154,7 +156,8 @@ export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             className="hidden lg:block"
           >
             <PhotoSlot
-              alt="Learner studying at Finprov"
+              src={learnersPhotoSrc}
+              alt="Learners studying at Finprov"
               caption="Real learners, real outcomes"
               gradient="from-cta/80 to-navy/70"
               className="aspect-[4/3] rounded-2xl shadow-2xl overflow-hidden border border-white/15"

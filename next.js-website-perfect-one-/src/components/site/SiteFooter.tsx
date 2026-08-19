@@ -23,10 +23,10 @@ const columns = [
   {
     title: "Programs",
     links: [
-      { label: "All Courses", to: "/courses" },
-      { label: "Finance", to: "/courses" },
-      { label: "Analytics", to: "/courses" },
-      { label: "Marketing", to: "/courses" },
+      { label: "All Courses", to: "/all-courses" },
+      { label: "Finance", to: "/all-courses" },
+      { label: "Analytics", to: "/all-courses" },
+      { label: "Marketing", to: "/all-courses" },
     ],
   },
   {

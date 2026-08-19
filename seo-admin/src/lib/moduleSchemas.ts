@@ -385,7 +385,7 @@ export const PAGE_SECTION_ORDER: Record<string, string[]> = {
     "testimonials", "cta", "partner_logos", "team", "why_finprov", "life_at_finprov", "faq",
   ],
   about: ["banner", "credentials", "team", "history", "why_finprov", "cta"],
-  courses: ["banner", "courses"],
+  "all-courses": ["banner", "courses"],
   placement: ["placements", "testimonials", "partner_logos"],
   business: ["banner", "why_finprov", "cta", "faq"],
   blog: ["banner", "cta"],

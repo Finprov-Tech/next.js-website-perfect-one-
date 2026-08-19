@@ -1,7 +1,7 @@
 import bleach
 from rest_framework import serializers
 
-from blog.models import BlogCategory, BlogPost, BlogPostSection
+from blog.models import BlogCategory, BlogPost, BlogPostSection, Author
 from modules.models import (
     CTA,
     Banner,
@@ -603,3 +603,27 @@ class BlogPostDetailSerializer(BlogPostAuthorFieldsMixin, serializers.ModelSeria
     def get_sections(self, obj):
         sections = obj.sections.filter(is_active=True).order_by('display_order')
         return BlogPostSectionSerializer(sections, many=True, context=self.context).data
+
+
+class AuthorDetailSerializer(serializers.ModelSerializer):
+    posts = serializers.SerializerMethodField()
+    photo = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Author
+        fields = ['name', 'slug', 'role', 'bio', 'photo', 'posts']
+
+    def get_photo(self, obj):
+        if not obj.photo:
+            return None
+        request = self.context.get('request')
+        url = obj.photo.url
+        return request.build_absolute_uri(url) if request else url
+
+    def get_posts(self, obj):
+        posts = (
+            obj.posts.filter(status=BlogPost.STATUS_PUBLISHED)
+            .select_related('category', 'author')
+            .order_by('-published_date')
+        )
+        return BlogPostListSerializer(posts, many=True, context=self.context).data
