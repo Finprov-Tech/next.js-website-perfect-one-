@@ -167,7 +167,7 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                 key={area.title}
                 type="button"
                 onClick={() => setSelectedAreaTitle(area.title)}
-                className={`rounded-xl px-4 py-4 text-sm font-bold transition-colors sm:text-base ${selectedAreaTitle === area.title ? "bg-cta text-white shadow-lg shadow-cta/20" : "bg-navy/[0.06] text-navy hover:bg-navy/[0.1]"}`}
+                className={`rounded-xl px-4 py-4 text-sm font-bold transition-colors sm:text-base ${selectedAreaTitle === area.title ? "bg-navy text-white shadow-lg shadow-navy/20" : "bg-navy/[0.06] text-navy hover:bg-navy/[0.1]"}`}
               >
                 {area.title}
               </button>
@@ -241,10 +241,14 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             ))}
           </div>
           <Reveal>
-            <div className="mt-12 rounded-3xl bg-gradient-to-r from-cta via-teal to-cta p-8 text-center text-white shadow-xl shadow-cta/20 sm:p-12">
-              <h2 className="text-3xl font-bold">{ctaHeading}</h2>
-              <p className="mx-auto mt-3 max-w-2xl text-white/80"><RichText html={ctaParagraph} /></p>
-              <Link href={ctaHref} className="btn-gloss mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3.5 font-bold text-navy">{ctaLabel} <ArrowUpRight className="h-4 w-4" /></Link>
+            <div className="relative mt-12 overflow-hidden rounded-3xl bg-gradient-to-br from-navy via-emerald-deep to-navy p-8 text-center text-white shadow-xl shadow-navy/25 sm:p-12">
+              <div className="pointer-events-none absolute -right-16 -bottom-16 h-64 w-64 rounded-full bg-mint/15 blur-3xl" />
+              <div className="pointer-events-none absolute -left-10 -top-10 h-48 w-48 rounded-full bg-teal/20 blur-3xl" />
+              <div className="relative">
+                <h2 className="text-3xl font-bold">{ctaHeading}</h2>
+                <p className="mx-auto mt-3 max-w-2xl text-white/80"><RichText html={ctaParagraph} /></p>
+                <Link href={ctaHref} className="btn-gloss mt-7 inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3.5 font-bold text-navy shadow-lg shadow-gold/25">{ctaLabel} <ArrowUpRight className="h-4 w-4" /></Link>
+              </div>
             </div>
           </Reveal>
         </div>

@@ -27,12 +27,26 @@ function normalizePath(pathname: string): string {
   return pathname.endsWith("/") ? pathname : `${pathname}/`;
 }
 
+const CONTACT_CANONICAL = "/contact/";
+
 export async function middleware(request: NextRequest) {
+  const pathname = normalizePath(request.nextUrl.pathname);
+
+  // Migrated WP slug — must not override the dedicated Next.js contact page (map + form).
+  if (pathname === "/contact-us/") {
+    return NextResponse.redirect(new URL(CONTACT_CANONICAL, request.url), 301);
+  }
+
   const redirects = await getRedirectMap();
-  const match = redirects.get(normalizePath(request.nextUrl.pathname));
+  const match = redirects.get(pathname);
 
   if (match) {
-    return NextResponse.redirect(new URL(match.new_path, request.url), match.redirect_type);
+    // WordPress imported /contact/ → /contact-us/ breaks our dedicated /contact route.
+    if (pathname === CONTACT_CANONICAL && normalizePath(match.new_path) === "/contact-us/") {
+      return NextResponse.next();
+    }
+    const destination = normalizePath(match.new_path) === "/contact-us/" ? CONTACT_CANONICAL : match.new_path;
+    return NextResponse.redirect(new URL(destination, request.url), match.redirect_type);
   }
 
   return NextResponse.next();

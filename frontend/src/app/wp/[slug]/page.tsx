@@ -1,4 +1,4 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
 import { getPageBySlug, getBlogPostBySlug, getBlogPosts } from "@/lib/cms";
 import { buildMetadata, SITE_URL } from "@/lib/seo";
@@ -101,6 +101,10 @@ export default async function RootSlugPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
+
+  if (slug === "contact-us") {
+    redirect("/contact");
+  }
 
   const cmsPage = await getPageBySlug(slug);
   if (cmsPage?.landing_page) {

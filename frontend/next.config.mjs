@@ -14,6 +14,8 @@ export default function nextConfig(phase) {
   async redirects() {
     // finprov.com uses root-level slugs — no /blog/, /courses/, /business/, /career/ prefixes.
     return [
+      // Live site canonical URL is /contact/ — the migrated WP slug contact-us is a broken CMS landing page.
+      { source: '/contact-us', destination: '/contact', permanent: true },
       { source: '/blog/:slug', destination: '/:slug', permanent: true },
       { source: '/courses/:slug', destination: '/:slug', permanent: true },
       { source: '/business/:program', destination: '/:program', permanent: true },
