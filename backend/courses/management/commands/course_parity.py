@@ -10,7 +10,7 @@ class Command(BaseCommand):
     help = 'Read-only parity report comparing the TypeScript manifest with the canonical CMS import.'
 
     def add_arguments(self, parser):
-        default = Path(__file__).resolve().parents[4] / 'next.js-website-perfect-one-' / 'src' / 'data' / 'courses.ts'
+        default = Path(__file__).resolve().parents[4] / 'frontend' / 'src' / 'data' / 'courses.ts'
         parser.add_argument('--source', type=Path, default=default)
 
     def handle(self, *args, **options):

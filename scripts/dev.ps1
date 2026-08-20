@@ -8,7 +8,7 @@ $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot '..')).Path
 $RuntimeRoot = Join-Path $ProjectRoot '.runtime'
 $Services = @(
     @{ Name='django'; Port=8000; WorkDir=(Join-Path $ProjectRoot 'backend'); File='python.exe'; Args=@('manage.py','runserver','127.0.0.1:8000','--noreload'); Health='http://127.0.0.1:8000/api/v1/courses/' },
-    @{ Name='public'; Port=3000; WorkDir=(Join-Path $ProjectRoot 'next.js-website-perfect-one-'); File='cmd.exe'; Args=@('/c','npm run dev'); Health='http://127.0.0.1:3000/' },
+    @{ Name='public'; Port=3000; WorkDir=(Join-Path $ProjectRoot 'frontend'); File='cmd.exe'; Args=@('/c','npm run dev'); Health='http://127.0.0.1:3000/' },
     @{ Name='seo-admin'; Port=3001; WorkDir=(Join-Path $ProjectRoot 'seo-admin'); File='cmd.exe'; Args=@('/c','npm run dev'); Health='http://127.0.0.1:3001/login' }
 )
 

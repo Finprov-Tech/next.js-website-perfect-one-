@@ -16,7 +16,7 @@ from courses.models import (
 from seo.models import Redirect
 
 
-SOURCE = Path(__file__).resolve().parents[2] / 'next.js-website-perfect-one-' / 'src' / 'data' / 'courses.ts'
+SOURCE = Path(__file__).resolve().parents[2] / 'frontend' / 'src' / 'data' / 'courses.ts'
 
 
 class CourseImportAndAPITests(TestCase):

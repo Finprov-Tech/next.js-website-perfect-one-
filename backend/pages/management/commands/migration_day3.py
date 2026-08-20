@@ -17,7 +17,7 @@ from seo.models import Redirect, SEOMeta  # noqa: E402
 
 DEFAULT_SITEMAP = (
     Path(__file__).resolve().parents[4]
-    / "next.js-website-perfect-one-"
+    / "frontend"
     / "scratch"
     / "live_sitemap_pages.json"
 )

@@ -26,7 +26,7 @@ $manifest = [ordered]@{
     format_version=1; created_at=(Get-Date).ToString('o'); project_root=$ProjectRoot
     database=@{ file='db.sqlite3'; bytes=(Get-Item $backupDb).Length; sha256=$dbHash }
     media=@{ directory='media'; files=$mediaFiles.Count; bytes=($mediaFiles | Measure-Object Length -Sum).Sum; manifest='media-files.json'; manifest_sha256=$mediaManifestHash }
-    courses_ts_git_hash=(git -C $ProjectRoot hash-object 'next.js-website-perfect-one-/src/data/courses.ts')
+    courses_ts_git_hash=(git -C $ProjectRoot hash-object 'frontend/src/data/courses.ts')
 }
 $countLines = @(python (Join-Path $ProjectRoot 'backend/manage.py') shell -c "from courses.models import Course; print(Course.objects.count()); print(Course.objects.filter(status=Course.STATUS_PUBLISHED).count()); print(Course.objects.filter(status=Course.STATUS_DRAFT).count())" | Select-Object -Last 3)
 if ($LASTEXITCODE -ne 0) { throw 'Django course count query failed.' }

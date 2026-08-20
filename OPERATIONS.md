@@ -33,9 +33,9 @@ Stop development services before release verification, then run:
 ```powershell
 python backend/manage.py check
 python backend/manage.py test
-npm --prefix next.js-website-perfect-one- run typecheck
-npm --prefix next.js-website-perfect-one- run lint
-npm --prefix next.js-website-perfect-one- run build
+npm --prefix frontend run typecheck
+npm --prefix frontend run lint
+npm --prefix frontend run build
 npm --prefix seo-admin run typecheck
 npm --prefix seo-admin run lint
 npm --prefix seo-admin run build

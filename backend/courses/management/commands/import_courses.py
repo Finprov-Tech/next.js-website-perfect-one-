@@ -66,7 +66,7 @@ class Command(BaseCommand):
     help = 'Idempotently import the reviewed 70-course TypeScript manifest as draft CMS records.'
 
     def add_arguments(self, parser):
-        default = Path(__file__).resolve().parents[4] / 'next.js-website-perfect-one-' / 'src' / 'data' / 'courses.ts'
+        default = Path(__file__).resolve().parents[4] / 'frontend' / 'src' / 'data' / 'courses.ts'
         parser.add_argument('--source', type=Path, default=default)
         parser.add_argument('--force', action='store_true', help='Re-import records even when their source hash is unchanged.')
 

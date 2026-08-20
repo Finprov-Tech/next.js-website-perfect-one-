@@ -19,7 +19,7 @@ $total = [int]$countLines[0]; $published = [int]$countLines[1]; $draft = [int]$c
 if ($total -ne 70 -or $published -ne 48 -or $draft -ne 22) { throw "Unexpected course counts: total=$total published=$published draft=$draft" }
 Write-Host "PASS course counts total=70 published=48 draft=22"
 
-$hash = git -C $ProjectRoot hash-object 'next.js-website-perfect-one-/src/data/courses.ts'
+$hash = git -C $ProjectRoot hash-object 'frontend/src/data/courses.ts'
 $expected = '235dd23c99a7f01d49fa2e21022b43fb78919526'
 if ($hash -ne $expected) { throw "courses.ts hash mismatch: $hash" }
 Write-Host "PASS courses.ts hash $hash"
