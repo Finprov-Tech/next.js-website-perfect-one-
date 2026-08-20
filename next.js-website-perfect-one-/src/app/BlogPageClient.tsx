@@ -15,9 +15,9 @@ import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { type Post } from "@/data/blog";
 import { resolveCmsImageUrl, type CMSBlogCategory, type CMSBlogPostSummary, type CMSPage } from "@/lib/cms";
 import { RichText } from "@/components/site/RichText";
+import { blogDateTimestamp, formatBlogDate } from "@/lib/formatBlogDate";
 
 const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
-const dateFmt = new Intl.DateTimeFormat("en-IN", { year: "numeric", month: "short", day: "numeric" });
 
 const postImages: Record<string, string> = {
   "cloud-based-accounting-transforming-industry": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=800&q=80",
@@ -76,7 +76,7 @@ export function BlogPageClient({
     () =>
       cmsPosts
         .map(fromCmsSummary)
-        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()),
+        .sort((a, b) => blogDateTimestamp(b.date) - blogDateTimestamp(a.date)),
     [cmsPosts],
   );
 
@@ -229,7 +229,7 @@ export function BlogPageClient({
 
                           <div>
                             <div className="text-[11px] font-bold text-white/80 uppercase tracking-widest">
-                              {dateFmt.format(new Date(p.date))} &bull; BY {p.author.name}
+                              {formatBlogDate(p.date) ? `${formatBlogDate(p.date)} \u2022 ` : ""}BY {p.author.name}
                             </div>
 
                             <h2 className="mt-2 text-xl font-black uppercase leading-snug text-white tracking-tight group-hover:text-white transition-all">

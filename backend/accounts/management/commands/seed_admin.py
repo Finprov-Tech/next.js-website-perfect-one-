@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand
 
 DEV_USERNAME = 'Admin'
-DEV_PASSWORD = 'Admin123'
+DEV_PASSWORD = 'Admin@123'
 
 
 class Command(BaseCommand):

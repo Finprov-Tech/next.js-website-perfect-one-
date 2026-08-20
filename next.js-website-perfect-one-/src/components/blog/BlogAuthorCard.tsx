@@ -1,4 +1,5 @@
-import { Linkedin } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Linkedin, User } from "lucide-react";
 import type { StaticImageData } from "next/image";
 import type { Post } from "@/data/blog";
 
@@ -14,14 +15,37 @@ const AUTHOR_PHOTOS: Record<string, StaticImageData> = {
   "CA Anish": anishPhoto,
 };
 
+const AUTHOR_PHOTOS_BY_SLUG: Record<string, StaticImageData> = {
+  "ca-veena-vijayan": veenaPhoto,
+  "ca-anand-kumar": anandPhoto,
+  "ca-taniya": taniyaPhoto,
+  "ca-anish": anishPhoto,
+};
+
 function photoSrc(img: StaticImageData | string | undefined): string | undefined {
   if (!img) return undefined;
   return typeof img === "string" ? img : img.src;
 }
 
-export function resolveAuthorPhoto(post: Post): string | undefined {
-  if (post.author.photoUrl) return post.author.photoUrl;
-  return photoSrc(AUTHOR_PHOTOS[post.author.name]);
+function slugifyAuthorName(name: string): string {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export function resolveAuthorPhoto(author: Post["author"]): string | undefined {
+  if (author.photoUrl) return author.photoUrl;
+  if (author.slug && AUTHOR_PHOTOS_BY_SLUG[author.slug]) {
+    return photoSrc(AUTHOR_PHOTOS_BY_SLUG[author.slug]);
+  }
+  return photoSrc(AUTHOR_PHOTOS[author.name]);
+}
+
+export function authorArchiveHref(author: Post["author"]): string | null {
+  const slug = author.slug?.trim() || slugifyAuthorName(author.name);
+  return slug ? `/author/${slug}` : null;
 }
 
 type BlogAuthorCardProps = {
@@ -29,58 +53,59 @@ type BlogAuthorCardProps = {
   className?: string;
 };
 
-export function BlogAuthorCard({ post, className = "" }: BlogAuthorCardProps) {
-  const photo = resolveAuthorPhoto(post);
-  const linkedinUrl = post.author.linkedinUrl?.trim() || "#";
-  const bio = post.author.bio?.trim() || "Finprov faculty and editorial contributor.";
+export function BlogAuthorCard({
+  post,
+  className = "",
+}: BlogAuthorCardProps) {
+  const { author } = post;
+  const photo = resolveAuthorPhoto(author);
+  const authorHref = authorArchiveHref(author);
+  const linkedinUrl = author.linkedinUrl?.trim() || "#";
+  const bio = author.bio?.trim() || "Finprov faculty and editorial contributor.";
 
   return (
-    <aside className={`relative ${className}`}>
-      <div className="relative flex flex-col items-center text-center lg:items-start lg:text-left">
-        <div className="relative h-44 w-36 overflow-visible sm:h-48 sm:w-40">
-          {/* Circle frame — shoulders sit inside; head extends above */}
-          <div
-            className="absolute bottom-0 left-1/2 h-[7.5rem] w-[7.5rem] -translate-x-1/2 rounded-full border border-white/20 bg-navy/40 shadow-[0_18px_40px_rgba(0,0,0,0.45)] sm:h-[8.5rem] sm:w-[8.5rem]"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute bottom-1 left-1/2 h-[7rem] w-[7rem] -translate-x-1/2 rounded-full bg-gradient-to-b from-white/10 to-transparent sm:h-[8rem] sm:w-[8rem]"
-            aria-hidden
-          />
-
+    <aside className={`overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_8px_30px_rgba(15,23,42,0.06)] ${className}`}>
+      <div className="flex flex-col items-center text-center">
+        <div
+          className="relative flex h-28 w-28 shrink-0 items-center justify-center overflow-hidden rounded-full border-4 border-white bg-slate-100 shadow-lg ring-2 ring-gold/30"
+          aria-label={photo ? `${author.name} profile photo` : `${author.name} profile photo placeholder`}
+        >
           {photo ? (
-            <img
-              src={photo}
-              alt={post.author.name}
-              className="relative z-10 mx-auto h-[11.5rem] w-[8.5rem] object-cover object-top drop-shadow-[0_20px_28px_rgba(0,0,0,0.55)] sm:h-[12.5rem] sm:w-[9.5rem] [transform:translateZ(0)_scale(1.02)]"
-            />
+            <img src={photo} alt={author.name} className="h-full w-full object-cover object-top" />
           ) : (
-            <div className="relative z-10 mx-auto flex h-[7.5rem] w-[7.5rem] items-center justify-center rounded-full bg-gold text-3xl font-black text-navy shadow-[0_18px_40px_rgba(0,0,0,0.45)] sm:h-[8.5rem] sm:w-[8.5rem]">
-              {post.author.name[0]}
+            <div className="flex h-full w-full flex-col items-center justify-center gap-1 bg-gradient-to-b from-navy to-navy/90 text-gold">
+              <User className="h-8 w-8 opacity-80" aria-hidden />
+              <span className="text-xl font-black">{author.name[0]}</span>
             </div>
           )}
-
-          <a
-            href={linkedinUrl}
-            aria-label={`${post.author.name} on LinkedIn`}
-            className="absolute bottom-1 right-0 z-20 inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#0A66C2] text-white shadow-[0_8px_20px_rgba(0,0,0,0.35)] ring-4 ring-navy transition-transform hover:scale-110 sm:right-1"
-            {...(linkedinUrl === "#" ? { onClick: (e) => e.preventDefault() } : { target: "_blank", rel: "noopener noreferrer" })}
-          >
-            <Linkedin className="h-5 w-5 fill-current" />
-          </a>
         </div>
 
-        <p className="mt-5 text-[10px] font-black uppercase tracking-[0.28em] text-gold">Written by</p>
+        <h3 className="mt-4 text-lg font-black text-navy">{author.name}</h3>
 
-        <h3 className="mt-1 text-xl font-black leading-tight text-white sm:text-2xl">{post.author.name}</h3>
-
-        {post.author.role ? (
-          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-slate-400">{post.author.role}</p>
+        {author.role ? (
+          <p className="mt-1 text-[10px] font-black uppercase tracking-[0.2em] text-emerald">{author.role}</p>
         ) : null}
 
-        <p className="mt-4 max-w-[280px] text-sm leading-relaxed text-slate-300/90 line-clamp-5">{bio}</p>
+        <p className="mt-4 text-sm leading-relaxed text-slate-500 line-clamp-5">{bio}</p>
 
-        <div className="mt-5 hidden h-px w-16 bg-gradient-to-r from-gold to-transparent lg:block" />
+        {authorHref ? (
+          <Link
+            href={authorHref}
+            className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-navy px-4 py-2.5 text-[11px] font-black uppercase tracking-wider text-white transition-colors hover:bg-navy/90"
+          >
+            View all blogs
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        ) : null}
+
+        <a
+          href={linkedinUrl}
+          aria-label={`${author.name} on LinkedIn`}
+          className="mt-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-slate-200 bg-slate-50 text-[#0A66C2] transition-all hover:border-[#0A66C2]/40 hover:bg-[#0A66C2]/10 hover:scale-105"
+          {...(linkedinUrl === "#" ? { onClick: (e) => e.preventDefault() } : { target: "_blank", rel: "noopener noreferrer" })}
+        >
+          <Linkedin className="h-5 w-5 fill-current" />
+        </a>
       </div>
     </aside>
   );

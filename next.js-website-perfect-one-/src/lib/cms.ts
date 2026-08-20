@@ -420,6 +420,7 @@ export type CMSBlogPostSummary = {
   cover_image_alt: string;
   author_name: string;
   author_role: string;
+  author_slug?: string;
   published_date: string | null;
   read_time: string;
   is_featured: boolean;
@@ -478,7 +479,7 @@ export async function getBlogCategories(): Promise<CMSBlogCategory[]> {
 /** Fetches one published blog post by slug (full detail incl. sections + seo). Null on any failure. */
 export async function getBlogPostBySlug(slug: string): Promise<CMSBlogPostDetail | null> {
   try {
-    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/${slug}/`, { next: { revalidate: 60 } });
+    const res = await fetch(`${CMS_API_URL}/api/v1/blog/posts/${slug}/`, { cache: "no-store" });
     if (!res.ok) return null;
     return (await res.json()) as CMSBlogPostDetail;
   } catch {

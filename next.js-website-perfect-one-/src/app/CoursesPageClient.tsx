@@ -15,6 +15,7 @@ import { categories, programTypes, type Category, type ProgramType } from "@/dat
 import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 import { CmsIcon } from "@/lib/icons";
 import type { CMSPage } from "@/lib/cms";
+import { slugPath } from "@/lib/sitePaths";
 import { RichText } from "@/components/site/RichText";
 import learnersPhoto from "@/assets/kerala-students.png";
 
@@ -275,7 +276,7 @@ export function CoursesPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                   {/* Dual Action Buttons */}
                   <div className="mt-4 flex items-center gap-2 pt-1">
                     <Link
-                      href={`/courses/${c.slug}`}
+                      href={slugPath(c.slug)}
                       className="flex-1 rounded-xl border border-navy/30 px-2.5 py-2 text-center text-[11px] sm:text-xs font-bold text-navy transition-all hover:bg-navy hover:text-white"
                     >
                       View Details

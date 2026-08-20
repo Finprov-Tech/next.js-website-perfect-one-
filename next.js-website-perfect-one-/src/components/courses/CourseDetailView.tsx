@@ -17,7 +17,7 @@ import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { getRelatedCourses, type Course } from "@/data/courses";
+import { slugPath } from "@/lib/sitePaths";
 import type { CourseCatalogCourse } from "@/lib/courseCatalogCore";
 import { site } from "@/data/site";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -68,7 +68,7 @@ export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourse
   const breadcrumbSchema = generateBreadcrumbSchema([
     { name: "Home", url: "/" },
     { name: "Courses", url: "/all-courses" },
-    { name: course.title, url: `/courses/${course.slug}` },
+    { name: course.title, url: slugPath(course.slug) },
   ]);
   const faqSchema = course.faqs && course.faqs.length > 0 ? generateFaqSchema(course.faqs) : null;
 
@@ -688,7 +688,7 @@ export function CourseDetailView({ course, relatedCourses: suppliedRelatedCourse
                           </div>
                         </div>
                         <Link
-                          href={`/courses/${r.slug}`}
+                          href={slugPath(r.slug)}
                           className="mt-5 inline-flex items-center gap-1.5 text-xs font-bold text-cta hover:gap-2.5 transition-all"
                         >
                           View Details <ArrowRight className="h-3.5 w-3.5" />

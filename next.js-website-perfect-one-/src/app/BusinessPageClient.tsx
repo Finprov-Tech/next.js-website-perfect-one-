@@ -13,6 +13,7 @@ import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { resolveCmsLink, type CMSPage } from "@/lib/cms";
+import { slugPath } from "@/lib/sitePaths";
 import { CmsIcon } from "@/lib/icons";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
@@ -192,7 +193,7 @@ export function BusinessPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                       {visiblePrograms.map((program) => {
                         const cardContent = <><p className="font-semibold leading-snug text-navy">{program}</p><span className="mt-3 flex items-center gap-1.5 text-xs font-bold text-cta">Know more <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" /></span><span className="mt-1 flex items-center gap-1.5 text-xs text-text-body"><Clock3 className="h-3.5 w-3.5" /> Online / Offline · {getBusinessProgramDuration(program)}</span></>;
                         const className = "group rounded-2xl border border-border bg-white p-4 transition-all hover:-translate-y-1 hover:border-cta/30 hover:shadow-lg hover:shadow-cta/10";
-                        return hasOriginalBusinessProgramDetail(program) ? <Link key={program} href={`/business/${businessProgramSlug(program)}`} className={className}>{cardContent}</Link> : <a key={program} href={site.whatsappHref} target="_blank" rel="noreferrer" className={className}>{cardContent}</a>;
+                        return hasOriginalBusinessProgramDetail(program) ? <Link key={program} href={slugPath(businessProgramSlug(program))} className={className}>{cardContent}</Link> : <a key={program} href={site.whatsappHref} target="_blank" rel="noreferrer" className={className}>{cardContent}</a>;
                       })}
                     </div>
                   </div>

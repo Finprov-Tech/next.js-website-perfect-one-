@@ -277,8 +277,19 @@ class FAQItemSerializer(serializers.ModelSerializer):
 RICH_TEXT_ALLOWED_TAGS = [
     'p', 'ul', 'ol', 'li', 'strong', 'em', 'b', 'i', 'u', 'a', 'br', 'img',
     'h2', 'h3', 'h4', 'h5', 'h6',  # h1 deliberately excluded — stays the page's dedicated heading field
+    'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption', 'figure',
 ]
-RICH_TEXT_ALLOWED_ATTRS = {'a': ['href', 'target', 'rel'], 'img': ['src', 'alt']}
+RICH_TEXT_ALLOWED_ATTRS = {
+    'a': ['href', 'target', 'rel'],
+    'img': ['src', 'alt'],
+    'table': ['class'],
+    'thead': ['class'],
+    'tbody': ['class'],
+    'tr': ['class'],
+    'th': ['class', 'colspan', 'rowspan', 'scope'],
+    'td': ['class', 'colspan', 'rowspan'],
+    'figure': ['class'],
+}
 
 
 def sanitize_rich_text(html):
@@ -569,17 +580,21 @@ class BlogPostAuthorFieldsMixin:
     def get_author_bio(self, obj):
         return obj.author.bio if obj.author_id else ''
 
+    def get_author_slug(self, obj):
+        return obj.author.slug if obj.author_id else ''
+
 
 class BlogPostListSerializer(BlogPostAuthorFieldsMixin, serializers.ModelSerializer):
     category = BlogCategorySerializer(read_only=True)
     author_name = serializers.SerializerMethodField()
     author_role = serializers.SerializerMethodField()
+    author_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
         fields = [
             'title', 'slug', 'excerpt', 'category', 'cover_image', 'cover_image_alt',
-            'author_name', 'author_role', 'published_date', 'read_time', 'is_featured',
+            'author_name', 'author_role', 'author_slug', 'published_date', 'read_time', 'is_featured',
         ]
 
 
@@ -591,12 +606,13 @@ class BlogPostDetailSerializer(BlogPostAuthorFieldsMixin, serializers.ModelSeria
     author_role = serializers.SerializerMethodField()
     author_photo = serializers.SerializerMethodField()
     author_bio = serializers.SerializerMethodField()
+    author_slug = serializers.SerializerMethodField()
 
     class Meta:
         model = BlogPost
         fields = [
             'title', 'slug', 'excerpt', 'category', 'cover_image', 'cover_image_alt',
-            'author_name', 'author_role', 'author_photo', 'author_bio',
+            'author_name', 'author_role', 'author_photo', 'author_bio', 'author_slug',
             'published_date', 'read_time', 'is_featured', 'sections', 'seo',
         ]
 

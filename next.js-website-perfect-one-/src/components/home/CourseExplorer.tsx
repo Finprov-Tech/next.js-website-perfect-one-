@@ -10,6 +10,7 @@ import { categories, categoryLabels, programTypes, type Category, type ProgramTy
 import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
 import { findCourseInCatalog, type CourseCatalogCourse } from "@/lib/courseCatalogCore";
 import { resolveCmsImageUrl, resolveCmsLink, type CMSCourseCard, type CMSCourseSection } from "@/lib/cms";
+import { slugPath } from "@/lib/sitePaths";
 
 const container = "mx-auto w-full max-w-[1320px] px-5 sm:px-8 lg:px-10 xl:px-14";
 const ease = [0.16, 1, 0.3, 1] as const;
@@ -55,7 +56,7 @@ function fromCmsCard(c: CMSCourseCard, course?: CourseCatalogCourse): DisplayCar
     duration: course?.duration || c.duration,
     mode: course?.mode || c.mode,
     tool: course?.tool || c.tool,
-    buttonHref: resolveCmsLink(c.button_internal_page, c.button_external_url, `/courses/${c.slug}`),
+    buttonHref: resolveCmsLink(c.button_internal_page, c.button_external_url, slugPath(c.slug)),
     buttonText: c.button_text || "View Details",
   };
 }
@@ -74,7 +75,7 @@ function fromStaticCourse(c: CourseCatalogCourse): DisplayCard {
     duration: c.duration,
     mode: c.mode,
     tool: c.tool,
-    buttonHref: `/courses/${c.slug}`,
+    buttonHref: slugPath(c.slug),
     buttonText: "View Details",
   };
 }

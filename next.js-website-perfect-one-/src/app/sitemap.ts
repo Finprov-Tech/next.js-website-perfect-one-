@@ -98,7 +98,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const careerEntries: MetadataRoute.Sitemap = jobOpenings.map((j) => ({
-    url: `${SITE_URL}/career/${j.slug}/`,
+    url: `${SITE_URL}/${j.slug}/`,
     changeFrequency: "weekly",
     priority: 0.5,
   }));
@@ -106,7 +106,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const businessEntries: MetadataRoute.Sitemap = businessProgramAreas
     .flatMap((area) => area.programs)
     .map((title) => ({
-      url: `${SITE_URL}/business/${businessProgramSlug(title)}/`,
+      url: `${SITE_URL}/${businessProgramSlug(title)}/`,
       changeFrequency: "monthly" as const,
       priority: 0.4,
     }));

@@ -8,6 +8,7 @@ import { searchRAG, RAGMessage } from "@/lib/ragEngine";
 import { Course } from "@/data/courses";
 import { EnquireModal } from "./EnquireModal";
 import { useCourseCatalog } from "@/components/providers/CourseCatalogProvider";
+import { slugPath } from "@/lib/sitePaths";
 
 const quickPrompts = [
   "Top 3 SAP Courses",
@@ -176,7 +177,7 @@ export function RAGChatbot() {
                             <span className="font-semibold text-teal">{c.tool}</span>
                             <div className="flex gap-1.5">
                               <Link
-                                href={`/courses/${c.slug}`}
+                                href={slugPath(c.slug)}
                                 onClick={() => setIsOpen(false)}
                                 className="font-bold text-white hover:underline flex items-center"
                               >

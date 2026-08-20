@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import html
 import re
+import ssl
 import time
 import urllib.error
 import urllib.request
@@ -22,6 +23,11 @@ META_DESC_RE = re.compile(
 CANONICAL_RE = re.compile(r'<link\s+rel="canonical"\s+href="([^"]+)"', re.I)
 ROBOTS_RE = re.compile(r'<meta\s+name="robots"\s+content="([^"]+)"', re.I)
 OG_TITLE_RE = re.compile(r'<meta\s+property="og:title"\s+content="([^"]+)"', re.I)
+ARTICLE_PUBLISHED_RE = re.compile(
+    r'<meta\s+property="article:published_time"\s+content="([^"]+)"',
+    re.I,
+)
+TIME_DATETIME_RE = re.compile(r'<time[^>]+datetime="([^"]+)"', re.I)
 ARTICLE_RE = re.compile(r'<article[^>]*class="[^"]*\bpost-\d+\b[^"]*"[^>]*>(.*)</article>', re.I | re.S)
 ENTRY_CONTENT_RE = re.compile(
     r'<div[^>]*class="[^"]*\bentry-content\b[^"]*"[^>]*>(.*?)</div>\s*(?:<(?:footer|aside|div class="ast-single-entry-banner)|\Z)',
@@ -56,6 +62,7 @@ class ScrapedPage:
     meta_description: str
     meta_robots: str
     content_type: str  # blog | landing | course | unknown
+    published_date: str = ""
     author: ScrapedAuthor | None = None
     error: str = ""
 
@@ -84,32 +91,59 @@ def _detect_content_type(page_html: str) -> str:
     return "unknown"
 
 
-def _extract_elementor_widget(html: str, widget_type: str) -> str:
-    needle = f'data-widget_type="{widget_type}"'
-    start = html.find(needle)
-    if start < 0:
+def _extract_balanced_div_inner(html: str, open_pos: int) -> str:
+    """Return inner HTML for the div whose opening tag starts at open_pos."""
+    tag_end = html.find(">", open_pos)
+    if tag_end < 0:
         return ""
-    container_needle = '<div class="elementor-widget-container">'
-    cstart = html.find(container_needle, start)
-    if cstart < 0:
-        return ""
-    cstart += len(container_needle)
     depth = 1
-    idx = cstart
+    idx = tag_end + 1
+    inner_start = idx
     while idx < len(html) and depth:
         next_open = html.find("<div", idx)
         next_close = html.find("</div>", idx)
         if next_close == -1:
-            break
+            return ""
         if next_open != -1 and next_open < next_close:
             depth += 1
             idx = next_open + 4
         else:
             depth -= 1
             if depth == 0:
-                return html[cstart:next_close].strip()
+                return html[inner_start:next_close].strip()
             idx = next_close + 6
     return ""
+
+
+def _extract_elementor_widget(html: str, widget_type: str) -> str:
+    needle = f'data-widget_type="{widget_type}"'
+    start = html.find(needle)
+    if start < 0:
+        return ""
+    widget_open = html.rfind("<div", max(0, start - 400), start + 1)
+    if widget_open < 0:
+        return ""
+    inner = _extract_balanced_div_inner(html, widget_open)
+    if not inner:
+        return ""
+    container_needle = '<div class="elementor-widget-container">'
+    cpos = inner.find(container_needle)
+    if cpos >= 0:
+        sub_open = inner.find("<div", cpos)
+        if sub_open >= 0:
+            return _extract_balanced_div_inner(inner, sub_open)
+    return inner
+
+
+def _looks_like_post_body(html: str) -> bool:
+    if not html.strip():
+        return False
+    lowered = html.lower()
+    if "elementor-posts-container" in lowered:
+        return False
+    if "elementor-post-navigation" in lowered:
+        return False
+    return True
 
 
 def _infer_author_role(name: str) -> str:
@@ -168,10 +202,10 @@ def _extract_body(page_html: str) -> str:
     )
     scope = single_match.group(1) if single_match else page_html
     body = _extract_elementor_widget(scope, "theme-post-content.default")
-    if body:
+    if _looks_like_post_body(body):
         return body
     body = _extract_elementor_widget(scope, "text-editor.default")
-    if body:
+    if _looks_like_post_body(body):
         return body
     elementor = ELEMENTOR_POST_CONTENT_RE.search(page_html)
     if elementor:
@@ -187,18 +221,32 @@ def _extract_body(page_html: str) -> str:
     return ""
 
 
+def _fetch_page_html(url: str, *, timeout: float = 45.0, retries: int = 3) -> tuple[int, str, str]:
+    """Fetch a live page with retries for transient SSL/network errors."""
+    last_error = ""
+    context = ssl.create_default_context()
+    for attempt in range(retries):
+        if attempt:
+            time.sleep(0.6 * attempt)
+        request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+        try:
+            with urllib.request.urlopen(request, timeout=timeout, context=context) as response:
+                return response.getcode(), response.read().decode("utf-8", errors="replace"), ""
+        except urllib.error.HTTPError as exc:
+            return exc.code, "", str(exc)
+        except Exception as exc:  # noqa: BLE001
+            last_error = str(exc)
+    return 0, "", last_error
+
+
 def fetch_live_page(url: str, *, slug: str = "") -> ScrapedPage:
     slug = slug or url.rstrip("/").split("/")[-1]
-    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    try:
-        with urllib.request.urlopen(request, timeout=45) as response:
-            status = response.getcode()
-            page_html = response.read().decode("utf-8", errors="replace")
-    except urllib.error.HTTPError as exc:
+    status, page_html, error = _fetch_page_html(url)
+    if status != 200 or not page_html:
         return ScrapedPage(
             url=url,
             slug=slug,
-            status_code=exc.code,
+            status_code=status,
             title="",
             excerpt="",
             body_html="",
@@ -207,22 +255,7 @@ def fetch_live_page(url: str, *, slug: str = "") -> ScrapedPage:
             meta_description="",
             meta_robots="",
             content_type="unknown",
-            error=str(exc),
-        )
-    except Exception as exc:  # noqa: BLE001
-        return ScrapedPage(
-            url=url,
-            slug=slug,
-            status_code=0,
-            title="",
-            excerpt="",
-            body_html="",
-            canonical_url="",
-            seo_title="",
-            meta_description="",
-            meta_robots="",
-            content_type="unknown",
-            error=str(exc),
+            error=error,
         )
 
     title_match = TITLE_RE.search(page_html)
@@ -235,6 +268,7 @@ def fetch_live_page(url: str, *, slug: str = "") -> ScrapedPage:
     excerpt = _strip_tags(body)[:500]
     content_type = _detect_content_type(page_html)
     author = extract_author_from_html(page_html) if content_type == "blog" else None
+    published = ARTICLE_PUBLISHED_RE.search(page_html) or TIME_DATETIME_RE.search(page_html)
 
     return ScrapedPage(
         url=url,
@@ -248,6 +282,7 @@ def fetch_live_page(url: str, *, slug: str = "") -> ScrapedPage:
         meta_description=(meta_desc.group(1) if meta_desc else excerpt)[:320],
         meta_robots=robots.group(1) if robots else "index,follow",
         content_type=content_type,
+        published_date=published.group(1) if published else "",
         author=author,
     )
 

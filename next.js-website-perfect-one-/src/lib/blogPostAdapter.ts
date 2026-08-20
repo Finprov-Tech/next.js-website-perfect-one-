@@ -10,7 +10,7 @@ export function fromCmsSummary(p: CMSBlogPostSummary): Post {
     date: p.published_date || "",
     readTime: p.read_time,
     gradient: "",
-    author: { name: p.author_name, role: p.author_role },
+    author: { name: p.author_name, role: p.author_role, slug: p.author_slug || undefined },
     sections: [],
     coverImageUrl: resolveCmsImageUrl(p.cover_image) || undefined,
     coverImageAlt: p.cover_image_alt || undefined,
@@ -23,6 +23,7 @@ export function fromCmsDetail(p: CMSBlogPostDetail): Post {
     author: {
       name: p.author_name,
       role: p.author_role,
+      slug: p.author_slug || undefined,
       bio: p.author_bio || undefined,
       photoUrl: p.author_photo ? resolveCmsImageUrl(p.author_photo) || undefined : undefined,
     },

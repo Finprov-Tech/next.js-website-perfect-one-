@@ -11,6 +11,15 @@ export default function nextConfig(phase) {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  async redirects() {
+    // finprov.com uses root-level slugs — no /blog/, /courses/, /business/, /career/ prefixes.
+    return [
+      { source: '/blog/:slug', destination: '/:slug', permanent: true },
+      { source: '/courses/:slug', destination: '/:slug', permanent: true },
+      { source: '/business/:program', destination: '/:program', permanent: true },
+      { source: '/career/:slug', destination: '/:slug', permanent: true },
+    ];
+  },
   async rewrites() {
     // Fallback only — runs after every real file-system route (static and
     // dynamic) has already failed to match, so /about, /courses/[slug], etc.

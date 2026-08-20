@@ -12,7 +12,7 @@ import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import { careerHero, culturePerks, jobOpenings, type Department, type JobOpening } from "@/data/careers";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { JsonLd } from "@/components/seo/JsonLd";
+import { slugPath } from "@/lib/sitePaths";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
 import { resolveCmsLink, type CMSPage } from "@/lib/cms";
@@ -289,7 +289,7 @@ export function CareersPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
 
                         <div className="grid grid-cols-2 gap-2">
                           <Link
-                            href={`/career/${job.slug}`}
+                            href={slugPath(job.slug)}
                             className="inline-flex items-center justify-center gap-1 rounded-xl bg-bg-light px-3 py-2 text-xs font-bold text-navy hover:bg-navy/10 transition-colors"
                           >
                             Details <ChevronRight className="h-3.5 w-3.5" />

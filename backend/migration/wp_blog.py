@@ -35,9 +35,16 @@ def strip_html(text: str) -> str:
 def parse_post_date(raw: str) -> date | None:
     if not raw:
         return None
+    text = raw.strip()
+    if text.endswith("Z"):
+        text = f"{text[:-1]}+00:00"
+    try:
+        return datetime.fromisoformat(text).date()
+    except ValueError:
+        pass
     for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d"):
         try:
-            return datetime.strptime(raw[:19], fmt).date()
+            return datetime.strptime(text[:19], fmt).date()
         except ValueError:
             continue
     return None

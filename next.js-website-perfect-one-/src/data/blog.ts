@@ -6,7 +6,7 @@ export type Post = {
   date: string;
   readTime: string;
   gradient: string;
-  author: { name: string; role: string; bio?: string; photoUrl?: string; linkedinUrl?: string };
+  author: { name: string; role: string; slug?: string; bio?: string; photoUrl?: string; linkedinUrl?: string };
   sections: { heading: string; body: string }[];
   coverImageUrl?: string;
   coverImageAlt?: string;

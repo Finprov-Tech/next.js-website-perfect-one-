@@ -2,30 +2,24 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  ArrowLeft,
-  Clock,
-  Calendar,
-  Share2,
-  ArrowRight,
-  BookOpen,
-  Sparkles,
-  Award,
-  ChevronRight,
-  Check,
-} from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, Calendar, Clock, Sparkles } from "lucide-react";
+import { useMemo } from "react";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { Reveal } from "@/components/motion/Reveal";
 import { ScrollProgress } from "@/components/motion/ScrollProgress";
 import { type BlogPost } from "@/data/blog";
 import { RichText } from "@/components/site/RichText";
-import { BlogAuthorCard } from "@/components/blog/BlogAuthorCard";
+import { BlogSidebarDesktop, BlogSidebarMobile } from "@/components/blog/BlogSidebar";
+import { formatBlogDate, formatBlogDateShort } from "@/lib/formatBlogDate";
+import { buildTocEntries, injectHeadingIds, sectionWrapperId } from "@/lib/blogToc";
 
-const container = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
-const articleContainer = "mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12";
-const dateFmt = new Intl.DateTimeFormat("en-IN", { year: "numeric", month: "long", day: "numeric" });
+function bodyStartsWithIntroHeading(html: string): boolean {
+  return /^\s*<h[23][^>]*>\s*(?:<[^>]+>\s*)*Introduction\b/i.test(html.trim());
+}
+import { slugPath } from "@/lib/sitePaths";
+
+const container = "mx-auto w-full max-w-[1240px] px-5 sm:px-8 lg:px-12";
 
 const postImages: Record<string, string> = {
   "cloud-based-accounting-transforming-industry": "https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200&q=80",
@@ -38,220 +32,188 @@ const postImages: Record<string, string> = {
 
 const defaultImage = "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1200&q=80";
 
-export function BlogDetailView({ post, related = [] }: { post: BlogPost; related?: BlogPost[] }) {
-  const [copied, setCopied] = useState(false);
-
+export function BlogDetailView({
+  post,
+  related = [],
+  latestPosts = [],
+}: {
+  post: BlogPost;
+  related?: BlogPost[];
+  latestPosts?: BlogPost[];
+}) {
   const heroImg = post.coverImageUrl || postImages[post.slug] || defaultImage;
+  const dateLabel = formatBlogDate(post.date);
 
-  const handleCopyLink = () => {
-    if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
-    }
-  };
+  const tocSections = useMemo(() => buildTocEntries(post.sections), [post.sections]);
 
   return (
-    <div className="min-h-screen bg-[#FAF9F6] text-slate-800 selection:bg-gold selection:text-navy">
+    <div className="min-h-screen bg-[#F4F6FA] text-slate-800 selection:bg-gold selection:text-navy">
       <ScrollProgress />
       <SiteHeader />
 
-      {/* Hero Header Section */}
-      <section className="relative overflow-hidden bg-navy py-16 text-white sm:py-24 border-b border-white/10">
-        <div className="pointer-events-none absolute inset-0 bg-grid-white opacity-10" />
-        <div className="pointer-events-none absolute -right-20 top-0 h-96 w-96 rounded-full bg-emerald/20 blur-3xl" />
-        <div className="pointer-events-none absolute -left-20 bottom-0 h-96 w-96 rounded-full bg-gold/15 blur-3xl" />
+      {/* Hero — full-bleed image + overlay */}
+      <section className="relative min-h-[340px] overflow-hidden sm:min-h-[420px] lg:min-h-[480px]">
+        <img src={heroImg} alt="" className="absolute inset-0 h-full w-full object-cover" aria-hidden />
+        <div className="absolute inset-0 bg-navy/75" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-navy via-navy/40 to-navy/60" />
 
-        <div className={`${container} relative z-10`}>
+        <div className={`${container} relative z-10 flex min-h-[340px] flex-col justify-end pb-16 pt-28 sm:min-h-[420px] sm:pb-20 lg:min-h-[480px]`}>
+          <Link
+            href="/blog"
+            className="mb-8 inline-flex w-fit items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md transition-colors hover:bg-white/20"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to Journal
+          </Link>
+
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_300px] lg:items-start"
+            className="mx-auto max-w-4xl text-center"
           >
-            <div>
-              <Link
-                href="/blog"
-                className="inline-flex items-center gap-2 rounded-md bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-slate-200 backdrop-blur-md transition-all hover:bg-white/20 hover:text-white"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" /> BACK TO JOURNAL
-              </Link>
-
-              <span className="mt-6 inline-block rounded-md bg-gold px-3.5 py-1 text-[11px] font-black uppercase tracking-wider text-navy shadow-md">
+            {post.category ? (
+              <span className="inline-block rounded-full border border-gold/40 bg-gold/20 px-4 py-1.5 text-[11px] font-black uppercase tracking-[0.15em] text-gold backdrop-blur-sm">
                 {post.category.replace(/&amp;/g, "&")}
               </span>
+            ) : null}
 
-              <h1 className="mt-4 text-3xl font-black uppercase leading-tight tracking-tight text-white sm:text-4xl lg:text-5xl">
-                {post.title}
-              </h1>
+            <h1 className="mt-5 text-2xl font-black leading-tight tracking-tight text-white sm:text-4xl lg:text-[2.75rem] lg:leading-[1.15]">
+              {post.title}
+            </h1>
 
-              <div className="mt-6 flex flex-wrap items-center gap-4 border-t border-white/10 pt-6 text-xs text-slate-300 font-medium">
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="h-3.5 w-3.5 text-gold" /> {dateFmt.format(new Date(post.date))}
+            <div className="mt-6 flex flex-wrap items-center justify-center gap-4 text-sm text-white/80">
+              {dateLabel ? <span className="text-sm text-white/80">{dateLabel}</span> : null}
+              {post.readTime ? (
+                <span className="flex items-center gap-1.5 text-white/70">
+                  <Clock className="h-4 w-4 text-gold" />
+                  {post.readTime}
                 </span>
-                <span>&bull;</span>
-                <span className="flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 text-gold" /> {post.readTime}
-                </span>
-                <button
-                  onClick={handleCopyLink}
-                  className="inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-white/10 px-3 py-1.5 text-xs font-bold text-white transition-all hover:bg-gold hover:text-navy hover:border-gold"
-                >
-                  {copied ? <Check className="h-3.5 w-3.5 text-emerald" /> : <Share2 className="h-3.5 w-3.5" />}
-                  {copied ? "COPIED LINK" : "SHARE"}
-                </button>
-              </div>
+              ) : null}
             </div>
-
-            <BlogAuthorCard post={post} className="lg:sticky lg:top-24" />
           </motion.div>
         </div>
       </section>
 
-      {/* Main Reading Canvas */}
-      <article className="py-14 sm:py-20">
-        <div className={`${articleContainer} max-w-[900px]`}>
-          <div className="relative overflow-hidden rounded-2xl border border-slate-200 shadow-2xl">
-            <img
-              src={heroImg}
-              alt={post.coverImageAlt || post.title}
-              className="h-[320px] sm:h-[460px] w-full object-cover object-center"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-transparent to-transparent" />
-            <div className="absolute bottom-4 right-4 rounded-md bg-navy/80 px-3 py-1 text-[10px] font-bold text-white/90 backdrop-blur-md">
-              FINPROV EDITORIAL
+      {/* Main + sidebar */}
+      <div className={`${container} relative z-20 -mt-12 pb-16 sm:-mt-16 lg:-mt-20`}>
+        <div className="mb-6 lg:hidden">
+          <BlogSidebarMobile post={post} sections={tocSections} />
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch lg:gap-10">
+          <article className="overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] sm:p-10 lg:p-12">
+            <div className="space-y-10">
+              {post.sections.map((s, i) => {
+                const titled = s.heading.trim();
+                const isFirst = i === 0 && !titled;
+                const showSyntheticIntro = isFirst && !bodyStartsWithIntroHeading(s.body);
+                const wrapperId = titled
+                  ? tocSections.find((t) => t.heading === titled)?.id ?? sectionWrapperId(titled, i)
+                  : isFirst
+                    ? tocSections.find((t) => t.heading === "Introduction")?.id ?? "introduction"
+                    : sectionWrapperId("", i);
+                const bodyHtml = injectHeadingIds(s.body, tocSections);
+
+                return (
+                  <Reveal key={`${wrapperId}-${i}`} delay={i * 0.04}>
+                    <div id={wrapperId} className="scroll-mt-32">
+                      {titled ? (
+                        <h2 className="flex items-center gap-4 border-b border-slate-100 pb-4 text-xl font-black text-navy sm:text-2xl">
+                          <span className="h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-gold to-emerald" aria-hidden />
+                          {titled}
+                        </h2>
+                      ) : showSyntheticIntro ? (
+                        <h2 className="flex items-center gap-4 border-b border-slate-100 pb-4 text-xl font-black text-navy sm:text-2xl">
+                          <span className="h-8 w-1 shrink-0 rounded-full bg-gradient-to-b from-gold to-emerald" aria-hidden />
+                          Introduction
+                        </h2>
+                      ) : null}
+                      <RichText
+                        html={bodyHtml}
+                        as="div"
+                        className={`blog-prose prose prose-slate max-w-none text-base leading-[1.85] text-slate-600 sm:text-[1.05rem] ${titled || showSyntheticIntro ? "mt-5" : ""}`}
+                      />
+                    </div>
+                  </Reveal>
+                );
+              })}
             </div>
-          </div>
 
-          <div className="mt-10 rounded-2xl border-l-4 border-gold bg-amber-500/10 p-6 sm:p-8 backdrop-blur-sm">
-            <p className="text-base sm:text-lg font-semibold leading-relaxed text-navy">
-              "{post.excerpt}"
-            </p>
-          </div>
-
-          {post.sections.length > 1 && (
-            <div className="mt-10 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-navy">
-                <BookOpen className="h-4 w-4 text-emerald" /> ARTICLE OVERVIEW
-              </div>
-              <ul className="mt-3 space-y-2">
-                {post.sections.map((s) => (
-                  <li key={s.heading}>
-                    <a
-                      href={`#${s.heading.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="text-xs font-bold text-slate-600 hover:text-emerald transition-colors flex items-center gap-1.5"
-                    >
-                      <ChevronRight className="h-3 w-3 text-gold" /> {s.heading}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          <div className="mt-12 space-y-12 text-slate-700">
-            {post.sections.map((s, i) => (
-              <Reveal key={s.heading || `section-${i}`} delay={i * 0.05}>
-                <div id={s.heading ? s.heading.toLowerCase().replace(/\s+/g, "-") : undefined} className="scroll-mt-28">
-                  {s.heading ? (
-                    <h2 className="text-xl sm:text-2xl font-black uppercase leading-tight tracking-tight text-navy border-b border-slate-200 pb-3">
-                      <span className="text-gold mr-2">#</span> {s.heading}
-                    </h2>
-                  ) : null}
-                  <RichText
-                    html={s.body}
-                    as="div"
-                    className={`prose prose-slate max-w-none text-base sm:text-lg leading-relaxed ${s.heading ? "mt-4" : ""}`}
-                  />
-                </div>
-              </Reveal>
-            ))}
-          </div>
-
-          <div className="mt-16 rounded-2xl border border-emerald/30 bg-emerald/5 p-8">
-            <div className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-emerald">
-              <Award className="h-4 w-4" /> KEY PRACTICAL TAKEAWAY
-            </div>
-            <h3 className="mt-2 text-lg font-bold text-navy">
-              Mastering Accounting &amp; Tax Workflows in Practice
-            </h3>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
-              Applying these concepts standardizes financial reporting, minimizes GST/VAT audit risk, and equips professionals for corporate accounting roles across India and the Gulf region.
-            </p>
-          </div>
-
-          <Reveal className="mt-14 overflow-hidden rounded-2xl border border-navy/20 bg-navy p-8 sm:p-10 text-white shadow-2xl relative">
-            <div className="pointer-events-none absolute -right-16 top-0 h-64 w-64 rounded-full bg-gold/15 blur-3xl" />
-            <div className="relative z-10">
-              <span className="inline-flex items-center gap-1.5 rounded-md bg-gold/20 px-3.5 py-1 text-[11px] font-black uppercase tracking-wider text-gold border border-gold/30">
-                <Sparkles className="h-3.5 w-3.5" /> FINPROV CERTIFICATION
+            <div className="mt-10 overflow-hidden rounded-2xl bg-navy p-8 text-white sm:p-10">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-gold/20 px-3 py-1 text-[10px] font-black uppercase tracking-wider text-gold">
+                <Sparkles className="h-3.5 w-3.5" /> Finprov Certification
               </span>
-              <h3 className="mt-3 text-2xl sm:text-3xl font-black uppercase text-white">
-                Ready to Build These Skills in Real Life?
+              <h3 className="mt-4 text-2xl font-black leading-tight sm:text-3xl">
+                Ready to build these skills in real life?
               </h3>
-              <p className="mt-2 text-sm text-slate-300 max-w-xl">
-                Get hands-on training with real-time case studies, SAP ERP software access, and 100% placement support from CA faculty.
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
+                Hands-on training with real case studies, SAP ERP access, and placement support from practicing CAs.
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-4">
+              <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/all-courses"
-                  className="rounded-md bg-gold px-6 py-3 text-xs font-black uppercase tracking-wider text-navy shadow-lg hover:bg-gold-light hover:scale-105 transition-all inline-flex items-center gap-2"
+                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-xs font-black uppercase tracking-wider text-navy transition-transform hover:scale-[1.02]"
                 >
-                  EXPLORE CERTIFICATION PROGRAMS <ArrowRight className="h-4 w-4" />
+                  Explore programs <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/contact"
-                  className="rounded-md border border-white/20 bg-white/10 px-6 py-3 text-xs font-black uppercase tracking-wider text-white hover:bg-white/20 transition-all"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/25 px-6 py-3 text-xs font-black uppercase tracking-wider text-white transition-colors hover:bg-white/10"
                 >
-                  TALK TO ACADEMIC COUNSELOR
+                  Talk to counselor
                 </Link>
               </div>
             </div>
-          </Reveal>
-        </div>
-      </article>
+          </article>
 
-      {related.length > 0 && (
-        <section className="bg-slate-900 py-16 text-white border-t border-white/10">
+          <BlogSidebarDesktop post={post} sections={tocSections} latestPosts={latestPosts} />
+        </div>
+      </div>
+
+      {/* Read Next */}
+      {related.length > 0 ? (
+        <section className="border-t border-slate-200/80 bg-white py-16 sm:py-20">
           <div className={container}>
-            <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-8">
-              <h2 className="text-xl sm:text-2xl font-black uppercase tracking-tight text-white">
-                MORE FROM FINPROV JOURNAL
-              </h2>
-              <Link href="/blog" className="text-xs font-bold text-gold hover:underline uppercase flex items-center gap-1">
-                VIEW ALL ARTICLES <ArrowRight className="h-3.5 w-3.5" />
+            <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.25em] text-emerald">Keep reading</p>
+                <h2 className="mt-1 text-2xl font-black text-navy sm:text-3xl">Read Next</h2>
+              </div>
+              <Link
+                href="/blog"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-emerald transition-colors hover:text-navy"
+              >
+                View all articles <ArrowRight className="h-4 w-4" />
               </Link>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-3">
-              {related.map((p) => {
+            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+              {related.slice(0, 4).map((p, idx) => {
                 const bgImg = p.coverImageUrl || postImages[p.slug] || defaultImage;
+                const label = idx === 0 ? "Previous post" : "Latest";
                 return (
-                  <Link key={p.slug} href={`/${p.slug}`} className="block">
-                    <article className="group relative h-[360px] w-full overflow-hidden rounded-xl border border-white/10 bg-navy shadow-xl transition-all duration-300 hover:border-gold/50">
-                      <div
-                        className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
-                        style={{ backgroundImage: `url('${bgImg}')` }}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/80 to-transparent" />
-                      <div className="absolute inset-0 bg-emerald/90 opacity-0 transition-opacity duration-300 group-hover:opacity-95 backdrop-blur-sm" />
-
-                      <div className="relative z-10 flex h-full flex-col justify-between p-6 text-white">
-                        <span className="w-fit rounded-md bg-gold px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-navy shadow-md">
-                          {p.category}
+                  <Link key={p.slug} href={slugPath(p.slug)} className="group block">
+                    <article className="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-[0_8px_30px_rgba(15,23,42,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_16px_40px_rgba(15,23,42,0.1)]">
+                      <div className="relative aspect-[16/10] overflow-hidden">
+                        <img
+                          src={bgImg}
+                          alt={p.coverImageAlt || p.title}
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        />
+                        <span className="absolute left-3 top-3 rounded-md bg-white/95 px-2.5 py-1 text-[10px] font-black uppercase tracking-wider text-navy shadow-sm">
+                          {label}
                         </span>
-
-                        <div>
-                          <div className="text-[10px] font-bold text-white/80 uppercase">
-                            {p.readTime} &bull; {dateFmt.format(new Date(p.date))}
-                          </div>
-                          <h3 className="mt-2 text-base font-black uppercase leading-snug text-white group-hover:text-white transition-colors">
-                            {p.title}
-                          </h3>
-                          <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-black uppercase text-gold group-hover:text-white">
-                            READ POST <ChevronRight className="h-3.5 w-3.5" />
-                          </span>
-                        </div>
+                      </div>
+                      <div className="p-5">
+                        {formatBlogDateShort(p.date) ? (
+                          <p className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                            <Calendar className="h-3 w-3" />
+                            {formatBlogDateShort(p.date)}
+                          </p>
+                        ) : null}
+                        <h3 className="mt-2 line-clamp-3 text-sm font-black leading-snug text-navy group-hover:text-emerald sm:text-base">
+                          {p.title}
+                        </h3>
                       </div>
                     </article>
                   </Link>
@@ -260,7 +222,7 @@ export function BlogDetailView({ post, related = [] }: { post: BlogPost; related
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
       <SiteFooter />
     </div>

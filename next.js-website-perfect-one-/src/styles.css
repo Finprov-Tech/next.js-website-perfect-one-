@@ -517,3 +517,67 @@
   .glass-dark { background: rgb(20 35 80 / 0.75); }
   .glass-navy { background: oklch(0.23 0.06 258 / 0.97); }
 }
+
+/* Blog article body — reference-style lists & links in Finprov theme */
+.blog-prose ul {
+  list-style: none;
+  padding-left: 0;
+}
+.blog-prose ul > li {
+  position: relative;
+  padding-left: 1.75rem;
+  margin-bottom: 0.65rem;
+}
+.blog-prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  background: color-mix(in oklch, var(--color-emerald) 12%, white);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2310b981' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 0.65rem;
+}
+.blog-prose a {
+  color: var(--color-emerald);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blog-prose a:hover {
+  color: var(--color-navy);
+}
+
+/* Blog comparison tables (WordPress wp-block-table) */
+.blog-prose figure.wp-block-table,
+.blog-prose .wp-block-table {
+  margin: 1.75rem 0;
+  overflow-x: auto;
+}
+.blog-prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.blog-prose th,
+.blog-prose td {
+  border: 1px solid #e2e8f0;
+  padding: 0.75rem 1rem;
+  vertical-align: top;
+  text-align: left;
+}
+.blog-prose thead th,
+.blog-prose tbody tr:first-child td {
+  background: #f1f5f9;
+  font-weight: 700;
+  color: var(--color-navy);
+}
+.blog-prose tbody tr:not(:first-child) td strong {
+  font-weight: 700;
+  color: var(--color-navy);
+}

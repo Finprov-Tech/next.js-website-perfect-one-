@@ -14,7 +14,7 @@ export function publishedCourseEntries(courses: SitemapCourse[], siteUrl: string
   return courses
     .filter((course) => course.status === "published" && course.is_active && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(course.slug))
     .map((course) => ({
-      url: `${siteUrl}/courses/${course.slug}/`,
+      url: `${siteUrl}/${course.slug}/`,
       changeFrequency: "weekly" as const,
       priority: 0.8,
     }));

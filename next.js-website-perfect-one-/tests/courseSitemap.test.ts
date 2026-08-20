@@ -21,7 +21,7 @@ test("70 draft courses produce zero course URLs", () => {
 
 test("one published active course produces exactly one unchanged primary-slug URL", () => {
   const entries = publishedCourseEntries([course("ifrs-course", "published")], SITE_URL);
-  assert.deepEqual(entries.map((entry) => entry.url), ["https://finprov.com/courses/ifrs-course/"]);
+  assert.deepEqual(entries.map((entry) => entry.url), ["https://finprov.com/ifrs-course/"]);
 });
 
 test("mixed published, draft, archived, and inactive courses include only published active courses", () => {
@@ -31,7 +31,7 @@ test("mixed published, draft, archived, and inactive courses include only publis
     course("archived-course", "archived"),
     course("inactive-published-course", "published", false),
   ], SITE_URL);
-  assert.deepEqual(entries.map((entry) => entry.url), ["https://finprov.com/courses/published-course/"]);
+  assert.deepEqual(entries.map((entry) => entry.url), ["https://finprov.com/published-course/"]);
 });
 
 test("no published courses produce no course URLs", () => {
@@ -49,9 +49,9 @@ test("adding published courses preserves every existing non-course sitemap entry
   const existing = [
     { url: "https://finprov.com/", changeFrequency: "daily" as const, priority: 1 },
     { url: "https://finprov.com/about/", changeFrequency: "weekly" as const, priority: 0.6 },
-    { url: "https://finprov.com/blog/example/", changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: "https://finprov.com/example-post/", changeFrequency: "monthly" as const, priority: 0.5 },
   ];
   const result = appendPublishedCourses(existing, [course("ifrs-course", "published")], SITE_URL);
   assert.deepEqual(result.slice(0, existing.length), existing);
-  assert.equal(result.at(-1)?.url, "https://finprov.com/courses/ifrs-course/");
+  assert.equal(result.at(-1)?.url, "https://finprov.com/ifrs-course/");
 });

@@ -10,7 +10,7 @@ BACKEND_ROOT = Path(__file__).resolve().parents[3]
 if str(BACKEND_ROOT) not in sys.path:
     sys.path.insert(0, str(BACKEND_ROOT))
 
-from migration.wp_blog import normalize_wp_html, rank_math_to_blog_seo  # noqa: E402
+from migration.wp_blog import normalize_wp_html, parse_post_date, rank_math_to_blog_seo  # noqa: E402
 from migration.wp_scrape import fetch_live_page  # noqa: E402
 from blog.models import Author, BlogCategory, BlogPost, BlogPostSection  # noqa: E402
 from modules.models import LandingPageBody  # noqa: E402
@@ -89,6 +89,7 @@ class Command(BaseCommand):
                         "category": blog_category,
                         "author": resolve_author(scraped.author),
                         "cover_image_alt": scraped.title,
+                        "published_date": parse_post_date(scraped.published_date),
                         "status": BlogPost.STATUS_DRAFT,
                     },
                 )
