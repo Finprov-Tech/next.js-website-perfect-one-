@@ -13,12 +13,12 @@ const reelGradients = [
 export function ReelStories({ stories }: { stories: Testimonial[] }) {
   return (
     <div className="flex gap-5 overflow-x-auto pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-      {stories.map((s, i) => (
-        <motion.div key={s.name} whileHover={{ y: -6 }} className="w-40 shrink-0 sm:w-48">
-          <div className="relative">
+      {stories.map((s, i) => {
+        const card = (
+          <>
             <PhotoSlot
               src={s.photo}
-              alt={s.name}
+              alt={s.photoAlt || s.name}
               caption={s.name}
               subcaption={s.role}
               gradient={reelGradients[i % reelGradients.length]}
@@ -28,9 +28,23 @@ export function ReelStories({ stories }: { stories: Testimonial[] }) {
             <div className="pointer-events-none absolute left-1/2 top-1/2 grid h-12 w-12 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-navy shadow-lg">
               <Play className="ml-0.5 h-5 w-5 fill-navy" />
             </div>
-          </div>
-        </motion.div>
-      ))}
+          </>
+        );
+
+        return (
+          <motion.div key={s.name} whileHover={{ y: -6 }} className="w-40 shrink-0 sm:w-48">
+            <div className="relative">
+              {s.videoUrl ? (
+                <a href={s.videoUrl} target="_blank" rel="noopener noreferrer" aria-label={`Watch ${s.name}'s placement story`}>
+                  {card}
+                </a>
+              ) : (
+                card
+              )}
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

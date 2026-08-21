@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Target, Building2, Briefcase } from "lucide-react";
@@ -10,39 +11,25 @@ import { StaggerGrid, StaggerItem } from "@/components/motion/StaggerGrid";
 import { CountUp } from "@/components/motion/CountUp";
 import { PhotoSlot } from "@/components/site/PhotoSlot";
 import { ReelStories } from "@/components/site/ReelStories";
-import { hiringPartners, placementStats, testimonials as staticTestimonials, type Testimonial } from "@/data/testimonials";
+import { hiringPartners, placementStats, type Testimonial } from "@/data/testimonials";
+import { placementStories } from "@/data/placementStories";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { generateSchemaForPage, organizationSchema } from "@/lib/seoSchemas";
 import { SITE_URL } from "@/lib/seo";
-import { parseCountValue, resolveCmsImageUrl, resolveCmsLink, type CMSPage, type CMSTestimonial } from "@/lib/cms";
+import { parseCountValue, resolveCmsLink, type CMSPage } from "@/lib/cms";
 import { RichText } from "@/components/site/RichText";
 
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
-
-function fromCmsTestimonial(t: CMSTestimonial): Testimonial {
-  return {
-    initials: t.name
-      .split(" ")
-      .map((w) => w[0])
-      .join("")
-      .slice(0, 2)
-      .toUpperCase(),
-    name: t.name,
-    role: t.designation,
-    company: t.company,
-    quote: t.quote,
-    program: t.program,
-    photo: resolveCmsImageUrl(t.avatar) || undefined,
-    photoAlt: t.avatar_alt || t.name,
-  };
-}
+const STORIES_INITIAL_COUNT = 6;
+const STORIES_LOAD_MORE_COUNT = 6;
 
 export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
+  const [visibleStoryCount, setVisibleStoryCount] = useState(STORIES_INITIAL_COUNT);
   const placements = cmsPage?.placements ?? null;
 
-  const heroHeading = placements?.heading || "Placement Highlights FY2026";
+  const heroHeading = placements?.heading || "4500+ Students Placed With Our Placement Support";
   const heroSubHeading =
-    placements?.sub_heading || "Real outcomes from learners who trained on the tools employers actually use.";
+    placements?.sub_heading || "Get closer to your dream career with our unrivaled placement assistance!";
 
   const stats = placements?.stats?.length
     ? placements.stats.map((s) => ({ label: s.label, value: s.value }))
@@ -60,9 +47,9 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
   const ctaLabel = placements?.cta_text || "Explore Programs";
   const ctaHref = resolveCmsLink(placements?.cta_internal_page, placements?.cta_external_url, "/all-courses");
 
-  const testimonials: Testimonial[] = cmsPage?.testimonials?.length
-    ? cmsPage.testimonials.map(fromCmsTestimonial)
-    : staticTestimonials;
+  const testimonials: Testimonial[] = placementStories;
+  const visibleStories = testimonials.slice(0, visibleStoryCount);
+  const hasMoreStories = visibleStoryCount < testimonials.length;
 
   const partnerNames: string[] = cmsPage?.partner_logos?.length
     ? cmsPage.partner_logos.map((p) => p.name)
@@ -116,7 +103,10 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
       <section className="py-16">
         <div className={container}>
           <Reveal className="text-center">
-            <h2 className="text-2xl font-bold text-navy sm:text-3xl">Watch Real Placement Stories</h2>
+            <h2 className="text-2xl font-bold text-navy sm:text-3xl">Voices of Success: Stories from Our Placed Students!</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-text-body">
+              Students talk about their incredible stories of growth and success.
+            </p>
           </Reveal>
           <Reveal delay={0.1} className="mt-8">
             <ReelStories stories={testimonials} />
@@ -180,7 +170,7 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
           </Reveal>
 
           <StaggerGrid className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {testimonials.map((t) => (
+            {visibleStories.map((t) => (
               <StaggerItem key={t.name}>
                 <motion.div whileHover={{ y: -6 }} className="glass gloss-soft flex h-full flex-col rounded-2xl p-6">
                   <div className="flex items-center gap-3">
@@ -198,6 +188,23 @@ export function PlacementsPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               </StaggerItem>
             ))}
           </StaggerGrid>
+
+          {hasMoreStories && (
+            <Reveal className="mt-10 text-center">
+              <button
+                type="button"
+                onClick={() =>
+                  setVisibleStoryCount((count) => Math.min(count + STORIES_LOAD_MORE_COUNT, testimonials.length))
+                }
+                className="inline-flex items-center gap-2 rounded-full border border-navy/15 bg-white px-8 py-3.5 text-sm font-bold text-navy shadow-sm transition-colors hover:border-teal/40 hover:bg-teal/5"
+              >
+                Show more stories
+                <span className="text-xs font-semibold text-text-body">
+                  ({testimonials.length - visibleStoryCount} remaining)
+                </span>
+              </button>
+            </Reveal>
+          )}
         </div>
       </section>
 

@@ -103,7 +103,7 @@ function HeroToPrograms({
 function ProgramsExitToPlacement({ placementSection }: { placementSection: CMSPage["placements"] }) {
   return (
     <div className="relative -mt-[100dvh] h-[200dvh] bg-emerald">
-      <div className="sticky top-0 z-0 h-screen overflow-hidden bg-emerald">
+      <div className="sticky top-0 z-0 bg-emerald">
         <PlacementHighlights placementSection={placementSection} />
       </div>
     </div>

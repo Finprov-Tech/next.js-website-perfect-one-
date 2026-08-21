@@ -7,6 +7,7 @@ export type Testimonial = {
   program: string;
   photo?: string;
   photoAlt?: string;
+  videoUrl?: string;
 };
 
 export const testimonials: Testimonial[] = [

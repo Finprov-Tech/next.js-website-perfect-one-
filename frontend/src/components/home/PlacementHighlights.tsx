@@ -43,7 +43,7 @@ export function PlacementHighlights({ placementSection }: { placementSection?: C
           fill="currentColor"
         />
       </svg>
-      <div className="relative overflow-hidden bg-emerald pb-20 pt-6 text-white">
+      <div className="relative overflow-hidden bg-emerald pb-12 pt-16 text-white sm:pb-14 sm:pt-20">
         <div className="pointer-events-none absolute inset-0 bg-grid-lines" />
         <div className={`${container} relative`}>
           <Reveal className="text-center">

@@ -9,12 +9,19 @@ import {
   Trophy,
   ShieldCheck,
   Sparkles,
-  Lightbulb,
   HeartHandshake,
   ArrowRight,
   ArrowUpRight,
+  Users,
+  Rocket,
+  Scale,
+  Zap,
+  BookOpen,
+  MonitorPlay,
+  MessageCircle,
 } from "lucide-react";
 import keralaStudents from "@/assets/kerala-students.png";
+import aboutHeroImage from "@/assets/about-hero-student.png";
 import anandKumarPhoto from "@/assets/experts/anand-kumar.webp";
 import veenaVijayanPhoto from "@/assets/experts/veena-vijayan.webp";
 import taniyaMathewPhoto from "@/assets/experts/taniya-mathew.webp";
@@ -38,6 +45,80 @@ import type { CMSPage } from "@/lib/cms";
 const container = "mx-auto w-full max-w-[1200px] px-6 md:px-8 lg:px-[120px]";
 
 const getImageSrc = (img: any) => (typeof img === "string" ? img : img?.src || "");
+
+const heroSubHeading1 = "Achieve Excellence with World-Class Training & Education";
+const heroSubHeading2 = "Leading Digital Marketing, Finance & Accounting Training Institute";
+const heroIntro =
+  "Finprov Learning is a leading education and upskilling platform aiming at an innovative and highest quality education in Digital marketing, Finance and Accounting. Providing training to both students and professionals, Finprov Learning's vision is to create world-class professionals in the sector with in-depth theoretical knowledge and ready to work, hands-on experience.";
+const heroHighlights = [
+  "Practical job training",
+  "Case study based learning",
+  "Real Work Experience",
+  "Tech-enabled learning",
+];
+
+const visionText =
+  "To enable learners worldwide to acquire industry relevant skills to pursue / accelerate career growth, creating successful businesses and improve their lives and communities.";
+const missionText =
+  "To deliver innovative and practical learning experiences that bridge the gap between education and industry standards, leveraging the latest technology to empower learners with job-ready skills, entrepreneurial expertise, and a commitment to continuous learning, ensuring career growth and meaningful impact on society.";
+
+const ourStoryParagraphs = [
+  "We founded Finprov Learning after being inspired by industry leaders, entrepreneurs, and experienced professionals. We recognized that many individuals lacked adequate education in key areas such as finance and digital marketing, which affected their careers and businesses. Our mission is to offer the right guidance and education in these fields to help individuals build successful careers. We have 40+ years of industry experience serving students. We have 11 locations across Kerala and Bangalore.",
+  "Finprov has successfully trained thousands of our learners over the years by providing education, guidance, and leadership, resulting in over 4500+ placements across our organization. We focus on delivering practical learning that equips students to face real-world challenges, enabling them to grow professionally and achieve lasting success. Along with traditional offline training methods, we embrace technology-aided Online, E-learning, and Hybrid methods of learning, making education affordable and accessible for everyone.",
+];
+
+const pathToSuccessParagraphs = [
+  "Finprov offers high-quality upskilling courses designed to help learners enhance their skills across various fields. We provide training that helps students stay competitive and succeed in their careers. Whether starting a new job or advancing in your current role, Finprov ensures you gain the right practical experience and expertise needed to thrive in today's job market.",
+  "Our courses enhance professional skills to help individuals improve their corporate abilities and perform well in job interviews. We also provide placement assistance, connecting our learners with top global companies. With a focus on both technical and soft skills development, Finprov prepares students for career success in today's competitive environment.",
+];
+
+const liveCoreValues = [
+  {
+    icon: HeartHandshake,
+    title: "Learner First",
+    points: [
+      "We prioritise learners' success in every decision we make",
+      "We listen, adapt and innovate to create the best learning experience",
+    ],
+  },
+  {
+    icon: Rocket,
+    title: "Growth & Innovation",
+    points: [
+      "We constantly upskill ourselves and help others do the same",
+      "We challenge the status quo and innovate to create better outcomes",
+    ],
+  },
+  {
+    icon: ShieldCheck,
+    title: "Accountability",
+    points: [
+      "We take complete ownership of our responsibilities and outcomes",
+      "We hold ourselves and each other to high standards and deliver on our promises",
+    ],
+  },
+  {
+    icon: Users,
+    title: "Teamwork",
+    points: [
+      "We support each other, communicate openly and win as one team",
+      "We put team success above individual credit",
+    ],
+  },
+  {
+    icon: Scale,
+    title: "Integrity",
+    points: [
+      "We act with honesty even when no one's watching",
+      "We build and maintain trust with all stakeholders",
+    ],
+  },
+  {
+    icon: Zap,
+    title: "Work Hard, Play Harder",
+    points: ["We value both hard work and fun"],
+  },
+];
 
 const timeline = [
   {
@@ -67,33 +148,10 @@ const timeline = [
   },
 ];
 
-const defaultCoreValues = [
-  {
-    icon: Target,
-    title: "Practicality First",
-    desc: "We focus 80% of our training on real software tools, live GST portals, and simulated balance sheets used by top employers.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Lifetime Career Support",
-    desc: "Our commitment doesn't end at graduation. We provide continuous placement assistance, interview practice, and career upgrades for life.",
-  },
-  {
-    icon: Lightbulb,
-    title: "Continuous Innovation",
-    desc: "Our curriculum is reviewed quarterly by practicing CAs and industry leaders to incorporate emerging software and regulatory changes.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Uncompromising Integrity",
-    desc: "We instill ethical accounting practices, transparent compliance, and professional standards in every single student.",
-  },
-];
-
 const defaultStats = [
   { value: "4,500+", label: "Learners Placed" },
   { value: "300+", label: "Hiring Partners" },
-  { value: "10", label: "Centres & Online" },
+  { value: "11", label: "Centres & Online" },
   { value: "98%", label: "Placement Success Rate" },
 ];
 
@@ -144,28 +202,22 @@ const awards = [
 
 export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
   const [enquireOpen, setEnquireOpen] = useState(false);
+  const [trialEmail, setTrialEmail] = useState("");
+  const [trialSubmitted, setTrialSubmitted] = useState(false);
 
   const banner = cmsPage?.banner ?? null;
   const credentials = cmsPage?.credentials ?? null;
-  const whyFinprov = cmsPage?.why_finprov ?? null;
   const cta = cmsPage?.cta ?? null;
 
   const heroBadge = banner?.badge_text || "About Finprov Learning";
-  const heroHeading = banner?.heading || "We Started Small. Now We're Building Futures.";
-  const heroParagraph =
-    banner?.paragraph ||
-    "Founded by practicing Chartered Accountants, Finprov Learning bridges the gap between traditional degrees and real-world corporate demands across 10 centres in Kerala and Karnataka, plus online learning.";
-  const heroImage = resolveCmsImageUrl(banner?.image) || getImageSrc(keralaStudents);
-  const heroImageAlt = banner?.image_alt || "Finprov learners collaborating in the classroom";
+  const heroHeading = banner?.heading || "About Finprov";
+  const heroImage = getImageSrc(aboutHeroImage);
+  const heroImageAlt = banner?.image_alt || "Finprov learner with books — professional training and placement support";
   const heroFloatingBadge = banner?.top_card_title || "Founded by CAs";
 
   const stats = credentials?.items?.length
     ? credentials.items.map((item) => ({ value: item.value, label: item.title }))
     : defaultStats;
-
-  const coreValues = whyFinprov?.feature_cards?.length
-    ? whyFinprov.feature_cards.map((card) => ({ icon: null, iconKey: card.icon, title: card.title, desc: card.description }))
-    : defaultCoreValues.map((v) => ({ icon: v.icon, iconKey: null as string | null, title: v.title, desc: v.desc }));
 
   const teamMembers = cmsPage?.team?.members?.length
     ? cmsPage.team.members.map((m) => ({
@@ -234,14 +286,43 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
             >
               {heroHeading}
             </motion.h1>
+            <motion.h2
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
+              className="mt-3 text-xl font-bold text-mint sm:text-2xl"
+            >
+              {heroSubHeading1}
+            </motion.h2>
+            <motion.h3
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.18 }}
+              className="mt-2 text-base font-semibold text-white/90 sm:text-lg"
+            >
+              {heroSubHeading2}
+            </motion.h3>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-4 max-w-lg text-sm sm:text-base leading-relaxed text-white/80 font-normal"
             >
-              <RichText html={heroParagraph} />
+              {heroIntro}
             </motion.p>
+            <motion.ul
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.25 }}
+              className="mt-5 grid gap-2 sm:grid-cols-2"
+            >
+              {heroHighlights.map((item) => (
+                <li key={item} className="flex items-center gap-2 text-sm font-medium text-white/90">
+                  <Check className="h-4 w-4 shrink-0 text-gold" />
+                  {item}
+                </li>
+              ))}
+            </motion.ul>
           </div>
           <motion.div
             initial={{ opacity: 0, scale: 0.94 }}
@@ -256,6 +337,7 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
               subcaption="Empowering thousands of learners every year"
               gradient="from-teal/80 to-cta/70"
               className="aspect-[4/3] max-h-[360px] w-full"
+              fit="contain"
             />
             <div className="absolute -left-3 -top-3 animate-float rounded-xl bg-gold px-3.5 py-1.5 text-xs font-black text-navy shadow-lg">
               {heroFloatingBadge}
@@ -293,12 +375,10 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                     <Compass className="h-5 w-5" />
                   </div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-navy">Our Vision</h3>
-                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-body">
-                    To be India's most trusted and innovator-driven career academy, empowering every commerce, finance, and tech aspirant with practical, software-driven expertise to excel in the global economy.
-                  </p>
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-body">{visionText}</p>
                 </div>
                 <div className="mt-4 border-t border-border/60 pt-3 text-[11px] font-bold text-teal flex items-center gap-1.5">
-                  <Check className="h-3.5 w-3.5" /> Global Standards &bull; Practical Mastery
+                  <Check className="h-3.5 w-3.5" /> Global career growth &bull; Lasting community impact
                 </div>
               </div>
             </Reveal>
@@ -310,16 +390,46 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
                     <Target className="h-5 w-5 text-gold-dark" />
                   </div>
                   <h3 className="text-lg sm:text-xl font-extrabold text-navy">Our Mission</h3>
-                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-body">
-                    To deliver hands-on, job-oriented programs certified by top industry partners like IIT Palakkad iHub and SAP. We equip students with real GST filing, Tally Prime, and corporate workflow skills backed by 100% placement support.
-                  </p>
+                  <p className="mt-2 text-xs sm:text-sm leading-relaxed text-text-body">{missionText}</p>
                 </div>
                 <div className="mt-4 border-t border-border/60 pt-3 text-[11px] font-bold text-gold-dark flex items-center gap-1.5">
-                  <Check className="h-3.5 w-3.5" /> IIT Palakkad iHub Partner &bull; Live Tax Filings
+                  <Check className="h-3.5 w-3.5" /> Job-ready skills &bull; Industry-aligned learning
                 </div>
               </div>
             </Reveal>
           </div>
+        </div>
+      </section>
+
+      {/* Our Story */}
+      <section className="py-10 sm:py-12">
+        <div className={container}>
+          <Reveal>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal">Our Story</span>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">Built on Experience, Driven by Learners</h2>
+            <div className="mt-6 max-w-3xl space-y-4 text-sm sm:text-base leading-relaxed text-text-body">
+              {ourStoryParagraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Path to Success */}
+      <section className="py-10 sm:py-12 bg-bg-light/50">
+        <div className={container}>
+          <Reveal>
+            <span className="text-xs font-bold uppercase tracking-wider text-teal">Career Support</span>
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">
+              We Help You Find Your Path To Success
+            </h2>
+            <div className="mt-6 max-w-3xl space-y-4 text-sm sm:text-base leading-relaxed text-text-body">
+              {pathToSuccessParagraphs.map((paragraph) => (
+                <p key={paragraph.slice(0, 32)}>{paragraph}</p>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </section>
 
@@ -328,9 +438,10 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
         <div className={container}>
           <Reveal className="text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-teal">Leadership &amp; Governance</span>
-            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">Meet Our Experts</h2>
-            <p className="mt-3 text-sm text-text-body max-w-xl mx-auto">
-              Guided by practicing Chartered Accountants and industry leaders with decades of corporate leadership.
+            <h2 className="mt-2 text-3xl font-extrabold tracking-tight text-navy sm:text-4xl">Learn With the Industry Experts</h2>
+            <p className="mt-3 text-sm text-text-body max-w-2xl mx-auto">
+              Our team of expert trainers, with extensive industry experience, is committed to enhancing students&apos; professional
+              skills and preparing them for rewarding careers in accounting and digital marketing.
             </p>
           </Reveal>
 
@@ -449,28 +560,111 @@ export function AboutPageClient({ cmsPage }: { cmsPage: CMSPage | null }) {
         <div className={container}>
           <Reveal className="text-center">
             <span className="text-xs font-bold uppercase tracking-wider text-teal">Our Pillars</span>
-            <h2 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">Core Values</h2>
+            <h2 className="mt-2 text-3xl font-bold tracking-tight text-navy sm:text-4xl">Core Values of Finprov Learning</h2>
             <p className="mt-3 text-sm text-text-body max-w-2xl mx-auto">
-              The fundamental principles that guide our teaching methodology and student mentorship.
+              The principles that guide every decision we make for our learners, teams, and partners.
             </p>
           </Reveal>
 
-          <StaggerGrid className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {coreValues.map((v) => {
+          <StaggerGrid className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {liveCoreValues.map((v) => {
               const IconComp = v.icon;
               return (
                 <StaggerItem key={v.title}>
                   <div className="glass gloss-soft flex h-full flex-col rounded-2xl p-6 border border-border/80 hover:border-teal/40 transition-colors">
                     <div className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-teal/10 text-teal mb-4">
-                      {IconComp ? <IconComp className="h-5 w-5" /> : <CmsIcon name={v.iconKey} className="h-5 w-5" />}
+                      <IconComp className="h-5 w-5" />
                     </div>
                     <h3 className="font-bold text-navy text-lg">{v.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-text-body">{v.desc}</p>
+                    <ul className="mt-3 space-y-2 text-sm leading-relaxed text-text-body">
+                      {v.points.map((point) => (
+                        <li key={point} className="flex gap-2">
+                          <Check className="mt-0.5 h-4 w-4 shrink-0 text-teal" />
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </StaggerItem>
               );
             })}
           </StaggerGrid>
+        </div>
+      </section>
+
+      {/* Professional Certificate CTA */}
+      <section className="py-10 sm:py-12 bg-bg-light/50">
+        <div className={`${container} text-center`}>
+          <Reveal>
+            <BookOpen className="mx-auto h-10 w-10 text-teal" />
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-navy sm:text-4xl">
+              Take Our Courses &amp; Earn Professional Certificate
+            </h2>
+            <p className="mx-auto mt-4 max-w-2xl text-sm sm:text-base leading-relaxed text-text-body">
+              We are proudly being part of the worldwide change in education by developing and offering Accounting, Data Analytics
+              and Digital Marketing courses.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <Link
+                href="/all-courses"
+                className="inline-flex items-center gap-2 rounded-xl bg-cta px-6 py-3.5 text-sm font-bold text-white transition-transform hover:-translate-y-0.5"
+              >
+                <MonitorPlay className="h-4 w-4" /> Demo Class
+              </Link>
+              <button
+                type="button"
+                onClick={() => setEnquireOpen(true)}
+                className="inline-flex items-center gap-2 rounded-xl border border-navy/15 bg-white px-6 py-3.5 text-sm font-bold text-navy shadow-sm transition-colors hover:border-teal/40 hover:bg-teal/5"
+              >
+                <MessageCircle className="h-4 w-4" /> Talk To An Expert
+              </button>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* Free trial */}
+      <section className="py-10 sm:py-12">
+        <div className={container}>
+          <Reveal>
+            <div className="glass gloss-soft mx-auto max-w-2xl rounded-3xl border border-border/80 p-8 text-center shadow-md sm:p-10">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-teal/10 px-3 py-1 text-xs font-bold text-teal">
+                <Sparkles className="h-3.5 w-3.5" /> Free Trial
+              </span>
+              <h2 className="mt-4 text-2xl font-bold text-navy sm:text-3xl">Try It Free for 7 Days</h2>
+              <p className="mt-3 text-sm leading-relaxed text-text-body">
+                Experience our comprehensive finance and accounting courses firsthand. Start your free trial today and see how we
+                can elevate your career prospects!
+              </p>
+              {trialSubmitted ? (
+                <p className="mt-6 text-sm font-semibold text-teal">Thanks — we&apos;ll be in touch shortly.</p>
+              ) : (
+                <form
+                  className="mt-6 flex flex-col gap-3 sm:flex-row"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    if (trialEmail.trim()) setTrialSubmitted(true);
+                  }}
+                >
+                  <input
+                    type="email"
+                    required
+                    value={trialEmail}
+                    onChange={(e) => setTrialEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="flex-1 rounded-xl border border-border bg-white px-4 py-3 text-sm outline-none focus:border-teal focus:ring-4 focus:ring-teal/10"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-xl bg-navy px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-navy/90"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              )}
+              <p className="mt-4 text-xs text-text-body/70">We care about your data in our privacy policy.</p>
+            </div>
+          </Reveal>
         </div>
       </section>
 
